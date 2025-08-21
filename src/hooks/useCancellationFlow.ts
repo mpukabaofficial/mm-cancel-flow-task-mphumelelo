@@ -1,16 +1,14 @@
 import { useState } from 'react'
-import { useUser, useSubscription, useUserActions } from '@/store/userStore'
+import { useUser } from '@/contexts/UserContext'
 import { cancellationService } from '@/lib/api'
 import { DownsellVariant } from '@/lib/variant'
 
 /**
  * Custom hook for managing the cancellation flow
- * Integrates with Zustand store for user and subscription state
+ * Integrates with React Context for user and subscription state
  */
 export function useCancellationFlow() {
-  const user = useUser()
-  const subscription = useSubscription()
-  const { updateSubscriptionStatus } = useUserActions()
+  const { user, subscription, updateSubscriptionStatus } = useUser()
   
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)

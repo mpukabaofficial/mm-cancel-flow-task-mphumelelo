@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import CancelModal from "@/components/CancelModal";
-import { useClientStore } from "@/hooks/useClientStore";
+import { useUser } from "@/contexts/UserContext";
 
 // Get subscription data for UI display
 const getSubscriptionData = (
@@ -22,7 +22,6 @@ const getSubscriptionData = (
 });
 
 export default function ProfilePage() {
-  const [loading] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
 
   // New state for settings toggle
@@ -31,19 +30,41 @@ export default function ProfilePage() {
   // State for cancel modal
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
 
-  // Get user data from Zustand store (client-safe)
-  const { user, subscription, isClient } = useClientStore();
+  // Get user data from context
+  const { user, subscription, isLoading, error } = useUser();
 
   // Get subscription data for UI
   const mockSubscriptionData = getSubscriptionData(subscription);
 
-  // Early return if not on client or no user data
-  if (!isClient || !user) {
+  // Show loading state
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">{!isClient ? 'Loading...' : 'No user data available'}</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading user data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Early return if no user data
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600">No user data available</p>
         </div>
       </div>
     );
@@ -70,61 +91,6 @@ export default function ProfilePage() {
     setIsCancelModalOpen(false);
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 py-12">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white shadow rounded-lg overflow-hidden">
-            {/* Header skeleton */}
-            <div className="px-6 py-8 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-indigo-50">
-              <div className="flex items-center justify-between">
-                <div className="h-8 w-40 bg-gradient-to-r from-gray-200 to-gray-300 rounded animate-pulse"></div>
-                <div className="flex space-x-3">
-                  <div className="h-10 w-32 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg animate-pulse"></div>
-                  <div className="h-10 w-24 bg-gradient-to-r from-gray-200 to-gray-300 rounded-md animate-pulse"></div>
-                </div>
-              </div>
-            </div>
-
-            {/* Profile Info skeleton */}
-            <div className="px-6 py-6 border-b border-gray-200">
-              <div className="h-6 w-56 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-4 animate-pulse"></div>
-              <div className="space-y-6">
-                <div>
-                  <div className="h-4 w-20 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-2 animate-pulse"></div>
-                  <div className="h-5 w-48 bg-gradient-to-r from-gray-200 to-gray-300 rounded animate-pulse"></div>
-                </div>
-                <div>
-                  <div className="h-4 w-36 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-2 animate-pulse"></div>
-                  <div className="h-5 w-20 bg-gradient-to-r from-gray-200 to-gray-300 rounded animate-pulse"></div>
-                </div>
-                <div>
-                  <div className="h-4 w-48 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-2 animate-pulse"></div>
-                  <div className="h-5 w-32 bg-gradient-to-r from-gray-200 to-gray-300 rounded animate-pulse"></div>
-                </div>
-              </div>
-            </div>
-
-            {/* Support skeleton */}
-            <div className="px-6 py-6 border-b border-gray-200">
-              <div className="h-6 w-24 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-4 animate-pulse"></div>
-              <div className="h-12 w-full bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg animate-pulse"></div>
-            </div>
-
-            {/* Subscription Management skeleton */}
-            <div className="px-6 py-6">
-              <div className="h-6 w-56 bg-gradient-to-r from-gray-200 to-gray-300 rounded mb-4 animate-pulse"></div>
-              <div className="space-y-4">
-                <div className="h-12 w-full bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg animate-pulse"></div>
-                <div className="h-12 w-full bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg animate-pulse delay-75"></div>
-                <div className="h-12 w-full bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg animate-pulse delay-150"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 relative">

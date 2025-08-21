@@ -1,15 +1,11 @@
 'use client'
 
-import { useUser, useSubscription, useUserActions, useUserLoading, useUserError } from '@/store/userStore'
+import { useUser } from '@/contexts/UserContext'
 import { useCancellationFlow } from '@/hooks/useCancellationFlow'
 import Button from '@/components/ui/Button'
 
 export default function TestStorePage() {
-  const user = useUser()
-  const subscription = useSubscription()
-  const isLoading = useUserLoading()
-  const error = useUserError()
-  const { initializeUser, updateSubscriptionStatus, clearUser } = useUserActions()
+  const { user, subscription, isLoading, error, updateSubscriptionStatus } = useUser()
   
   const {
     variant,
@@ -63,7 +59,7 @@ export default function TestStorePage() {
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Zustand Store Testing</h1>
+      <h1 className="text-2xl font-bold mb-6">User Context Testing</h1>
 
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
@@ -123,7 +119,7 @@ export default function TestStorePage() {
         <h2 className="text-lg font-semibold mb-4">Store Actions</h2>
         <div className="space-y-4">
           <div className="flex flex-wrap gap-3">
-            <Button onClick={initializeUser} disabled={isLoading}>
+            <Button onClick={() => window.location.reload()} disabled={isLoading}>
               Re-initialize User
             </Button>
             
@@ -141,8 +137,8 @@ export default function TestStorePage() {
               Mark Active
             </Button>
 
-            <Button onClick={clearUser}>
-              Clear User
+            <Button onClick={() => console.log('Clear user functionality removed')}>
+              Clear User (Demo)
             </Button>
           </div>
         </div>
@@ -185,15 +181,14 @@ export default function TestStorePage() {
 
       {/* Developer Info */}
       <div className="mt-8 p-4 bg-blue-50 rounded-lg">
-        <h3 className="font-semibold text-blue-800 mb-2">Store Features:</h3>
+        <h3 className="font-semibold text-blue-800 mb-2">Context Features:</h3>
         <ul className="text-sm text-blue-700 space-y-1">
-          <li>✅ Persistent state (localStorage)</li>
-          <li>✅ DevTools integration</li>
-          <li>✅ Type-safe selectors</li>
-          <li>✅ Optimistic updates</li>
+          <li>✅ Simple React Context</li>
+          <li>✅ Type-safe hooks</li>
           <li>✅ Error handling</li>
           <li>✅ Loading states</li>
           <li>✅ Cancellation flow integration</li>
+          <li>✅ No SSR hydration issues</li>
         </ul>
       </div>
     </div>
