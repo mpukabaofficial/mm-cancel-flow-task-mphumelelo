@@ -31,6 +31,9 @@ body {
   color: var(--foreground);
 }
 
+button {
+  @apply cursor-pointer;
+}
 .red {
   @apply border border-red-500;
 }
