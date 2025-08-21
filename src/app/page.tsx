@@ -2,6 +2,9 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
+import Button from "@/components/ui/Button";
+import HorizontalLine from "@/components/ui/HorizontalLine";
 
 export default function CancelModal() {
   const [open, setOpen] = useState(true);
@@ -9,9 +12,9 @@ export default function CancelModal() {
   if (!open) return null;
 
   return (
-    <div className="bg-black/30 absolute inset-0">
-      <div className="w-[1000px] rounded-lg mx-auto mt-20 bg-white relative">
-        <button className="absolute top-[18px] right-[20px]">
+    <div className="bg-black/30 absolute inset-0 flex items-center justify-center p-2 sm:p-4">
+      <div className="w-full max-w-[1000px] max-h-[90vh] overflow-y-auto rounded-[12px] sm:rounded-[20px] bg-white relative font-semibold text-gray-warm-800">
+        <button className="absolute top-[12px] right-[12px] sm:top-[18px] sm:right-[20px] z-10">
           <svg
             width="24"
             height="25"
@@ -25,25 +28,42 @@ export default function CancelModal() {
             />
           </svg>
         </button>
-        <div className="h-[60px] flex justify-center items-center">
-          <div></div>
-          <p className="text-grey-warm-800 font-semibold">
-            Subscription Cancellation
-          </p>
+        <div className="h-[50px] sm:h-[60px] flex justify-center items-center border-gray-warm-300 border-b px-2">
+          <p className="text-xs sm:text-sm">Subscription Cancellation</p>
         </div>
-        <div>
-          <div>
-            <div>
-              <p className="text-4xl">
+        {/* main */}
+        <div className="p-3 sm:p-5 flex flex-col md:flex-row gap-3 sm:gap-5">
+          {/* Image on top for mobile, right side for desktop */}
+          <div className="order-1 md:order-2 h-[100px] sm:h-[122px] md:h-auto w-full md:w-[400px] relative flex-shrink-0 self-stretch">
+            <Image
+              src="/empire-state-compressed.jpg"
+              alt="New York skyline"
+              className="rounded-lg object-cover"
+              fill
+            />
+          </div>
+          {/* Content */}
+          <div className="order-2 md:order-1 space-y-5 w-full">
+            <div className="font-semibold space-y-4">
+              <p className="text-large md:text-large text-2xl flex flex-col">
                 <span>Hey mate,</span>
                 <span>Quick one before you go.</span>
               </p>
-              <p className="text-4xl"></p>
+              <p className="text-large md:text-large text-2xl italic">
+                Have you found a job yet?
+              </p>
             </div>
-            <div>subtext</div>
-            <div>buttons</div>
+            <p className="text-gray-warm-700 text-base tracking-tighter w-full md:w-[469px]">
+              Whatever your answer, we just want to help you take the next step.
+              With visa support, or by hearing how we can do better.
+            </p>
+            <HorizontalLine />
+
+            <div className="w-full space-y-4">
+              <Button>Yes, I've found a job</Button>
+              <Button>Not yet - I'm still looking </Button>
+            </div>
           </div>
-          <div>right</div>
         </div>
       </div>
     </div>

@@ -9,7 +9,9 @@
       "Bash(psql:*)",
       "Bash(docker rm:*)",
       "Bash(docker container prune:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(move srcassetsempire-state-compressed.jpg publicempire-state-compressed.jpg)",
+      "Bash(mv:*)"
     ],
     "deny": [],
     "ask": []

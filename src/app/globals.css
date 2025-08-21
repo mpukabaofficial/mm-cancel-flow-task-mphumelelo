@@ -11,6 +11,12 @@
   --font-sans: var(--font-dm-sans);
   --color-gray-warm-800: #41403d;
   --color-gray-warm-700: #62605c;
+  --color-gray-warm-300: #e6e6e6;
+}
+
+.text-large {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -23,7 +29,6 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 .red {
