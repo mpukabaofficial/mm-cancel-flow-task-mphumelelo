@@ -1,10 +1,23 @@
 import { supabase } from '@/lib/supabase'
-import { CreateCancellationRequest } from '@/lib/types'
 import { NextRequest, NextResponse } from 'next/server'
+import { createCancellationSchema, validateRequestBody, uuidSchema } from '@/lib/validations'
+import { getMockUser } from '@/lib/mockUser'
 
 export async function POST(request: NextRequest) {
   try {
-    const body: CreateCancellationRequest = await request.json()
+    // Parse and validate request body
+    const rawBody = await request.json()
+    const validation = validateRequestBody(createCancellationSchema, rawBody)
+    
+    if (!validation.success) {
+      return NextResponse.json({ 
+        error: 'Validation failed', 
+        details: validation.error 
+      }, { status: 400 })
+    }
+
+    const body = validation.data
+    const mockUser = getMockUser()
     
     const { data, error } = await supabase
       .from('cancellations')
@@ -14,7 +27,7 @@ export async function POST(request: NextRequest) {
           downsell_variant: body.downsell_variant,
           reason: body.reason,
           has_job: body.has_job,
-          user_id: '00000000-0000-0000-0000-000000000000' // TODO: Get from auth
+          user_id: mockUser.id // Use actual mock user ID
         }
       ])
       .select()
@@ -39,6 +52,17 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const userId = searchParams.get('user_id')
 
+    // Validate user_id if provided
+    if (userId) {
+      const validation = validateRequestBody(uuidSchema, userId)
+      if (!validation.success) {
+        return NextResponse.json({ 
+          error: 'Invalid user_id format', 
+          details: validation.error 
+        }, { status: 400 })
+      }
+    }
+
     let query = supabase.from('cancellations').select('*')
     
     if (userId) {
@@ -53,7 +77,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(data)
   } catch (error) {
-    console.log(error)
+    console.error(error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

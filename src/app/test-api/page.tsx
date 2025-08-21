@@ -30,8 +30,11 @@ export default function TestApiPage() {
         has_job: true
       })
       setResult(JSON.stringify(response, null, 2))
-    } catch (error: any) {
-      setResult(`Error: ${error.response?.data?.error || error.message}`)
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 
+        (error as { response?: { data?: { error?: string } } })?.response?.data?.error || 
+        'Unknown error'
+      setResult(`Error: ${errorMessage}`)
     } finally {
       setLoading(false)
     }

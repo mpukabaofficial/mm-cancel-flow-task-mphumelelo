@@ -20,7 +20,7 @@ export async function GET() {
       message: 'Database connection successful',
       data 
     })
-  } catch (error) {
+  } catch {
     return NextResponse.json({
       success: false,
       error: 'Failed to connect to database'

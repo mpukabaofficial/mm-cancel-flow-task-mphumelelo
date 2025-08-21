@@ -2,26 +2,24 @@
 
 import { useState } from "react";
 import CancelModal from "@/components/CancelModal";
-import { getMockUser, getMockSubscription } from "@/lib/mockUser";
+import { useClientStore } from "@/hooks/useClientStore";
 
-// Use seeded user from database
-const mockUser = getMockUser();
-const mockSubscription = getMockSubscription();
-
-// Mock subscription data for UI display
-const mockSubscriptionData = {
-  status: "active",
+// Get subscription data for UI display
+const getSubscriptionData = (
+  subscription: { status?: string; monthly_price?: number } | null
+) => ({
+  status: subscription?.status || "active",
   isTrialSubscription: false,
   cancelAtPeriodEnd: false,
   currentPeriodEnd: new Date(
     Date.now() + 30 * 24 * 60 * 60 * 1000
   ).toISOString(), // 30 days from now
-  monthlyPrice: mockSubscription.monthly_price,
+  monthlyPrice: subscription?.monthly_price || 25,
   isUCStudent: false,
   hasManagedAccess: false,
   managedOrganization: null,
   downsellAccepted: false,
-};
+});
 
 export default function ProfilePage() {
   const [loading] = useState(false);
@@ -32,6 +30,24 @@ export default function ProfilePage() {
 
   // State for cancel modal
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+
+  // Get user data from Zustand store (client-safe)
+  const { user, subscription, isClient } = useClientStore();
+
+  // Get subscription data for UI
+  const mockSubscriptionData = getSubscriptionData(subscription);
+
+  // Early return if not on client or no user data
+  if (!isClient || !user) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">{!isClient ? 'Loading...' : 'No user data available'}</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleSignOut = async () => {
     setIsSigningOut(true);
@@ -163,7 +179,7 @@ export default function ProfilePage() {
             <div className="space-y-3">
               <div>
                 <p className="text-sm font-medium text-gray-500">Email</p>
-                <p className="mt-1 text-md text-gray-900">{mockUser.email}</p>
+                <p className="mt-1 text-md text-gray-900">{user.email}</p>
               </div>
               <div className="pt-2 space-y-3">
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -403,7 +419,9 @@ export default function ProfilePage() {
       </div>
 
       {/* Cancel Modal */}
-      <CancelModal isOpen={isCancelModalOpen} onClose={handleModalClose} />
+      {subscription && (
+        <CancelModal isOpen={isCancelModalOpen} onClose={handleModalClose} />
+      )}
     </div>
   );
 }

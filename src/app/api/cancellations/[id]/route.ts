@@ -1,12 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
-import { UpdateCancellationRequest } from '@/lib/types'
+import { updateCancellationSchema, validateRequestBody, validateParams, uuidSchema } from '@/lib/validations'
+import { z } from 'zod'
+
+const paramsSchema = z.object({
+  id: uuidSchema
+})
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
+    // Validate URL parameters
+    const paramValidation = validateParams(params, paramsSchema)
+    if (!paramValidation.success) {
+      return NextResponse.json({ 
+        error: 'Invalid parameters', 
+        details: paramValidation.error 
+      }, { status: 400 })
+    }
+
     const { data, error } = await supabase
       .from('cancellations')
       .select('*')
@@ -19,6 +33,7 @@ export async function GET(
 
     return NextResponse.json(data)
   } catch (error) {
+    console.error(error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -31,7 +46,27 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const body: UpdateCancellationRequest = await request.json()
+    // Validate URL parameters
+    const paramValidation = validateParams(params, paramsSchema)
+    if (!paramValidation.success) {
+      return NextResponse.json({ 
+        error: 'Invalid parameters', 
+        details: paramValidation.error 
+      }, { status: 400 })
+    }
+
+    // Parse and validate request body
+    const rawBody = await request.json()
+    const bodyValidation = validateRequestBody(updateCancellationSchema, rawBody)
+    
+    if (!bodyValidation.success) {
+      return NextResponse.json({ 
+        error: 'Validation failed', 
+        details: bodyValidation.error 
+      }, { status: 400 })
+    }
+
+    const body = bodyValidation.data
     
     const { data, error } = await supabase
       .from('cancellations')
@@ -46,6 +81,7 @@ export async function PATCH(
 
     return NextResponse.json(data)
   } catch (error) {
+    console.error(error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -58,6 +94,15 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Validate URL parameters
+    const paramValidation = validateParams(params, paramsSchema)
+    if (!paramValidation.success) {
+      return NextResponse.json({ 
+        error: 'Invalid parameters', 
+        details: paramValidation.error 
+      }, { status: 400 })
+    }
+
     const { error } = await supabase
       .from('cancellations')
       .delete()
@@ -69,6 +114,7 @@ export async function DELETE(
 
     return NextResponse.json({ message: 'Cancellation deleted successfully' })
   } catch (error) {
+    console.error(error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
