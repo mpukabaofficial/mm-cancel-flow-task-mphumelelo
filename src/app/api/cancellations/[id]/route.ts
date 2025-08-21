@@ -9,11 +9,12 @@ const paramsSchema = z.object({
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params
     // Validate URL parameters
-    const paramValidation = validateParams(params, paramsSchema)
+    const paramValidation = validateParams(resolvedParams, paramsSchema)
     if (!paramValidation.success) {
       return NextResponse.json({ 
         error: 'Invalid parameters', 
@@ -24,7 +25,7 @@ export async function GET(
     const { data, error } = await supabase
       .from('cancellations')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', resolvedParams.id)
       .single()
 
     if (error) {
@@ -43,11 +44,12 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params
     // Validate URL parameters
-    const paramValidation = validateParams(params, paramsSchema)
+    const paramValidation = validateParams(resolvedParams, paramsSchema)
     if (!paramValidation.success) {
       return NextResponse.json({ 
         error: 'Invalid parameters', 
@@ -71,7 +73,7 @@ export async function PATCH(
     const { data, error } = await supabase
       .from('cancellations')
       .update(body)
-      .eq('id', params.id)
+      .eq('id', resolvedParams.id)
       .select()
       .single()
 
@@ -91,11 +93,12 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params
     // Validate URL parameters
-    const paramValidation = validateParams(params, paramsSchema)
+    const paramValidation = validateParams(resolvedParams, paramsSchema)
     if (!paramValidation.success) {
       return NextResponse.json({ 
         error: 'Invalid parameters', 
@@ -106,7 +109,7 @@ export async function DELETE(
     const { error } = await supabase
       .from('cancellations')
       .delete()
-      .eq('id', params.id)
+      .eq('id', resolvedParams.id)
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 400 })

@@ -24,12 +24,12 @@ export const updateCancellationSchema = z.object({
 }).strict()
 
 export const updateSubscriptionSchema = z.object({
-  id: z.string().uuid('Invalid subscription ID format'),
+  id: z.uuid('Invalid subscription ID format'),
   status: subscriptionStatusSchema
 }).strict()
 
 // UUID validation helper
-export const uuidSchema = z.string().uuid('Invalid UUID format')
+export const uuidSchema = z.uuid('Invalid UUID format')
 
 // Validation result type
 type ValidationResult<T> = 

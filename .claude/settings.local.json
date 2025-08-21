@@ -18,7 +18,9 @@
       "Bash(npx tsc:*)",
       "Bash(timeout:*)",
       "Bash(npm uninstall:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(taskkill:*)",
+      "Bash(powershell:*)"
     ],
     "deny": [],
     "ask": []
