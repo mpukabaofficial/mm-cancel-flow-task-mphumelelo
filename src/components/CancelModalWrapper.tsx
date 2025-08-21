@@ -1,34 +1,35 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import CancelModal from './CancelModal'
-import { getMockUser, fetchMockUserSubscription } from '@/lib/mockUser'
+import { fetchMockUserSubscription } from "@/lib/mockUser";
+import { useEffect, useState } from "react";
+import CancelModal from "./CancelModal";
 
 interface CancelModalWrapperProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-export default function CancelModalWrapper({ isOpen, onClose }: CancelModalWrapperProps) {
-  const [subscription, setSubscription] = useState<any>(null)
-  const [loading, setLoading] = useState(false)
-  const mockUser = getMockUser()
+export default function CancelModalWrapper({
+  isOpen,
+  onClose,
+}: CancelModalWrapperProps) {
+  const [subscription, setSubscription] = useState<{
+    id: string;
+    monthly_price: number;
+  } | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (isOpen && !subscription) {
-      setLoading(true)
+      setLoading(true);
       fetchMockUserSubscription()
         .then(setSubscription)
         .catch(console.error)
-        .finally(() => setLoading(false))
+        .finally(() => setLoading(false));
     }
-  }, [isOpen, subscription])
+  }, [isOpen, subscription]);
 
-  const handleHasFoundJob = (hasFoundJob: boolean) => {
-    console.log('Has found job:', hasFoundJob)
-  }
-
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   if (loading || !subscription) {
     return (
@@ -40,16 +41,8 @@ export default function CancelModalWrapper({ isOpen, onClose }: CancelModalWrapp
           </div>
         </div>
       </div>
-    )
+    );
   }
 
-  return (
-    <CancelModal
-      isOpen={isOpen}
-      onClose={onClose}
-      onHasFoundJob={handleHasFoundJob}
-      userId={mockUser.id}
-      subscriptionId={subscription.id}
-    />
-  )
+  return <CancelModal isOpen={isOpen} onClose={onClose} />;
 }
