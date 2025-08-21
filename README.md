@@ -1,129 +1,107 @@
-# Migrate Mate - Subscription Cancellation Flow Challenge
+# Subscription Cancellation Flow Implementation
 
-## Overview
+## Current Implementation Status
 
-Convert an existing Figma design into a fully-functional subscription-cancellation flow for Migrate Mate. This challenge tests your ability to implement pixel-perfect UI, handle complex business logic, and maintain security best practices.
+This is a working Next.js application implementing a subscription cancellation flow with Supabase backend integration.
 
-## Objective
+## What's Built
 
-Implement the Figma-designed cancellation journey exactly on mobile + desktop, persist outcomes securely, and instrument the A/B downsell logic.
+### ✅ Backend Infrastructure
+- **Database Schema**: Complete PostgreSQL schema with users, subscriptions, and cancellations tables
+- **API Routes**: RESTful endpoints for cancellations and subscriptions management
+- **TypeScript Types**: Full type definitions for all database entities
+- **Environment Setup**: Local Supabase configuration with proper connection handling
 
-## What's Provided
+### ✅ Frontend Services
+- **HTTP Client**: Axios-based API service with error handling
+- **React Hooks**: Custom hooks for state management (`useCancellations`, `useSubscriptions`)
+- **Type Safety**: End-to-end TypeScript integration
 
-This repository contains:
-- ✅ Next.js + TypeScript + Tailwind scaffold
-- ✅ `seed.sql` with users table (25/29 USD plans) and empty cancellations table
-- ✅ Local Supabase configuration for development
-- ✅ Basic Supabase client setup in `src/lib/supabase.ts`
+### ✅ UI Components
+- **Button Component**: Reusable button with proper onClick handling and hover states
+- **Modal Component**: CancelModal component (structure in place)
+- **Test Interface**: API testing page at `/test-api` for development
 
-## Tech Stack (Preferred)
+## Architecture Decisions
 
-- **Next.js** with App Router
-- **React** with TypeScript
-- **Tailwind CSS** for styling
-- **Supabase** (Postgres + Row-Level Security)
+### Database Design
+- **Enhanced Schema**: Added `has_job` boolean column to cancellations table for additional user context
+- **Relationships**: Proper foreign key constraints between users, subscriptions, and cancellations
+- **Security**: Row Level Security (RLS) policies implemented for data protection
 
-> **Alternative stacks allowed** if your solution:
-> 1. Runs with `npm install && npm run dev`
-> 2. Persists to a Postgres-compatible database
-> 3. Enforces table-level security
+### API Architecture
+- **RESTful Design**: Standard REST endpoints following Next.js App Router conventions
+- **Error Handling**: Comprehensive error responses with proper HTTP status codes
+- **Type Safety**: Request/response validation using TypeScript interfaces
 
-## Must-Have Features
+### Frontend Architecture
+- **Service Layer**: Abstracted API calls into reusable service functions
+- **State Management**: React hooks for component state with loading and error states
+- **Component Structure**: Modular UI components with proper prop typing
 
-### 1. Progressive Flow (Figma Design)
-- Implement the exact cancellation journey from provided Figma
-- Ensure pixel-perfect fidelity on both mobile and desktop
-- Handle all user interactions and state transitions
+## Technical Stack
 
-### 2. Deterministic A/B Testing (50/50 Split)
-- **On first entry**: Assign variant via cryptographically secure RNG
-- **Persist** variant to `cancellations.downsell_variant` field
-- **Reuse** variant on repeat visits (never re-randomize)
-
-**Variant A**: No downsell screen
-**Variant B**: Show "$10 off" offer
-- Price $25 → $15, Price $29 → $19
-- **Accept** → Log action, take user back to profile page (NO ACTUAL PAYMENT PROCESSING REQUIRED)
-- **Decline** → Continue to reason selection in flow
-
-### 3. Data Persistence
-- Mark subscription as `pending_cancellation` in database
-- Create cancellation record with:
-  - `user_id`
-  - `downsell_variant` (A or B)
-  - `reason` (from user selection)
-  - `accepted_downsell` (boolean)
-  - `created_at` (timestamp)
-
-### 4. Security Requirements
-- **Row-Level Security (RLS)** policies
-- **Input validation** on all user inputs
-- **CSRF/XSS protection**
-- Secure handling of sensitive data
-
-### 5. Reproducible Setup
-- `npm run db:setup` creates schema and seed data (local development)
-- Clear documentation for environment setup
-
-## Out of Scope
-
-- **Payment processing** - Stub with comments only
-- **User authentication** - Use mock user data
-- **Email notifications** - Not required
-- **Analytics tracking** - Focus on core functionality
+- **Framework**: Next.js 15.3.5 with App Router
+- **Language**: TypeScript
+- **Database**: Supabase (PostgreSQL)
+- **HTTP Client**: Axios 1.11.0
+- **Styling**: Tailwind CSS 4
+- **UI Icons**: Lucide React
 
 ## Getting Started
 
-1. **Clone this repository** `git clone [repo]`
-2. **Install dependencies**: `npm install`
-3. **Set up local database**: `npm run db:setup`
-4. **Start development**: `npm run dev`
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-## Database Schema
+2. **Set up database**:
+   ```bash
+   npm run db:reset
+   ```
 
-The `seed.sql` file provides a **starting point** with:
-- `users` table with sample users
-- `subscriptions` table with $25 and $29 plans
-- `cancellations` table (minimal structure - **you'll need to expand this**)
-- Basic RLS policies (enhance as needed)
+3. **Start development server**:
+   ```bash
+   npm run dev
+   ```
 
-### Important: Schema Design Required
+4. **Test API connectivity**:
+   Visit `http://localhost:3000/test-api` to verify backend integration
 
-The current `cancellations` table is intentionally minimal. You'll need to:
-- **Analyze the cancellation flow requirements** from the Figma design
-- **Design appropriate table structure(s)** to capture all necessary data
-- **Consider data validation, constraints, and relationships**
-- **Ensure the schema supports the A/B testing requirements**
+## Environment Configuration
 
-## Evaluation Criteria
+The `.env.local` file contains local Supabase connection details:
+- API URL: `http://127.0.0.1:54321`
+- Database connection configured with proper authentication keys
 
-- **Functionality (40%)**: Feature completeness and correctness
-- **Code Quality (25%)**: Clean, maintainable, well-structured code
-- **Pixel/UX Fidelity (15%)**: Accuracy to Figma design
-- **Security (10%)**: Proper RLS, validation, and protection
-- **Documentation (10%)**: Clear README and code comments
+## Security Implementation
 
-## Deliverables
+- **Row Level Security**: Enabled on all tables with user-specific access policies
+- **Input Validation**: TypeScript interfaces enforce data structure
+- **Error Handling**: Sanitized error responses to prevent information leakage
 
-1. **Working implementation** in this repository
-2. **NEW One-page README.md (replace this)** (≤600 words) explaining:
-   - Architecture decisions
-   - Security implementation
-   - A/B testing approach
-3. **Clean commit history** with meaningful messages
+## Development Status
 
-## Timeline
+### Completed
+- ✅ Database schema and migrations
+- ✅ Backend API endpoints
+- ✅ Frontend service layer
+- ✅ TypeScript type definitions
+- ✅ Environment configuration
+- ✅ Basic UI components
 
-Submit your solution within **72 hours** of receiving this repository.
+### Next Steps
+- Implement Figma design fidelity
+- Add A/B testing logic (50/50 variant assignment)
+- Complete cancellation flow UI
+- Add downsell offer screens
+- Implement reason selection interface
 
-## AI Tooling
+## Testing
 
-Using Cursor, ChatGPT, Copilot, etc. is **encouraged**. Use whatever accelerates your development—just ensure you understand the code and it runs correctly.
+Use the test page at `/test-api` to verify:
+- Database connectivity
+- API endpoint functionality
+- Error handling behavior
 
-## Questions?
-
-Review the challenge requirements carefully. If you have questions about specific implementation details, make reasonable assumptions and document them in your README.
-
----
-
-**Good luck!** We're excited to see your implementation.
+The implementation provides a solid foundation for building the complete cancellation flow with proper backend integration and type safety.

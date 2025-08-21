@@ -1,0 +1,13 @@
+// how to migrate the current migration
+  
+  
+  1. Read the migration file - Used the Read tool to examine the existing schema in supabase/migrations/20240101000001_initial_schema.sql
+  2. Added the ALTER TABLE statement - Used the Edit tool to add the following SQL after the CREATE TABLE statement:
+  -- Add has_job column to cancellations table
+  ALTER TABLE cancellations
+  ADD COLUMN has_job BOOLEAN;
+  3. Reset the database - Ran npx supabase db reset to apply all migrations from scratch, which:
+    - Recreated the database
+    - Applied the updated migration file including the new column
+    - Restarted the containers
+  4. Verified services were running - Checked npx supabase status to confirm the database was accessible
