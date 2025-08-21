@@ -5,6 +5,7 @@ import {
   UpdateCancellationRequest,
   Subscription 
 } from './types'
+import { DownsellVariant, assignVariant } from './variant'
 
 const api = axios.create({
   baseURL: '/api',
@@ -37,6 +38,49 @@ export const cancellationService = {
 
   delete: async (id: string): Promise<void> => {
     await api.delete(`/cancellations/${id}`)
+  },
+
+  /**
+   * Get or assign variant for a user's cancellation flow
+   * Checks if user has existing cancellation, if so returns existing variant
+   * If not, assigns new variant using secure RNG
+   */
+  getOrAssignVariant: async (userId: string, subscriptionId: string): Promise<{ variant: DownsellVariant; isNewAssignment: boolean }> => {
+    try {
+      // Check for existing cancellation
+      const existingCancellations = await cancellationService.getAll(userId)
+      const existingCancellation = existingCancellations.find(c => c.subscription_id === subscriptionId)
+      
+      if (existingCancellation) {
+        return {
+          variant: existingCancellation.downsell_variant,
+          isNewAssignment: false
+        }
+      }
+
+      // No existing cancellation, assign new variant
+      const variant = assignVariant()
+      
+      // Create initial cancellation record with assigned variant
+      const newCancellation = await cancellationService.create({
+        subscription_id: subscriptionId,
+        downsell_variant: variant,
+        reason: undefined,
+        has_job: undefined
+      })
+
+      return {
+        variant: newCancellation.downsell_variant,
+        isNewAssignment: true
+      }
+    } catch (error) {
+      console.error('Error getting or assigning variant:', error)
+      // Fallback to assigning variant without persistence for now
+      return {
+        variant: assignVariant(),
+        isNewAssignment: true
+      }
+    }
   }
 }
 

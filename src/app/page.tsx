@@ -413,6 +413,8 @@ export default function ProfilePage() {
         isOpen={isCancelModalOpen}
         onClose={handleModalClose}
         onHasFoundJob={handleHasFoundJob}
+        userId={mockUser.id}
+        subscriptionId="123e4567-e89b-12d3-a456-426614174000"
       />
     </div>
   );

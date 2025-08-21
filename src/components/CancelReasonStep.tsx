@@ -3,15 +3,14 @@
 
 import Button from "@/components/ui/Button";
 import HorizontalLine from "@/components/ui/HorizontalLine";
+import { cancellationService } from "@/lib/api";
 import Image from "next/image";
 
 const CancelReasonStep = () => {
   function handleHasFoundJob(hasFoundJob: boolean) {
-    alert(
-      hasFoundJob
-        ? "Record has found job in backend"
-        : "Record has not found job in backend"
-    );
+    cancellationService.update("something", {
+      has_job: hasFoundJob,
+    });
   }
   return (
     <div className="w-full max-w-[1000px] max-h-[90vh] overflow-y-auto rounded-[12px] sm:rounded-[20px] bg-white relative font-semibold text-gray-warm-800">
