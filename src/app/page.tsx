@@ -30,7 +30,7 @@ export default function ProfilePage() {
 
   // New state for settings toggle
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
-  
+
   // State for cancel modal
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
 
@@ -53,11 +53,6 @@ export default function ProfilePage() {
 
   const handleModalClose = () => {
     setIsCancelModalOpen(false);
-  };
-
-  const handleHasFoundJob = (hasFoundJob: boolean) => {
-    console.log("Has found job:", hasFoundJob);
-    // Handle the job status logic here
   };
 
   if (loading) {
@@ -407,15 +402,9 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
-      
+
       {/* Cancel Modal */}
-      <CancelModal 
-        isOpen={isCancelModalOpen}
-        onClose={handleModalClose}
-        onHasFoundJob={handleHasFoundJob}
-        userId={mockUser.id}
-        subscriptionId="123e4567-e89b-12d3-a456-426614174000"
-      />
+      <CancelModal isOpen={isCancelModalOpen} onClose={handleModalClose} />
     </div>
   );
 }

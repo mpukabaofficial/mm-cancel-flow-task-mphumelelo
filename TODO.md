@@ -1,1 +1,2 @@
 - fix the screen change issues
+- fix the step 1 UI got ruined
