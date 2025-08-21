@@ -2,12 +2,11 @@
 
 import { useState } from "react";
 import CancelModal from "@/components/CancelModal";
+import { getMockUser, getMockSubscription } from "@/lib/mockUser";
 
-// Mock user data for UI display
-const mockUser = {
-  email: "user@example.com",
-  id: "1",
-};
+// Use seeded user from database
+const mockUser = getMockUser();
+const mockSubscription = getMockSubscription();
 
 // Mock subscription data for UI display
 const mockSubscriptionData = {
@@ -17,7 +16,7 @@ const mockSubscriptionData = {
   currentPeriodEnd: new Date(
     Date.now() + 30 * 24 * 60 * 60 * 1000
   ).toISOString(), // 30 days from now
-  monthlyPrice: 25,
+  monthlyPrice: mockSubscription.monthly_price,
   isUCStudent: false,
   hasManagedAccess: false,
   managedOrganization: null,

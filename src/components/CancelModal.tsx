@@ -41,7 +41,7 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
       className="bg-black/30 fixed inset-0 flex items-center justify-center p-2 sm:p-4 z-50"
       onClick={handleBackdropClick}
     >
-      <CancelReasonStep />
+      <CancelReasonStep onClose={onClose} />
     </div>
   );
 }

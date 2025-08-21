@@ -12,7 +12,8 @@
       "Bash(npm install:*)",
       "Bash(move srcassetsempire-state-compressed.jpg publicempire-state-compressed.jpg)",
       "Bash(mv:*)",
-      "Bash(timeout 10 curl http://localhost:3000/api/test)"
+      "Bash(timeout 10 curl http://localhost:3000/api/test)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []

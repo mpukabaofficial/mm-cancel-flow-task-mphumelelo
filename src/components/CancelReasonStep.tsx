@@ -6,7 +6,11 @@ import HorizontalLine from "@/components/ui/HorizontalLine";
 import { cancellationService } from "@/lib/api";
 import Image from "next/image";
 
-const CancelReasonStep = () => {
+interface Props {
+  onClose: () => void;
+}
+
+const CancelReasonStep = ({ onClose }: Props) => {
   function handleHasFoundJob(hasFoundJob: boolean) {
     cancellationService.update("something", {
       has_job: hasFoundJob,
@@ -14,7 +18,10 @@ const CancelReasonStep = () => {
   }
   return (
     <div className="w-full max-w-[1000px] max-h-[90vh] overflow-y-auto rounded-[12px] sm:rounded-[20px] bg-white relative font-semibold text-gray-warm-800">
-      <button className="absolute top-[12px] right-[12px] sm:top-[18px] sm:right-[20px] z-10">
+      <button
+        onClick={onClose}
+        className="absolute top-[12px] right-[12px] sm:top-[18px] sm:right-[20px] z-10"
+      >
         <svg
           width="24"
           height="25"
