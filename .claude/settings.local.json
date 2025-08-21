@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(supabase db reset:*)",
+      "Bash(npx supabase:*)",
+      "Bash(mkdir:*)",
+      "Bash(npm run:*)",
+      "Bash(set PGPASSWORD=postgres)",
+      "Bash(psql:*)",
+      "Bash(docker rm:*)",
+      "Bash(docker container prune:*)",
+      "Bash(npm install:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
