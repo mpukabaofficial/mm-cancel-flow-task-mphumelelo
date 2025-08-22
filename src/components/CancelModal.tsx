@@ -9,8 +9,7 @@ import CancelOffer from "./CancelOffer";
 import CancelReasonStep from "./CancelReasonStep";
 import CancellationCard from "./CancellationCard";
 import FoundJobQuestionnaire from "./FoundJobQuestionnaire";
-import HorizontalLine from "./ui/HorizontalLine";
-import Button from "./ui/Button";
+import AcceptedDownsell from "./AcceptedDownsell";
 
 interface CancelModalProps {
   isOpen: boolean;
@@ -26,7 +25,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
   const [variant, setVariant] = useState<DownsellVariant | null>(null);
   const [cancellationId, setCancellationId] = useState<string | null>(null);
 
-  const { getOrAssignVariant, loading, error } = useCancellationFlow();
+  const { getOrAssignVariant, loading, error, subscription } = useCancellationFlow();
 
   // Reset state when modal opens/closes
   useEffect(() => {
@@ -163,26 +162,20 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
         }
       }
 
-      // ddownsell
+      // downsell
     }
     // move to step 2,
     if (step.num === 2) {
       // has accepted downsell
       if (step.option === "A") {
         return (
-          <CancellationCard
-            totalSteps={totalSteps}
+          <AcceptedDownsell
             step={step}
-            onSetStep={setStep}
+            setStep={setStep}
             onClose={onClose}
-          >
-            <div className="w-full space-y-5">
-              <div>Header </div>
-              <div>sub heading </div>
-              <HorizontalLine />
-              <Button>Button</Button>
-            </div>
-          </CancellationCard>
+            totalSteps={totalSteps}
+            subscription={subscription}
+          />
         );
       }
     }

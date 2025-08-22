@@ -40,16 +40,21 @@ export async function fetchMockUserSubscription() {
       id: subscription.id,
       user_id: subscription.user_id,
       monthly_price: subscription.monthly_price / 100, // Convert cents to dollars
-      status: subscription.status
+      status: subscription.status,
+      created_at: subscription.created_at,
+      updated_at: subscription.updated_at
     };
   } catch (error) {
     console.error('Error fetching subscription:', error);
     // Fallback subscription data
+    const fallbackDate = new Date().toISOString();
     return {
       id: 'fallback-subscription-id',
       user_id: getMockUser().id,
       monthly_price: 25,
-      status: 'active' as const
+      status: 'active' as const,
+      created_at: fallbackDate,
+      updated_at: fallbackDate
     };
   }
 }
@@ -60,10 +65,13 @@ export async function fetchMockUserSubscription() {
  * This is synchronous fallback data
  */
 export function getMockSubscription() {
+  const fallbackDate = new Date().toISOString();
   return {
     id: 'sync-fallback-id',
     user_id: getMockUser().id,
     monthly_price: 25, // $25 (stored as 2500 cents in DB)
-    status: 'active' as const
+    status: 'active' as const,
+    created_at: fallbackDate,
+    updated_at: fallbackDate
   };
 }

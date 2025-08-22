@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DM_Sans } from "next/font/google";
+import { DM_Sans, Inter } from "next/font/google";
 import "./globals.css";
 import UserProvider from "@/components/UserProvider";
 
@@ -8,8 +8,11 @@ const dmSans = DM_Sans({
   subsets: ["latin"],
 });
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+
 export const metadata: Metadata = {
-  title: "Migrate Mate | Profile"
+  title: "Migrate Mate | Profile",
 };
 
 export default function RootLayout({
@@ -19,12 +22,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${dmSans.variable} font-sans antialiased`}
-      >
-        <UserProvider>
-          {children}
-        </UserProvider>
+      <body className={`${dmSans.variable} font-sans antialiased`}>
+        <UserProvider>{children}</UserProvider>
       </body>
     </html>
   );

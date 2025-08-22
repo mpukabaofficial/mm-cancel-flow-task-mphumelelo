@@ -22,7 +22,8 @@
       "Bash(taskkill:*)",
       "Bash(powershell:*)",
       "Bash(supabase status:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []
