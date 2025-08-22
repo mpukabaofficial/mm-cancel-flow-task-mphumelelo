@@ -1,5 +1,5 @@
 "use client";
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import CancellationCard from "./CancellationCard";
 import Button from "./ui/Button";
 import HorizontalLine from "./ui/HorizontalLine";
@@ -65,8 +65,49 @@ const FoundJobQuestionnaire = ({
     null,
     null,
   ]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  console.log(id);
+  // Fetch existing questionnaire data on component mount
+  useEffect(() => {
+    const fetchExistingData = async () => {
+      if (!id) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/cancellations/${id}`);
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch data: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        // Prepopulate answers if they exist
+        if (data.found_job_with_migratemate || 
+            data.roles_applied_count || 
+            data.companies_emailed_count || 
+            data.companies_interviewed_count) {
+          
+          setAnswers([
+            data.found_job_with_migratemate || null,
+            data.roles_applied_count || null,
+            data.companies_emailed_count || null,
+            data.companies_interviewed_count || null,
+          ]);
+        }
+      } catch (err) {
+        console.error("Error fetching questionnaire data:", err);
+        setError("Failed to load existing data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchExistingData();
+  }, [id]);
 
   const handleSelect = (qIndex: number, option: string) => {
     setAnswers((prev) => {
@@ -119,6 +160,23 @@ const FoundJobQuestionnaire = ({
     }
   };
 
+  // Show loading state
+  if (loading) {
+    return (
+      <CancellationCard
+        totalSteps={totalSteps}
+        step={step}
+        onSetStep={setStep}
+        onClose={onClose}
+      >
+        <div className="w-full flex items-center justify-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-2 border-gray-300 border-t-gray-900"></div>
+          <span className="ml-3 text-gray-600">Loading questionnaire...</span>
+        </div>
+      </CancellationCard>
+    );
+  }
+
   return (
     <CancellationCard
       totalSteps={totalSteps}
@@ -128,6 +186,12 @@ const FoundJobQuestionnaire = ({
     >
       <div className="w-full space-y-5">
         <h1 className="text-large">Congrats on the new role! 🎉</h1>
+
+        {error && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3">
+            <p className="text-sm text-yellow-800">{error}</p>
+          </div>
+        )}
 
         {/* questionnaire */}
         <div className="space-y-9">

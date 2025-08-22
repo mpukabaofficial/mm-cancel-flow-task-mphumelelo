@@ -26,6 +26,17 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
 
   const { getOrAssignVariant, loading, error } = useCancellationFlow();
 
+  // Reset state when modal opens/closes
+  useEffect(() => {
+    if (isOpen) {
+      setStep({ num: 0, option: "A" });
+    } else {
+      // Reset state when modal closes
+      setVariant(null);
+      setCancellationId(null);
+    }
+  }, [isOpen]);
+
   // Get or assign variant when modal opens
   useEffect(() => {
     if (isOpen && !variant) {

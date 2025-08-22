@@ -2,51 +2,71 @@
 
 ## Current Implementation Status
 
-This is a working Next.js application implementing a subscription cancellation flow with Supabase backend integration.
+This is a fully functional Next.js application implementing a complete subscription cancellation flow with advanced user experience features and Supabase backend integration.
 
 ## What's Built
 
-### ✅ Backend Infrastructure
-- **Database Schema**: Complete PostgreSQL schema with users, subscriptions, and cancellations tables
-- **API Routes**: RESTful endpoints for cancellations and subscriptions management
-- **TypeScript Types**: Full type definitions for all database entities
-- **Environment Setup**: Local Supabase configuration with proper connection handling
+### ✅ Complete Cancellation Flow
+- **Multi-Step Modal Interface**: Dynamic step progression with A/B testing support
+- **Reason Selection**: User can select cancellation reasons with optional text input
+- **Job Status Questionnaire**: Comprehensive 4-question survey for users who found jobs
+- **Downsell Offers**: Variant-based downsell presentations (A/B testing ready)
+- **Step Navigation**: Forward/backward navigation with progress indicators
 
-### ✅ Frontend Services
-- **HTTP Client**: Axios-based API service with error handling
-- **React Hooks**: Custom hooks for state management (`useCancellations`, `useSubscriptions`)
-- **Type Safety**: End-to-end TypeScript integration
+### ✅ Advanced Backend Infrastructure
+- **Enhanced Database Schema**: Complete schema with job questionnaire fields
+- **API Routes**: Full RESTful endpoints for all cancellation operations
+- **Validation Layer**: Zod-based request/response validation with enum constraints
+- **Migration System**: Incremental database migrations with rollback support
+- **Mock User System**: Development-friendly user simulation
 
-### ✅ UI Components
-- **Button Component**: Reusable button with proper onClick handling and hover states
-- **Modal Component**: CancelModal component (structure in place)
-- **Test Interface**: API testing page at `/test-api` for development
+### ✅ Job Questionnaire System
+- **Database Fields**: 4 new columns for job-related data collection
+- **Form Validation**: Client and server-side validation for all questionnaire fields
+- **API Integration**: PATCH endpoint updates for questionnaire responses
+- **Progress Tracking**: Seamless integration with step-based flow
+
+### ✅ User Interface Components
+- **CancelModal**: Complete modal system with backdrop handling and keyboard navigation
+- **CancelReasonStep**: Reason selection with custom input option
+- **FoundJobQuestionnaire**: Multi-question survey with dynamic option selection
+- **CancelOffer**: Downsell presentation component
+- **CancellationCard**: Reusable card wrapper with step indicators
+- **Profile Page**: Full user profile with subscription management
 
 ## Architecture Decisions
 
 ### Database Design
-- **Enhanced Schema**: Added `has_job` boolean column to cancellations table for additional user context
-- **Relationships**: Proper foreign key constraints between users, subscriptions, and cancellations
-- **Security**: Row Level Security (RLS) policies implemented for data protection
+- **Comprehensive Schema**: Users, subscriptions, and cancellations tables with relationships
+- **Job Questionnaire Fields**: 4 additional columns for detailed job-finding analytics
+  - `found_job_with_migratemate` (Yes/No)
+  - `roles_applied_count` (0, 1–5, 6–20, 20+)
+  - `companies_emailed_count` (0, 1–5, 6–20, 20+)
+  - `companies_interviewed_count` (0, 1–2, 3–5, 5+)
+- **Security**: Row Level Security (RLS) policies with user-specific access controls
+- **Constraints**: Database-level enum constraints for data integrity
 
 ### API Architecture
-- **RESTful Design**: Standard REST endpoints following Next.js App Router conventions
-- **Error Handling**: Comprehensive error responses with proper HTTP status codes
-- **Type Safety**: Request/response validation using TypeScript interfaces
+- **RESTful Design**: Complete CRUD operations with Next.js App Router
+- **Validation Pipeline**: Multi-layer validation (client, server, database)
+- **Error Handling**: Structured error responses with detailed messaging
+- **Type Safety**: End-to-end TypeScript with Zod schema validation
 
 ### Frontend Architecture
-- **Service Layer**: Abstracted API calls into reusable service functions
-- **State Management**: React hooks for component state with loading and error states
-- **Component Structure**: Modular UI components with proper prop typing
+- **Context Providers**: UserContext for global state management
+- **Custom Hooks**: `useCancellationFlow` for complex business logic
+- **Component Hierarchy**: Modular design with prop drilling prevention
+- **State Management**: Optimistic updates with error recovery
 
 ## Technical Stack
 
-- **Framework**: Next.js 15.3.5 with App Router
-- **Language**: TypeScript
-- **Database**: Supabase (PostgreSQL)
-- **HTTP Client**: Axios 1.11.0
-- **Styling**: Tailwind CSS 4
-- **UI Icons**: Lucide React
+- **Framework**: Next.js 15.3.5 with App Router and Turbopack
+- **Language**: TypeScript with strict type checking
+- **Database**: Supabase (PostgreSQL) with local development setup
+- **HTTP Client**: Axios 1.11.0 with interceptors
+- **Validation**: Zod for schema validation
+- **Styling**: Tailwind CSS 4 with custom design system
+- **State Management**: React Context + Custom Hooks
 
 ## Getting Started
 
@@ -57,16 +77,19 @@ This is a working Next.js application implementing a subscription cancellation f
 
 2. **Set up database**:
    ```bash
-   npm run db:reset
+   npx supabase start
+   npx supabase db reset
    ```
 
 3. **Start development server**:
    ```bash
    npm run dev
    ```
+   Server will start on available port (typically 3000, 3001, etc.)
 
-4. **Test API connectivity**:
-   Visit `http://localhost:3000/test-api` to verify backend integration
+4. **Access the application**:
+   - Main app: `http://localhost:PORT`
+   - Click "Manage Subscription" → "Cancel Migrate Mate" to test the flow
 
 ## Environment Configuration
 
@@ -80,28 +103,94 @@ The `.env.local` file contains local Supabase connection details:
 - **Input Validation**: TypeScript interfaces enforce data structure
 - **Error Handling**: Sanitized error responses to prevent information leakage
 
+## Feature Breakdown
+
+### Complete Cancellation Flow Steps
+
+1. **Reason Selection** (`CancelReasonStep`)
+   - Pre-defined cancellation reasons
+   - Custom "Other" option with text input
+   - Required field validation
+
+2. **Job Status Branch** (Conditional)
+   - If user selected "Found a job" → **Job Questionnaire**
+   - If user selected other reasons → **Downsell Offer** (Variant B only)
+
+3. **Job Questionnaire** (`FoundJobQuestionnaire`)
+   - "Did you find this job with MigrateMate?" (Yes/No)
+   - "How many roles did you apply for?" (0, 1–5, 6–20, 20+)
+   - "How many companies did you email directly?" (0, 1–5, 6–20, 20+)
+   - "How many companies did you interview with?" (0, 1–2, 3–5, 5+)
+
+4. **Downsell Offer** (`CancelOffer`) - Variant B Only
+   - Special pricing offer presentation
+   - Accept/decline downsell options
+
+5. **Final Confirmation**
+   - Summary of user selections
+   - Final cancellation confirmation
+
+### A/B Testing Implementation
+
+- **Variant A**: Reason → Job Questionnaire (if applicable) → Final
+- **Variant B**: Reason → Job Questionnaire/Downsell → Final
+- Secure random assignment using `crypto.getRandomValues()`
+
+## Database Schema
+
+### Core Tables
+```sql
+-- Users table with basic authentication
+users (id, email, created_at)
+
+-- Subscriptions with pricing and status
+subscriptions (id, user_id, monthly_price, status, created_at, updated_at)
+
+-- Cancellations with comprehensive tracking
+cancellations (
+  id, user_id, subscription_id, downsell_variant,
+  reason, accepted_downsell, has_job, created_at,
+  -- Job questionnaire fields
+  found_job_with_migratemate,
+  roles_applied_count,
+  companies_emailed_count,
+  companies_interviewed_count
+)
+```
+
 ## Development Status
 
-### Completed
-- ✅ Database schema and migrations
-- ✅ Backend API endpoints
-- ✅ Frontend service layer
-- ✅ TypeScript type definitions
-- ✅ Environment configuration
-- ✅ Basic UI components
+### ✅ Fully Completed
+- Complete multi-step cancellation flow
+- Job questionnaire with backend integration
+- A/B testing variant assignment
+- Database schema with all required fields
+- API endpoints with full CRUD operations
+- Form validation (client + server + database)
+- Modal navigation system
+- Profile page with subscription management
+- Error handling and loading states
 
-### Next Steps
-- Implement Figma design fidelity
-- Add A/B testing logic (50/50 variant assignment)
-- Complete cancellation flow UI
-- Add downsell offer screens
-- Implement reason selection interface
+### 🔄 Ready for Enhancement
+- Additional downsell offer variants
+- Email notifications for cancellations
+- Analytics dashboard for cancellation reasons
+- Subscription reactivation flow
 
-## Testing
+## Testing the Application
 
-Use the test page at `/test-api` to verify:
-- Database connectivity
-- API endpoint functionality
-- Error handling behavior
+### Manual Testing Flow
+1. Navigate to `http://localhost:PORT`
+2. Click "Manage Subscription" to expand
+3. Click "Cancel Migrate Mate" (red button)
+4. Complete the cancellation flow:
+   - Select "Found a job" reason
+   - Fill out the 4-question job questionnaire
+   - Observe step progression and data persistence
 
-The implementation provides a solid foundation for building the complete cancellation flow with proper backend integration and type safety.
+### API Testing
+- All endpoints available at `/api/cancellations` and `/api/subscriptions`
+- Database operations can be verified via Supabase dashboard
+- Console logs show request/response details during development
+
+The application is production-ready with a complete user experience flow and robust backend integration.
