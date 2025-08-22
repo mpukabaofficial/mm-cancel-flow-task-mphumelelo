@@ -1,21 +1,75 @@
-// app/components/CancelModal.tsx
 "use client";
 
 import Button from "@/components/ui/Button";
 import HorizontalLine from "@/components/ui/HorizontalLine";
 import { cancellationService } from "@/lib/api";
+import { useUser } from "@/contexts/UserContext";
 import Image from "next/image";
+import { useCallback, useEffect, useState } from "react";
 
 interface Props {
   onClose: () => void;
+  id: string;
 }
 
-const CancelReasonStep = ({ onClose }: Props) => {
-  function handleHasFoundJob(hasFoundJob: boolean) {
-    cancellationService.update("something", {
-      has_job: hasFoundJob,
-    });
-  }
+const CancelReasonStep = ({ onClose, id }: Props) => {
+  const [selected, setSelected] = useState<"yes" | "no" | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const { user, subscription, isLoading: userLoading } = useUser();
+
+  const handleHasFoundJob = useCallback(async (hasFoundJob: boolean) => {
+    if (!subscription?.id || submitting) return;
+    
+    setSubmitting(true);
+    setError(null);
+    
+    try {
+      await cancellationService.update(id, {
+        has_job: hasFoundJob,
+      });
+      setSelected(hasFoundJob ? "yes" : "no");
+    } catch (err) {
+      console.error("Failed to update cancellation:", err);
+      setError("Failed to save your response. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  }, [id, subscription?.id, submitting]);
+
+  useEffect(() => {
+    if (!user?.id || !subscription?.id || userLoading) return;
+
+    const loadCancellation = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        const cancellation = await cancellationService.getBySubscription(
+          subscription.id,
+          user.id
+        );
+        
+        if (cancellation?.has_job === true) {
+          setSelected("yes");
+        } else if (cancellation?.has_job === false) {
+          setSelected("no");
+        } else {
+          setSelected(null);
+        }
+      } catch (err) {
+        console.error("Failed to load cancellation:", err);
+        setError("Failed to load cancellation data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadCancellation();
+  }, [user?.id, subscription?.id, userLoading]);
+
   return (
     <div className="w-full max-w-[1000px] max-h-[90vh] overflow-y-auto rounded-[12px] sm:rounded-[20px] bg-white relative font-semibold text-gray-warm-800">
       <button
@@ -68,14 +122,35 @@ const CancelReasonStep = ({ onClose }: Props) => {
           </p>
           <HorizontalLine />
 
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm">
+              {error}
+            </div>
+          )}
+
           <div className="w-full space-y-4">
-            <Button onClick={() => handleHasFoundJob(true)}>
-              Yes, I&apos;ve found a job
+            <Button
+              onClick={() => handleHasFoundJob(true)}
+              isSelected={selected === "yes"}
+              disabled={loading || submitting || userLoading}
+            >
+              {submitting && selected !== "yes" ? "Saving..." : "Yes, I've found a job"}
             </Button>
-            <Button onClick={() => handleHasFoundJob(false)}>
-              Not yet - I&apos;m still looking{" "}
+
+            <Button
+              onClick={() => handleHasFoundJob(false)}
+              isSelected={selected === "no"}
+              disabled={loading || submitting || userLoading}
+            >
+              {submitting && selected !== "no" ? "Saving..." : "Not yet – I'm still looking"}
             </Button>
           </div>
+
+          {loading && (
+            <div className="flex justify-center items-center py-4">
+              <div className="animate-spin rounded-full h-6 w-6 border-2 border-gray-300 border-t-blue-600"></div>
+            </div>
+          )}
         </div>
       </div>
     </div>

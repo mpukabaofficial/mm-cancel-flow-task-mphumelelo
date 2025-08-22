@@ -7,9 +7,10 @@ import CancelReasonStep from "./CancelReasonStep";
 interface CancelModalProps {
   isOpen: boolean;
   onClose: () => void;
+  id: string;
 }
 
-export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
+export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -41,7 +42,7 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
       className="bg-black/30 fixed inset-0 flex items-center justify-center p-2 sm:p-4 z-50"
       onClick={handleBackdropClick}
     >
-      <CancelReasonStep onClose={onClose} />
+      <CancelReasonStep onClose={onClose} id={id} />
     </div>
   );
 }
