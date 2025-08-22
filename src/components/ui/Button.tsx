@@ -4,7 +4,7 @@ interface Props {
   children: ReactNode;
   onClick?: MouseEventHandler<HTMLButtonElement>;
   disabled?: boolean;
-  variant?: "primary" | "green" | "outline";
+  variant?: "primary" | "green" | "outline" | "danger";
 }
 
 const Button = ({
@@ -25,9 +25,11 @@ const Button = ({
           disabled
             ? "bg-gray-warm-300 text-gray-warm-500 border-gray-warm-300 cursor-not-allowed"
             : variant === "primary"
-            ? "bg-[var(--color-Brand-Migrate-Mate)] text-white border-[var(--color-Brand-Migrate-Mate)] hover:bg-[#865fe0]"
+            ? "bg-Brand-Migrate-Mate text-white border-Brand-Migrate-Mate hover:bg-[#865fe0]"
             : variant === "green"
             ? "bg-Theme-Success text-white border-Theme-Success hover:border-green-600"
+            : variant === "danger"
+            ? "bg-theme-danger text-white border-theme-danger hover:border-red-600"
             : "bg-white border-gray-warm-300 text-gray-warm-700 hover:bg-gray-50 hover:border-gray-400"
         }
       `}

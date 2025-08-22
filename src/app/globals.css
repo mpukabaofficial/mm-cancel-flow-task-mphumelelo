@@ -19,11 +19,19 @@
   --color-Brand-Migrate-Mate: #9a6fff;
   --color-Brand-Background: #ebe1fe;
   --color-Theme-Success: #4abf71;
+  --color-theme-danger: #dc2626;
 }
 
 .text-large {
   @apply text-4xl;
   letter-spacing: -1.08px;
+}
+.text-normal {
+  @apply font-normal tracking-[-0.8px];
+}
+
+.fine-print {
+  @apply text-xs italic font-normal;
 }
 
 /* @media (prefers-color-scheme: dark) {

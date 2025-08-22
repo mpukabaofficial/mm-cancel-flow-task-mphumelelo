@@ -104,9 +104,7 @@ const AcceptedDownsell = ({
               : "15.00"}
             .
           </p>
-          <p className="text-xs italic font-normal">
-            You can cancel anytime before then.
-          </p>
+          <p className="fine-print">You can cancel anytime before then.</p>
         </div>
         <HorizontalLine />
         <Button onClick={handleGoHome} variant="primary">

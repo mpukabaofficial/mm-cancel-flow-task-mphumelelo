@@ -5,11 +5,12 @@ import { useCancellationFlow } from "@/hooks/useCancellationFlow";
 import { DownsellVariant } from "@/lib/variant";
 import { Step } from "@/types/step";
 import { useEffect, useState } from "react";
+import AcceptedDownsell from "./AcceptedDownsell";
 import CancelOffer from "./CancelOffer";
 import CancelReasonStep from "./CancelReasonStep";
 import CancellationCard from "./CancellationCard";
 import FoundJobQuestionnaire from "./FoundJobQuestionnaire";
-import AcceptedDownsell from "./AcceptedDownsell";
+import NoJobQuestionnaireA from "./NoJobQuestionnaireA";
 
 interface CancelModalProps {
   isOpen: boolean;
@@ -25,7 +26,8 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
   const [variant, setVariant] = useState<DownsellVariant | null>(null);
   const [cancellationId, setCancellationId] = useState<string | null>(null);
 
-  const { getOrAssignVariant, loading, error, subscription } = useCancellationFlow();
+  const { getOrAssignVariant, loading, error, subscription } =
+    useCancellationFlow();
 
   // Reset state when modal opens/closes
   useEffect(() => {
@@ -106,6 +108,9 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
 
   const totalSteps = getTotalSteps();
 
+  console.log("[CancelModal.tsx] this is the step");
+  console.log(step);
+
   // Adjust step rendering based on variant
   const renderStep = () => {
     if (step.num === 0) {
@@ -146,18 +151,15 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
             />
           );
         } else {
-          // no downsell
+          // no downsell and questionnaire
           return (
-            <CancellationCard
-              totalSteps={totalSteps}
+            <NoJobQuestionnaireA
               step={step}
               onSetStep={setStep}
               onClose={onClose}
-            >
-              <div className="h-80 w-full flex justify-center items-center">
-                No downsell go on
-              </div>
-            </CancellationCard>
+              totalSteps={totalSteps}
+              id={id}
+            />
           );
         }
       }
@@ -176,6 +178,19 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
             totalSteps={totalSteps}
             subscription={subscription}
           />
+        );
+      } else {
+        return (
+          <CancellationCard
+            totalSteps={totalSteps}
+            step={step}
+            onSetStep={setStep}
+            onClose={onClose}
+          >
+            <div className="h-80 w-full flex justify-center items-center">
+              reasons
+            </div>
+          </CancellationCard>
         );
       }
     }

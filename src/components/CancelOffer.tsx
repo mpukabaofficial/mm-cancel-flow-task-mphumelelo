@@ -122,7 +122,7 @@ const CancelOffer = ({
             <span className="text-Brand-Migrate-Mate text-2xl tracking-[-1.2px]">
               ${discountedPrice}/month
             </span>
-            <span className="line-through tracking-[-0.8px] font-normal">
+            <span className="line-through text-normal">
               ${originalPrice} /month
             </span>
           </div>
@@ -135,7 +135,7 @@ const CancelOffer = ({
               ? "Processing..."
               : `Get $${originalPrice - discountedPrice} off`}
           </Button>
-          <p className="text-xs italic font-normal text-center w-full">
+          <p className="fine-print text-center w-full">
             You won&apos;t be charged until your next billing date.
           </p>
         </div>
