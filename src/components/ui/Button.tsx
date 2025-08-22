@@ -18,7 +18,7 @@ const Button = ({ children, onClick, disabled, isSelected = false }: Props) => {
         transition-all ease-in-out duration-150 shadow-sm
         ${
           isSelected
-            ? "bg-green-600 border-green-600 text-white"
+            ? "bg-Theme-Success text-white border-Theme-Success hover:border-green-600"
             : "bg-white border-gray-warm-300 text-gray-warm-700 hover:bg-gray-50 hover:border-gray-400"
         }
       `}

@@ -65,7 +65,7 @@ const CancellationCard = ({
         <p className="text-xs sm:text-sm">Subscription Cancellation</p>
         {step > 0 && (
           <div>
-            <StepIndicator currentStep={1} totalSteps={5} />
+            <StepIndicator currentStep={step} totalSteps={5} />
           </div>
         )}
       </div>

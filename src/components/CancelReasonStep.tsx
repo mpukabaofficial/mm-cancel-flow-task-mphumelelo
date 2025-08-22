@@ -35,7 +35,7 @@ const CancelReasonStep = ({ onClose, id, step, setStep }: Props) => {
           has_job: hasFoundJob,
         });
         setSelected(hasFoundJob ? "yes" : "no");
-        setStep(1);
+        setStep(step + 1);
       } catch (err) {
         console.error("Failed to update cancellation:", err);
         setError("Failed to save your response. Please try again.");
@@ -43,7 +43,7 @@ const CancelReasonStep = ({ onClose, id, step, setStep }: Props) => {
         setSubmitting(false);
       }
     },
-    [id, subscription?.id, submitting]
+    [id, subscription?.id, submitting, setStep, step]
   );
 
   useEffect(() => {

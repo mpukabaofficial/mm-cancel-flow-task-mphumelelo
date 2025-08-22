@@ -3,6 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --very-tight: -1.2px;
 }
 
 @theme inline {
@@ -12,11 +13,15 @@
   --color-gray-warm-800: #41403d;
   --color-gray-warm-700: #62605c;
   --color-gray-warm-300: #e6e6e6;
+  --color-Brand-Migrate-Mate: #9a6fff;
+  --color-Brand-Background: #ebe1fe;
+  --color-Theme-Success: #4abf71;
 }
 
 .text-large {
-  font-size: 2.25rem;
-  line-height: 2.5rem;
+  @apply text-4xl;
+  line-height: 2.5rem; /* same as leading-10 */
+  letter-spacing: -1.08px; /* custom */
 }
 
 /* @media (prefers-color-scheme: dark) {
