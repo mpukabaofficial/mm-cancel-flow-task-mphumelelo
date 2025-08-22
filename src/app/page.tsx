@@ -3,6 +3,7 @@
 import { useState } from "react";
 import CancelModal from "@/components/CancelModal";
 import { useUser } from "@/contexts/UserContext";
+import { cancellationService } from "@/lib/api";
 
 // Get subscription data for UI display
 const getSubscriptionData = (
@@ -83,8 +84,29 @@ export default function ProfilePage() {
     console.log("Navigate to jobs");
   };
 
-  const handleCancelMigrateMate = () => {
-    setIsCancelModalOpen(true);
+  const handleCancelMigrateMate = async () => {
+    try {
+      // Get user and subscription info
+      if (!user || !subscription) {
+        console.error('User or subscription not available');
+        return;
+      }
+
+      // Create cancellation record with secure RNG variant assignment
+      const result = await cancellationService.getOrAssignVariant(user.id, subscription.id);
+      
+      console.log('Cancellation created:', {
+        variant: result.variant,
+        isNewAssignment: result.isNewAssignment
+      });
+
+      // Open the cancel modal
+      setIsCancelModalOpen(true);
+    } catch (error) {
+      console.error('Error creating cancellation:', error);
+      // Still open modal even if API call fails
+      setIsCancelModalOpen(true);
+    }
   };
 
   const handleModalClose = () => {

@@ -47,6 +47,8 @@ const CancelReasonStep = ({ onClose }: Props) => {
             alt="New York skyline"
             className="rounded-lg object-cover"
             fill
+            sizes="(max-width: 768px) 100vw, 400px"
+            priority
           />
         </div>
         {/* Content */}
