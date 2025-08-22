@@ -420,7 +420,7 @@ export default function ProfilePage() {
       {/* Cancel Modal */}
       {subscription && (
         <CancelModal
-          id={cancellationId || ""} //TODO: handle the id
+          id={cancellationId || ""}
           isOpen={isCancelModalOpen}
           onClose={handleModalClose}
         />

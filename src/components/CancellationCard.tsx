@@ -3,19 +3,25 @@
 import Image from "next/image";
 import { ReactNode } from "react";
 import StepIndicator from "./StepIndicator";
+import { Step } from "@/types/step";
 
 interface Props {
   onClose: () => void;
-  step: number;
+  step: Step;
   children: ReactNode;
-  onSetStep: (step: number) => void;
+  onSetStep: (step: Step) => void;
+  totalSteps: number;
 }
 
 const CancellationCard = ({
   onClose,
-  step = 0,
+  step = {
+    num: 0,
+    option: "A",
+  },
   children,
   onSetStep,
+  totalSteps,
 }: Props) => {
   return (
     <div className="w-full max-w-[1000px] max-h-[90vh] overflow-y-auto rounded-[12px] sm:rounded-[20px] bg-white relative font-semibold text-gray-warm-800">
@@ -37,9 +43,9 @@ const CancellationCard = ({
         </svg>
       </button>
 
-      {step > 0 && (
+      {step.num > 0 && (
         <button
-          onClick={() => onSetStep(step - 1)}
+          onClick={() => onSetStep({ ...step, num: step.num - 1 })}
           className="absolute top-[12px] flex left-[12px] sm:top-[18px] sm:left-[20px] z-10"
         >
           <div className="size-6 flex justify-center items-center">
@@ -63,9 +69,9 @@ const CancellationCard = ({
       )}
       <div className="h-[50px] sm:h-[60px] flex justify-center items-center gap-4 border-gray-warm-300 border-b px-2">
         <p className="text-xs sm:text-sm">Subscription Cancellation</p>
-        {step > 0 && (
+        {step.num > 0 && (
           <div>
-            <StepIndicator currentStep={step} totalSteps={5} />
+            <StepIndicator currentStep={step.num} totalSteps={totalSteps} />
           </div>
         )}
       </div>

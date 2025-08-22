@@ -7,15 +7,23 @@ import { cancellationService } from "@/lib/api";
 import { Loader2Icon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import CancellationCard from "./CancellationCard";
+import { Step } from "@/types/step";
 
 interface Props {
   onClose: () => void;
   id: string;
-  step: number;
-  setStep: (step: number) => void;
+  step: Step;
+  setStep: (step: Step) => void;
+  totalSteps: number;
 }
 
-const CancelReasonStep = ({ onClose, id, step, setStep }: Props) => {
+const CancelReasonStep = ({
+  onClose,
+  id,
+  step,
+  setStep,
+  totalSteps,
+}: Props) => {
   const [selected, setSelected] = useState<"yes" | "no" | null>(null);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -34,8 +42,11 @@ const CancelReasonStep = ({ onClose, id, step, setStep }: Props) => {
         await cancellationService.update(id, {
           has_job: hasFoundJob,
         });
-        setSelected(hasFoundJob ? "yes" : "no");
-        setStep(step + 1);
+
+        setStep({
+          num: step.num + 1,
+          option: hasFoundJob ? "A" : "B",
+        });
       } catch (err) {
         console.error("Failed to update cancellation:", err);
         setError("Failed to save your response. Please try again.");
@@ -78,7 +89,12 @@ const CancelReasonStep = ({ onClose, id, step, setStep }: Props) => {
   }, [user?.id, subscription?.id, userLoading]);
 
   return (
-    <CancellationCard onSetStep={setStep} onClose={onClose} step={step}>
+    <CancellationCard
+      totalSteps={totalSteps}
+      onSetStep={setStep}
+      onClose={onClose}
+      step={step}
+    >
       <div className="order-2 md:order-1 space-y-5 w-full">
         <div className="font-semibold space-y-4">
           <p className="text-large md:text-large text-2xl flex flex-col">

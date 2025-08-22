@@ -20,7 +20,11 @@ export const createCancellationSchema = z.object({
 export const updateCancellationSchema = z.object({
   reason: z.string().max(500, 'Reason must be 500 characters or less').optional(),
   accepted_downsell: z.boolean().optional(),
-  has_job: z.boolean().optional()
+  has_job: z.boolean().optional(),
+  found_job_with_migratemate: z.enum(['Yes', 'No']).optional(),
+  roles_applied_count: z.enum(["0", "1–5", "6–20", "20+"]).optional(),
+  companies_emailed_count: z.enum(["0", "1–5", "6–20", "20+"]).optional(),
+  companies_interviewed_count: z.enum(["0", "1–2", "3–5", "5+"]).optional()
 }).strict()
 
 export const updateSubscriptionSchema = z.object({

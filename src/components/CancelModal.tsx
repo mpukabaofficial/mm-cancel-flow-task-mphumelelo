@@ -1,12 +1,14 @@
 // app/components/CancelModal.tsx
 "use client";
 
+import { useCancellationFlow } from "@/hooks/useCancellationFlow";
+import { DownsellVariant } from "@/lib/variant";
+import { Step } from "@/types/step";
 import { useEffect, useState } from "react";
 import CancelOffer from "./CancelOffer";
 import CancelReasonStep from "./CancelReasonStep";
 import CancellationCard from "./CancellationCard";
-import { useCancellationFlow } from "@/hooks/useCancellationFlow";
-import { DownsellVariant } from "@/lib/variant";
+import FoundJobQuestionnaire from "./FoundJobQuestionnaire";
 
 interface CancelModalProps {
   isOpen: boolean;
@@ -15,7 +17,10 @@ interface CancelModalProps {
 }
 
 export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState<Step>({
+    num: 0,
+    option: "A",
+  });
   const [variant, setVariant] = useState<DownsellVariant | null>(null);
   const [cancellationId, setCancellationId] = useState<string | null>(null);
 
@@ -76,71 +81,76 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
     );
   }
 
-  // // Calculate total steps based on variant
-  // const getTotalSteps = () => {
-  //   if (variant === 'A') {
-  //     // Variant A: Step 0 (reason), skip downsell, Step 1 (final)
-  //     return 2;
-  //   } else {
-  //     // Variant B: Step 0 (reason), Step 1 (downsell), Step 2 (final)
-  //     return 3;
-  //   }
-  // };
+  // Calculate total steps based on variant
+  const getTotalSteps = () => {
+    if (variant === "A") {
+      // Variant A: Step 0 (reason), skip downsell, Step 1 (final)
+      return 2;
+    } else {
+      // Variant B: Step 0 (reason), Step 1 (downsell), Step 2 (final)
+      return 3;
+    }
+  };
+
+  const totalSteps = getTotalSteps();
 
   // Adjust step rendering based on variant
   const renderStep = () => {
-    if (variant === "A") {
-      // Variant A flow: reason -> final (skip downsell)
-      if (step === 0) {
-        return (
-          <CancelReasonStep
-            step={step}
-            setStep={setStep}
-            onClose={onClose}
-            id={cancellationId}
-          />
-        );
-      } else if (step === 1) {
-        return (
-          <CancellationCard step={step} onSetStep={setStep} onClose={onClose}>
-            <div className="h-80 w-full flex justify-center items-center">
-              Final Step (Variant A)
-            </div>
-          </CancellationCard>
-        );
-      }
-    } else {
-      // Variant B flow: reason -> downsell -> final
-      if (step === 0) {
-        return (
-          <CancelReasonStep
-            step={step}
-            setStep={setStep}
-            onClose={onClose}
-            id={cancellationId}
-          />
-        );
-      } else if (step === 1) {
-        return (
-          <CancelOffer
-            step={step}
-            setStep={setStep}
-            onClose={onClose}
-            id={cancellationId}
-            variant={variant}
-          />
-        );
-      } else if (step === 2) {
-        return (
-          <CancellationCard step={step} onSetStep={setStep} onClose={onClose}>
-            <div className="h-80 w-full flex justify-center items-center">
-              Final Step (Variant B)
-            </div>
-          </CancellationCard>
-        );
-      }
+    if (step.num === 0) {
+      return (
+        <CancelReasonStep
+          step={step}
+          setStep={setStep}
+          onClose={onClose}
+          id={cancellationId}
+          totalSteps={totalSteps}
+        />
+      );
     }
-    return null;
+    // step 1 - has found job or not
+    if (step.num === 1) {
+      // has found job
+      if (step.option === "A") {
+        return (
+          <FoundJobQuestionnaire
+            step={step}
+            setStep={setStep}
+            onClose={onClose}
+            id={cancellationId}
+            totalSteps={totalSteps}
+          />
+        );
+      } else {
+        if (variant === "B") {
+          return (
+            <CancelOffer
+              step={step}
+              setStep={setStep}
+              onClose={onClose}
+              id={cancellationId}
+              variant={variant}
+              totalSteps={totalSteps}
+            />
+          );
+        } else {
+          // no downsell
+          return (
+            <CancellationCard
+              totalSteps={totalSteps}
+              step={step}
+              onSetStep={setStep}
+              onClose={onClose}
+            >
+              <div className="h-80 w-full flex justify-center items-center">
+                No downsell go on
+              </div>
+            </CancellationCard>
+          );
+        }
+      }
+
+      // ddownsell
+    }
   };
 
   return (

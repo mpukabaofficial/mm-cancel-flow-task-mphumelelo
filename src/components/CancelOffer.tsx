@@ -5,15 +5,24 @@ import HorizontalLine from "./ui/HorizontalLine";
 import { cancellationService, subscriptionService } from "@/lib/api";
 import { useUser } from "@/contexts/UserContext";
 import { DownsellVariant, calculateDownsellPrice } from "@/lib/variant";
+import { Step } from "@/types/step";
 
 interface Props {
   onClose: () => void;
   id: string;
-  step: number;
-  setStep: (step: number) => void;
+  step: Step;
+  setStep: (step: Step) => void;
   variant: DownsellVariant;
+  totalSteps: number;
 }
-const CancelOffer = ({ onClose, id, setStep, step, variant }: Props) => {
+const CancelOffer = ({
+  onClose,
+  id,
+  setStep,
+  step,
+  variant,
+  totalSteps,
+}: Props) => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isVariantA, setIsVariantA] = useState(false);
@@ -27,7 +36,7 @@ const CancelOffer = ({ onClose, id, setStep, step, variant }: Props) => {
       // For variant A, automatically proceed to next step
       // This effect should only run once when variant is determined
       const timer = setTimeout(() => {
-        setStep(step + 1);
+        setStep({ ...step, num: step.num + 1 });
       }, 0);
       return () => clearTimeout(timer);
     }
@@ -57,10 +66,10 @@ const CancelOffer = ({ onClose, id, setStep, step, variant }: Props) => {
           // Update local subscription state
           updateSubscriptionStatus("active");
 
-          setStep(step + 1);
+          setStep({ ...step, num: step.num + 1 });
         } else {
           // User declined the offer, continue with cancellation flow
-          setStep(step + 1);
+          setStep({ ...step, num: step.num + 1 });
         }
       } catch (err) {
         console.error("Failed to update cancellation:", err);
@@ -90,7 +99,12 @@ const CancelOffer = ({ onClose, id, setStep, step, variant }: Props) => {
   const discountedPrice = calculateDownsellPrice(originalPrice);
 
   return (
-    <CancellationCard onSetStep={setStep} onClose={onClose} step={step}>
+    <CancellationCard
+      totalSteps={totalSteps}
+      onSetStep={setStep}
+      onClose={onClose}
+      step={step}
+    >
       {/* handle error globally */}
       <div className="w-full space-y-5">
         <h1 className="text-large">

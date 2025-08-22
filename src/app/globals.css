@@ -12,7 +12,9 @@
   --font-sans: var(--font-dm-sans);
   --color-gray-warm-800: #41403d;
   --color-gray-warm-700: #62605c;
+  --color-gray-warm-500: #b5b3af;
   --color-gray-warm-300: #e6e6e6;
+  --color-gray-warm-200: #f6f6f6;
   --color-Brand-Migrate-Mate: #9a6fff;
   --color-Brand-Background: #ebe1fe;
   --color-Theme-Success: #4abf71;
@@ -20,8 +22,7 @@
 
 .text-large {
   @apply text-4xl;
-  line-height: 2.5rem; /* same as leading-10 */
-  letter-spacing: -1.08px; /* custom */
+  letter-spacing: -1.08px;
 }
 
 /* @media (prefers-color-scheme: dark) {

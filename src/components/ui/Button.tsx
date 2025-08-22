@@ -17,7 +17,9 @@ const Button = ({ children, onClick, disabled, isSelected = false }: Props) => {
         rounded-lg border-2 text-center text-xs sm:text-sm font-semibold leading-[100%] tracking-[-0.32px]
         transition-all ease-in-out duration-150 shadow-sm
         ${
-          isSelected
+          disabled
+            ? "bg-gray-warm-300 text-gray-warm-500 border-gray-warm-300"
+            : isSelected
             ? "bg-Theme-Success text-white border-Theme-Success hover:border-green-600"
             : "bg-white border-gray-warm-300 text-gray-warm-700 hover:bg-gray-50 hover:border-gray-400"
         }
