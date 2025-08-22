@@ -20,24 +20,27 @@ const CancelReasonStep = ({ onClose, id }: Props) => {
 
   const { user, subscription, isLoading: userLoading } = useUser();
 
-  const handleHasFoundJob = useCallback(async (hasFoundJob: boolean) => {
-    if (!subscription?.id || submitting) return;
-    
-    setSubmitting(true);
-    setError(null);
-    
-    try {
-      await cancellationService.update(id, {
-        has_job: hasFoundJob,
-      });
-      setSelected(hasFoundJob ? "yes" : "no");
-    } catch (err) {
-      console.error("Failed to update cancellation:", err);
-      setError("Failed to save your response. Please try again.");
-    } finally {
-      setSubmitting(false);
-    }
-  }, [id, subscription?.id, submitting]);
+  const handleHasFoundJob = useCallback(
+    async (hasFoundJob: boolean) => {
+      if (!subscription?.id || submitting) return;
+
+      setSubmitting(true);
+      setError(null);
+
+      try {
+        await cancellationService.update(id, {
+          has_job: hasFoundJob,
+        });
+        setSelected(hasFoundJob ? "yes" : "no");
+      } catch (err) {
+        console.error("Failed to update cancellation:", err);
+        setError("Failed to save your response. Please try again.");
+      } finally {
+        setSubmitting(false);
+      }
+    },
+    [id, subscription?.id, submitting]
+  );
 
   useEffect(() => {
     if (!user?.id || !subscription?.id || userLoading) return;
@@ -45,13 +48,13 @@ const CancelReasonStep = ({ onClose, id }: Props) => {
     const loadCancellation = async () => {
       setLoading(true);
       setError(null);
-      
+
       try {
         const cancellation = await cancellationService.getBySubscription(
           subscription.id,
           user.id
         );
-        
+
         if (cancellation?.has_job === true) {
           setSelected("yes");
         } else if (cancellation?.has_job === false) {
@@ -134,7 +137,9 @@ const CancelReasonStep = ({ onClose, id }: Props) => {
               isSelected={selected === "yes"}
               disabled={loading || submitting || userLoading}
             >
-              {submitting && selected !== "yes" ? "Saving..." : "Yes, I've found a job"}
+              {submitting && selected !== "yes"
+                ? "Saving..."
+                : "Yes, I've found a job"}
             </Button>
 
             <Button
@@ -142,15 +147,11 @@ const CancelReasonStep = ({ onClose, id }: Props) => {
               isSelected={selected === "no"}
               disabled={loading || submitting || userLoading}
             >
-              {submitting && selected !== "no" ? "Saving..." : "Not yet – I'm still looking"}
+              {submitting && selected !== "no"
+                ? "Saving..."
+                : "Not yet – I'm still looking"}
             </Button>
           </div>
-
-          {loading && (
-            <div className="flex justify-center items-center py-4">
-              <div className="animate-spin rounded-full h-6 w-6 border-2 border-gray-300 border-t-blue-600"></div>
-            </div>
-          )}
         </div>
       </div>
     </div>
