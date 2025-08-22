@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 import { updateSubscriptionSchema, validateRequestBody, uuidSchema } from '@/lib/validations'
 
 export async function GET(request: NextRequest) {
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    let query = supabase.from('subscriptions').select('*')
+    let query = supabaseAdmin.from('subscriptions').select('*')
     
     if (userId) {
       query = query.eq('user_id', userId)
@@ -55,7 +55,7 @@ export async function PATCH(request: NextRequest) {
 
     const { id, status } = validation.data
     
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('subscriptions')
       .update({ 
         status,

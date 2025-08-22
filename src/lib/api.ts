@@ -40,12 +40,34 @@ export const cancellationService = {
     await api.delete(`/cancellations/${id}`)
   },
 
+
+  /**
+   * This fetches a cancellation based on the user and their subscription
+   * @param userId
+   * @param subscriptionId 
+   * @returns cancellation
+   */
+
+getBySubscription: async (
+  subscriptionId: string,
+  userId: string
+): Promise<Cancellation | null> => {
+  try {
+    const existingCancellations = await cancellationService.getAll(userId);
+    return existingCancellations.find(c => c.subscription_id === subscriptionId) ?? null;
+  } catch (err) {
+    console.error("Failed to fetch cancellation:", err);
+    return null;
+  }
+},
+
+
   /**
    * Get or assign variant for a user's cancellation flow
    * Checks if user has existing cancellation, if so returns existing variant
    * If not, assigns new variant using secure RNG
    */
-  getOrAssignVariant: async (userId: string, subscriptionId: string): Promise<{ variant: DownsellVariant; isNewAssignment: boolean }> => {
+  getOrAssignVariant: async (userId: string, subscriptionId: string): Promise<{ variant: DownsellVariant; isNewAssignment: boolean, id: string }> => {
     try {
       // Check for existing cancellation
       const existingCancellations = await cancellationService.getAll(userId)
@@ -54,7 +76,7 @@ export const cancellationService = {
       if (existingCancellation) {
         return {
           variant: existingCancellation.downsell_variant,
-          isNewAssignment: false
+          isNewAssignment: false, id: existingCancellation.id
         }
       }
 
@@ -71,14 +93,15 @@ export const cancellationService = {
 
       return {
         variant: newCancellation.downsell_variant,
-        isNewAssignment: true
+        isNewAssignment: true, id: newCancellation.id
       }
     } catch (error) {
       console.error('Error getting or assigning variant:', error)
       // Fallback to assigning variant without persistence for now
       return {
         variant: assignVariant(),
-        isNewAssignment: true
+        isNewAssignment: true, 
+        id: ""
       }
     }
   }

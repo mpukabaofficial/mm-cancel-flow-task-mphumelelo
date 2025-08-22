@@ -37,6 +37,10 @@ export default function ProfilePage() {
   // Get subscription data for UI
   const mockSubscriptionData = getSubscriptionData(subscription);
 
+  // store the cancellation id
+
+  const [cancellationId, setCancellationId] = useState<string | null>(null);
+
   // Show loading state
   if (isLoading) {
     return (
@@ -88,22 +92,30 @@ export default function ProfilePage() {
     try {
       // Get user and subscription info
       if (!user || !subscription) {
-        console.error('User or subscription not available');
+        console.error("User or subscription not available");
         return;
       }
 
       // Create cancellation record with secure RNG variant assignment
-      const result = await cancellationService.getOrAssignVariant(user.id, subscription.id);
-      
-      console.log('Cancellation created:', {
+      const result = await cancellationService.getOrAssignVariant(
+        user.id,
+        subscription.id
+      );
+
+      if (!result.id)
+        throw new Error("Cancellation was not created successfully");
+
+      setCancellationId(result.id);
+
+      console.log("Cancellation created:", {
         variant: result.variant,
-        isNewAssignment: result.isNewAssignment
+        isNewAssignment: result.isNewAssignment,
       });
 
       // Open the cancel modal
       setIsCancelModalOpen(true);
     } catch (error) {
-      console.error('Error creating cancellation:', error);
+      console.error("Error creating cancellation:", error);
       // Still open modal even if API call fails
       setIsCancelModalOpen(true);
     }
@@ -112,7 +124,6 @@ export default function ProfilePage() {
   const handleModalClose = () => {
     setIsCancelModalOpen(false);
   };
-
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 relative">
@@ -408,7 +419,11 @@ export default function ProfilePage() {
 
       {/* Cancel Modal */}
       {subscription && (
-        <CancelModal isOpen={isCancelModalOpen} onClose={handleModalClose} />
+        <CancelModal
+          id={cancellationId || ""} //TODO: handle the id
+          isOpen={isCancelModalOpen}
+          onClose={handleModalClose}
+        />
       )}
     </div>
   );

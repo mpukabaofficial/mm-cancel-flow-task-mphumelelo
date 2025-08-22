@@ -20,7 +20,9 @@
       "Bash(npm uninstall:*)",
       "Bash(rm:*)",
       "Bash(taskkill:*)",
-      "Bash(powershell:*)"
+      "Bash(powershell:*)",
+      "Bash(supabase status:*)",
+      "Bash(node:*)"
     ],
     "deny": [],
     "ask": []

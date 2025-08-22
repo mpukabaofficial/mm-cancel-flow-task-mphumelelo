@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 import { updateCancellationSchema, validateRequestBody, validateParams, uuidSchema } from '@/lib/validations'
 import { z } from 'zod'
 
@@ -22,7 +22,7 @@ export async function GET(
       }, { status: 400 })
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('cancellations')
       .select('*')
       .eq('id', resolvedParams.id)
@@ -70,7 +70,7 @@ export async function PATCH(
 
     const body = bodyValidation.data
     
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('cancellations')
       .update(body)
       .eq('id', resolvedParams.id)
@@ -106,7 +106,7 @@ export async function DELETE(
       }, { status: 400 })
     }
 
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('cancellations')
       .delete()
       .eq('id', resolvedParams.id)

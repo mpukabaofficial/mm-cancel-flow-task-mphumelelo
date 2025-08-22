@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 import { NextRequest, NextResponse } from 'next/server'
 import { createCancellationSchema, validateRequestBody, uuidSchema } from '@/lib/validations'
 import { getMockUser } from '@/lib/mockUser'
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     const body = validation.data
     const mockUser = getMockUser()
     
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('cancellations')
       .insert([
         {
@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    let query = supabase.from('cancellations').select('*')
+    let query = supabaseAdmin.from('cancellations').select('*')
     
     if (userId) {
       query = query.eq('user_id', userId)
