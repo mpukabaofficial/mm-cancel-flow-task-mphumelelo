@@ -1,8 +1,9 @@
 // app/components/CancelModal.tsx
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import CancelReasonStep from "./CancelReasonStep";
+import CancellationCard from "./CancellationCard";
 
 interface CancelModalProps {
   isOpen: boolean;
@@ -11,6 +12,8 @@ interface CancelModalProps {
 }
 
 export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
+  const [step, setStep] = useState(0);
+
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -42,7 +45,19 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
       className="bg-black/30 fixed inset-0 flex items-center justify-center p-2 sm:p-4 z-50"
       onClick={handleBackdropClick}
     >
-      <CancelReasonStep onClose={onClose} id={id} />
+      {step === 0 && (
+        <CancelReasonStep
+          step={step}
+          setStep={setStep}
+          onClose={onClose}
+          id={id}
+        />
+      )}
+      {step === 1 && (
+        <CancellationCard onSetStep={setStep} onClose={onClose} step={step}>
+          <div className="w-full h-64"></div>
+        </CancellationCard>
+      )}
     </div>
   );
 }
