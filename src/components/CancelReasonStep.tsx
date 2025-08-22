@@ -120,7 +120,7 @@ const CancelReasonStep = ({
         <div className="w-full space-y-4">
           <Button
             onClick={() => handleHasFoundJob(true)}
-            isSelected={selected === "yes"}
+            variant={selected === "yes" ? "green" : "outline"}
             disabled={loading || submitting || userLoading}
           >
             {submitting && selected !== "no" && (
@@ -131,7 +131,7 @@ const CancelReasonStep = ({
 
           <Button
             onClick={() => handleHasFoundJob(false)}
-            isSelected={selected === "no"}
+            variant={selected === "no" ? "green" : "outline"}
             disabled={loading || submitting || userLoading}
           >
             {submitting && selected !== "no" && (

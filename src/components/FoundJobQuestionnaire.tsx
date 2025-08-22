@@ -4,6 +4,7 @@ import CancellationCard from "./CancellationCard";
 import Button from "./ui/Button";
 import HorizontalLine from "./ui/HorizontalLine";
 import { Step } from "@/types/step";
+import { cancellationService } from "@/lib/api";
 
 interface QuestionnaireProps {
   options: string[];
@@ -77,13 +78,7 @@ const FoundJobQuestionnaire = ({
       }
 
       try {
-        const response = await fetch(`/api/cancellations/${id}`);
-        
-        if (!response.ok) {
-          throw new Error(`Failed to fetch data: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = await cancellationService.getById(id);
         
         // Prepopulate answers if they exist
         if (data.found_job_with_migratemate || 
@@ -123,33 +118,16 @@ const FoundJobQuestionnaire = ({
     if (!allAnswered) return;
 
     try {
-      console.log("Submitting questionnaire data:", {
-        found_job_with_migratemate: answers[0],
-        roles_applied_count: answers[1],
-        companies_emailed_count: answers[2],
-        companies_interviewed_count: answers[3],
-      });
+      const updateData = {
+        found_job_with_migratemate: answers[0] as 'Yes' | 'No',
+        roles_applied_count: answers[1] as '0' | '1–5' | '6–20' | '20+',
+        companies_emailed_count: answers[2] as '0' | '1–5' | '6–20' | '20+',
+        companies_interviewed_count: answers[3] as '0' | '1–2' | '3–5' | '5+',
+      };
 
-      const response = await fetch(`/api/cancellations/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          found_job_with_migratemate: answers[0],
-          roles_applied_count: answers[1],
-          companies_emailed_count: answers[2],
-          companies_interviewed_count: answers[3],
-        }),
-      });
+      console.log("Submitting questionnaire data:", updateData);
 
-      if (!response.ok) {
-        const errorData = await response.text();
-        console.error("Response error:", response.status, errorData);
-        throw new Error(`Failed to submit questionnaire: ${response.status}`);
-      }
-
-      const result = await response.json();
+      const result = await cancellationService.update(id, updateData);
       console.log("Questionnaire submitted successfully:", result);
 
       // Move to next step or close modal

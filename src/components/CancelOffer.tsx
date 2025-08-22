@@ -66,10 +66,10 @@ const CancelOffer = ({
           // Update local subscription state
           updateSubscriptionStatus("active");
 
-          setStep({ ...step, num: step.num + 1 });
+          setStep({ option: "A", num: step.num + 1 });
         } else {
           // User declined the offer, continue with cancellation flow
-          setStep({ ...step, num: step.num + 1 });
+          setStep({ option: "B", num: step.num + 1 });
         }
       } catch (err) {
         console.error("Failed to update cancellation:", err);
@@ -127,7 +127,7 @@ const CancelOffer = ({
             </span>
           </div>
           <Button
-            isSelected
+            variant="green"
             onClick={() => handleDownsellResponse(true)}
             disabled={submitting}
           >

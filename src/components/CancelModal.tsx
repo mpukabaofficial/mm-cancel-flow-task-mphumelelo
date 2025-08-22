@@ -9,6 +9,8 @@ import CancelOffer from "./CancelOffer";
 import CancelReasonStep from "./CancelReasonStep";
 import CancellationCard from "./CancellationCard";
 import FoundJobQuestionnaire from "./FoundJobQuestionnaire";
+import HorizontalLine from "./ui/HorizontalLine";
+import Button from "./ui/Button";
 
 interface CancelModalProps {
   isOpen: boolean;
@@ -132,6 +134,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
           />
         );
       } else {
+        // downsell
         if (variant === "B") {
           return (
             <CancelOffer
@@ -161,6 +164,27 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
       }
 
       // ddownsell
+    }
+    // move to step 2,
+    if (step.num === 2) {
+      // has accepted downsell
+      if (step.option === "A") {
+        return (
+          <CancellationCard
+            totalSteps={totalSteps}
+            step={step}
+            onSetStep={setStep}
+            onClose={onClose}
+          >
+            <div className="w-full space-y-5">
+              <div>Header </div>
+              <div>sub heading </div>
+              <HorizontalLine />
+              <Button>Button</Button>
+            </div>
+          </CancellationCard>
+        );
+      }
     }
   };
 
