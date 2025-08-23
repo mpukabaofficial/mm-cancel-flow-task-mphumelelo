@@ -3,8 +3,13 @@ import { useRouter } from "next/navigation";
 export const useNavigateApp = () => {
   const router = useRouter();
 
-  const handleGoHome = (onClose?: () => void) => {
+  const handleGoHome = (onClose?: () => void, setNavigatingHome?: (value: boolean) => void) => {
     try {
+      // Signal that we're navigating home to prevent reset
+      if (setNavigatingHome) {
+        setNavigatingHome(true);
+      }
+      
       // Close modal first for immediate UI feedback if provided
       if (onClose) {
         onClose();

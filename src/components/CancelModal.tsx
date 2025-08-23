@@ -4,7 +4,8 @@
 import { useCancellationFlow } from "@/hooks/useCancellationFlow";
 import { DownsellVariant } from "@/lib/variant";
 import { Step } from "@/types/step";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { cancellationService } from "@/lib/api";
 import AcceptedDownsell from "./AcceptedDownsell";
 import CancelComplete from "./CancelComplete";
 import CancelOffer from "./CancelOffer";
@@ -26,14 +27,31 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
   });
   const [variant, setVariant] = useState<DownsellVariant | null>(null);
   const [cancellationId, setCancellationId] = useState<string | null>(null);
+  const isNavigatingHome = useRef(false);
 
   const { getOrAssignVariant, loading, error, subscription } =
     useCancellationFlow();
+
+  // Custom close handler that resets cancellation data
+  const handleClose = async () => {
+    if (!isNavigatingHome.current && cancellationId) {
+      try {
+        await cancellationService.resetToBasic(cancellationId);
+      } catch (error) {
+        console.error("Error resetting cancellation:", error);
+      }
+    }
+    
+    // Reset local state
+    isNavigatingHome.current = false;
+    onClose();
+  };
 
   // Reset state when modal opens/closes
   useEffect(() => {
     if (isOpen) {
       setStep({ num: 0, option: "A" });
+      isNavigatingHome.current = false;
     } else {
       // Reset state when modal closes
       setVariant(null);
@@ -61,7 +79,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        onClose();
+        handleClose();
       }
     };
 
@@ -78,7 +96,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
-      onClose();
+      handleClose();
     }
   };
 
@@ -119,7 +137,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
         <CancelReasonStep
           step={step}
           setStep={setStep}
-          onClose={onClose}
+          onClose={handleClose}
           id={cancellationId}
           totalSteps={totalSteps}
         />
@@ -133,7 +151,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
           <FoundJobQuestionnaire
             step={step}
             setStep={setStep}
-            onClose={onClose}
+            onClose={handleClose}
             id={cancellationId}
             totalSteps={totalSteps}
           />
@@ -145,7 +163,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
             <CancelOffer
               step={step}
               setStep={setStep}
-              onClose={onClose}
+              onClose={handleClose}
               id={cancellationId}
               variant={variant}
               totalSteps={totalSteps}
@@ -157,7 +175,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
             <NoJobQuestionnaireA
               step={step}
               onSetStep={setStep}
-              onClose={onClose}
+              onClose={handleClose}
               totalSteps={totalSteps}
               id={id}
             />
@@ -175,9 +193,10 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
           <AcceptedDownsell
             step={step}
             setStep={setStep}
-            onClose={onClose}
+            onClose={handleClose}
             totalSteps={totalSteps}
             subscription={subscription}
+            setNavigatingHome={(value: boolean) => { isNavigatingHome.current = value; }}
           />
         );
       } else {
@@ -185,7 +204,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
           <CancelReasons
             step={step}
             setStep={setStep}
-            onClose={onClose}
+            onClose={handleClose}
             totalSteps={totalSteps}
             variant={variant}
             id={cancellationId}
@@ -199,10 +218,11 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
         return (
           <CancelComplete 
             step={step}
-            onClose={onClose}
+            onClose={handleClose}
             totalSteps={totalSteps}
             setStep={setStep}
             subscription={subscription}
+            setNavigatingHome={(value: boolean) => { isNavigatingHome.current = value; }}
           />
         );
       }

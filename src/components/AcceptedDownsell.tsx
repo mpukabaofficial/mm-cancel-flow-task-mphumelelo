@@ -13,6 +13,7 @@ interface Props {
   setStep: (step: Step) => void;
   totalSteps: number;
   subscription?: Subscription | null;
+  setNavigatingHome?: (value: boolean) => void;
 }
 
 const AcceptedDownsell = ({
@@ -21,6 +22,7 @@ const AcceptedDownsell = ({
   step,
   totalSteps,
   subscription,
+  setNavigatingHome,
 }: Props) => {
   const { handleGoHome } = useNavigateApp();
 
@@ -94,7 +96,7 @@ const AcceptedDownsell = ({
           <p className="fine-print">You can cancel anytime before then.</p>
         </div>
         <HorizontalLine />
-        <Button onClick={() => handleGoHome(onClose)} variant="primary">
+        <Button onClick={() => handleGoHome(onClose, setNavigatingHome)} variant="primary">
           Land your dream role
         </Button>
       </div>

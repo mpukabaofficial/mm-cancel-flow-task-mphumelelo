@@ -40,6 +40,11 @@ export const cancellationService = {
     await api.delete(`/cancellations/${id}`)
   },
 
+  resetToBasic: async (id: string): Promise<Cancellation> => {
+    const response = await api.patch(`/cancellations/${id}/reset`, {})
+    return response.data
+  },
+
 
   /**
    * This fetches a cancellation based on the user and their subscription

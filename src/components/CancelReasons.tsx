@@ -5,7 +5,7 @@ import ErrorMessage from "./ErrorMessage";
 import Button from "./ui/Button";
 import CheckedIcon from "./ui/CheckedIcon";
 import HorizontalLine from "./ui/HorizontalLine";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FollowUp from "./FollowUp";
 import { cancellationService } from "@/lib/api";
 
@@ -65,6 +65,49 @@ const CancelReasons = ({
   const [showFollowUpError, setShowFollowUpError] = useState(false);
   const [showPriceError, setShowPriceError] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // Fetch existing cancellation data on component mount
+  useEffect(() => {
+    const fetchExistingData = async () => {
+      try {
+        const cancellation = await cancellationService.getById(id);
+        if (cancellation.reason) {
+          setSelectedReason(cancellation.reason);
+          
+          // Populate existing explanation data
+          if (cancellation.explanation) {
+            switch (cancellation.reason) {
+              case "Too expensive":
+                // Extract price from explanation (format: "$25")
+                const price = cancellation.explanation.replace('$', '');
+                setMaxPrice(price);
+                break;
+              case "Platform not helpful":
+                setPlatformFeedback(cancellation.explanation);
+                break;
+              case "Not enough relevant jobs":
+                setJobsFeedback(cancellation.explanation);
+                break;
+              case "Decided not to move":
+                setMoveFeedback(cancellation.explanation);
+                break;
+              case "Other":
+                setOtherReason(cancellation.explanation);
+                break;
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching existing cancellation data:", error);
+        // Continue with empty form if fetch fails
+      }
+    };
+
+    if (id) {
+      fetchExistingData();
+    }
+  }, [id]);
+
   const handleReasonSelect = (reason: ReasonChoices) => {
     setSelectedReason(reason);
     setShowError(false);

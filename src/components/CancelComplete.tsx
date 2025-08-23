@@ -12,6 +12,7 @@ interface Props {
   setStep: (step: Step) => void;
   totalSteps: number;
   subscription: Subscription | null;
+  setNavigatingHome?: (value: boolean) => void;
 }
 
 const CancelComplete = ({
@@ -20,6 +21,7 @@ const CancelComplete = ({
   step,
   totalSteps,
   subscription,
+  setNavigatingHome,
 }: Props) => {
   // Calculate when subscription expires (next billing date)
   const calculateExpirationDate = () => {
@@ -81,7 +83,7 @@ const CancelComplete = ({
           </div>
         </div>
         <HorizontalLine />
-        <Button onClick={() => handleGoHome(onClose)} variant="primary">
+        <Button onClick={() => handleGoHome(onClose, setNavigatingHome)} variant="primary">
           Back to Jobs
         </Button>{" "}
       </div>
