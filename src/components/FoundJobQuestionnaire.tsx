@@ -57,7 +57,11 @@ const FoundJobQuestionnaire = ({
           disabled={!allAnswered}
           onClick={() => {
             handleSubmit();
-            setStep({ num: step.num + 1, option: "A" });
+            setStep({
+              num: step.num + 1,
+              option:
+                answers[0]?.toLowerCase() === "yes" ? "withMM" : "withoutMM",
+            });
           }}
         >
           Continue

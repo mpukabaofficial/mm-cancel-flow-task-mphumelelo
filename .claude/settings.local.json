@@ -25,7 +25,8 @@
       "Bash(node:*)",
       "Bash(git add:*)",
       "Bash(start http://localhost:3002)",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "Bash(tasklist:*)"
     ],
     "deny": [],
     "ask": []

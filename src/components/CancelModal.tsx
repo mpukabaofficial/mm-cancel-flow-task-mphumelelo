@@ -2,18 +2,19 @@
 "use client";
 
 import { useCancellationFlow } from "@/hooks/useCancellationFlow";
+import { cancellationService } from "@/lib/api";
 import { DownsellVariant } from "@/lib/variant";
 import { Step } from "@/types/step";
-import { useEffect, useState, useRef } from "react";
-import { cancellationService } from "@/lib/api";
+import { useCallback, useEffect, useRef, useState } from "react";
 import AcceptedDownsell from "./AcceptedDownsell";
 import CancelComplete from "./CancelComplete";
+import CancelHow from "./CancelHow";
+import CancelModalSkeleton from "./CancelModalSkeleton";
 import CancelOffer from "./CancelOffer";
 import CancelReasonStep from "./CancelReasonStep";
 import CancelReasons from "./CancelReasons";
 import FoundJobQuestionnaire from "./FoundJobQuestionnaire";
 import NoJobQuestionnaire from "./NoJobQuestionnaire";
-import CancelModalSkeleton from "./CancelModalSkeleton";
 
 interface CancelModalProps {
   isOpen: boolean;
@@ -34,7 +35,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
     useCancellationFlow();
 
   // Custom close handler that resets cancellation data
-  const handleClose = async () => {
+  const handleClose = useCallback(async () => {
     if (!isNavigatingHome.current && cancellationId) {
       try {
         await cancellationService.resetToBasic(cancellationId);
@@ -46,7 +47,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
     // Reset local state
     isNavigatingHome.current = false;
     onClose();
-  };
+  }, [cancellationId, onClose]);
 
   // Reset state when modal opens/closes
   useEffect(() => {
@@ -93,7 +94,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
       document.removeEventListener("keydown", handleEscape);
       document.body.style.overflow = "unset";
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, handleClose]);
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -187,6 +188,18 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
     }
     // move to step 2,
     if (step.num === 2) {
+      // how could we have
+      if (step.option === "withMM") {
+        return (
+          <CancelHow
+            step={step}
+            setStep={setStep}
+            onClose={handleClose}
+            totalSteps={totalSteps}
+          />
+        );
+      } else if (step.option === "withoutMM") {
+      }
       // has accepted downsell
       if (step.option === "A") {
         return (

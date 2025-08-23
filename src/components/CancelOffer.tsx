@@ -40,7 +40,7 @@ const CancelOffer = ({
       }, 0);
       return () => clearTimeout(timer);
     }
-  }, [variant]); // Remove step and setStep from dependencies to prevent infinite loops
+  }, [variant, step, setStep]);
 
   const handleDownsellResponse = useCallback(
     async (accepted: boolean) => {
