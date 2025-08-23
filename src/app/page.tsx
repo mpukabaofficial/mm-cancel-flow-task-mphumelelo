@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import CancelModal from "@/components/CancelModal";
 import { useUser } from "@/contexts/UserContext";
 import { cancellationService } from "@/lib/api";
+import { useState } from "react";
+import { useCancellation } from "@/context/CancellationContext";
 
 // Get subscription data for UI display
 const getSubscriptionData = (
@@ -25,6 +26,8 @@ const getSubscriptionData = (
 export default function ProfilePage() {
   const [isSigningOut, setIsSigningOut] = useState(false);
 
+  const { setCancellationId } = useCancellation();
+
   // New state for settings toggle
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
 
@@ -36,10 +39,6 @@ export default function ProfilePage() {
 
   // Get subscription data for UI
   const mockSubscriptionData = getSubscriptionData(subscription);
-
-  // store the cancellation id
-
-  const [cancellationId, setCancellationId] = useState<string | null>(null);
 
   // Show loading state
   if (isLoading) {
@@ -464,11 +463,7 @@ export default function ProfilePage() {
 
       {/* Cancel Modal */}
       {subscription && (
-        <CancelModal
-          id={cancellationId || ""}
-          isOpen={isCancelModalOpen}
-          onClose={handleModalClose}
-        />
+        <CancelModal isOpen={isCancelModalOpen} onClose={handleModalClose} />
       )}
     </div>
   );

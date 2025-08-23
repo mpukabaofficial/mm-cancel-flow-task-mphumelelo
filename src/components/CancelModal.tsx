@@ -20,15 +20,18 @@ import CancellationVisaNoJob from "./CancellationVisaNoJob";
 import FoundJobQuestionnaire from "./FoundJobQuestionnaire";
 import JobCancelComplete from "./JobCancelComplete";
 import NoJobQuestionnaire from "./NoJobQuestionnaire";
+import { useCancellation } from "@/context/CancellationContext";
+import CancellationCard from "./CancellationCard";
 
 interface CancelModalProps {
   isOpen: boolean;
   onClose: () => void;
-  id: string;
 }
 
-export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
+export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
   const isNavigatingHome = useRef(false);
+  const { cancellationId } = useCancellation();
+  const id = cancellationId || "";
 
   const {
     currentStep,
@@ -40,7 +43,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
   } = useNavigationStack({ num: 0, option: "A" });
 
   const {
-    cancellationId,
+    // cancellationId,
     setVariant,
     variant,
     error,
@@ -339,7 +342,9 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
           {error}
         </div>
       )}
-      {renderStep()}
+      <CancellationCard {...commonProps}>
+        <div className="w-full space-y-5">{renderStep()}</div>
+      </CancellationCard>
     </div>
   );
 }

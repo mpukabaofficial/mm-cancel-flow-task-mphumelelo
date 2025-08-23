@@ -2,7 +2,6 @@ import { cancellationService } from "@/lib/api";
 import { DownsellVariant } from "@/lib/variant";
 import { Step } from "@/types/step";
 import { useEffect, useState } from "react";
-import CancellationCard from "./CancellationCard";
 import ErrorMessage from "./ErrorMessage";
 import FollowUp from "./FollowUp";
 import OptionItem from "./OptionItem";
@@ -17,15 +16,10 @@ type ReasonChoices =
   | "Other";
 
 interface Props {
-  totalSteps: number;
-  step: Step;
   setStep: (step: Step) => void;
-  onClose: () => void;
   variant: DownsellVariant;
   id: string;
   subscriptionAmount: number;
-  canGoBack?: boolean;
-  onBack?: () => void;
 }
 
 const CancelReasons = ({

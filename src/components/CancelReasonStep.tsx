@@ -6,28 +6,17 @@ import { useUser } from "@/contexts/UserContext";
 import { cancellationService } from "@/lib/api";
 import { Loader2Icon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import CancellationCard from "./CancellationCard";
 import { Step } from "@/types/step";
 
 interface Props {
-  onClose: () => void;
   id: string;
-  step: Step;
   setStep: (step: Step) => void;
-  totalSteps: number;
-  canGoBack?: boolean;
-  onBack?: () => void;
   resetNavigation?: (step?: Step) => void;
 }
 
 const CancelReasonStep = ({
-  onClose,
   id,
-  step,
   setStep,
-  totalSteps,
-  canGoBack,
-  onBack,
   resetNavigation,
 }: Props) => {
   const [selected, setSelected] = useState<"yes" | "no" | null>(null);
@@ -67,7 +56,7 @@ const CancelReasonStep = ({
         setPreviousJobStatus(hasFoundJob);
 
         setStep({
-          num: step.num + 1,
+          num: 1,
           option: hasFoundJob ? "job-found" : "job-notfound",
         });
       } catch (err) {
@@ -77,7 +66,7 @@ const CancelReasonStep = ({
         setSubmitting(false);
       }
     },
-    [id, subscription?.id, submitting, setStep, step, previousJobStatus, resetNavigation]
+    [id, subscription?.id, submitting, setStep, previousJobStatus, resetNavigation]
   );
 
   useEffect(() => {
@@ -115,15 +104,7 @@ const CancelReasonStep = ({
   }, [user?.id, subscription?.id, userLoading]);
 
   return (
-    <CancellationCard
-      totalSteps={totalSteps}
-      onSetStep={setStep}
-      onClose={onClose}
-      step={step}
-      canGoBack={canGoBack}
-      onBack={onBack}
-    >
-      <div className="order-2 md:order-1 space-y-5 w-full">
+    <div className="order-2 md:order-1 space-y-5 w-full">
         <div className="font-semibold space-y-4">
           <p className="text-large md:text-large text-2xl flex flex-col">
             <span>Hey mate,</span>
@@ -169,7 +150,6 @@ const CancelReasonStep = ({
           </Button>
         </div>
       </div>
-    </CancellationCard>
   );
 };
 

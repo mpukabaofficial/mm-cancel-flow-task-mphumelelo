@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans, Inter } from "next/font/google";
 import "./globals.css";
 import UserProvider from "@/components/UserProvider";
+import { CancellationProvider } from "@/context/CancellationContext";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -23,7 +24,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${dmSans.variable} font-sans antialiased`}>
-        <UserProvider>{children}</UserProvider>
+        <UserProvider>
+          <CancellationProvider>{children}</CancellationProvider>
+        </UserProvider>
       </body>
     </html>
   );
