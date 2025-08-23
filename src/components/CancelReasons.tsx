@@ -41,6 +41,7 @@ interface Props {
   onClose: () => void;
   variant: DownsellVariant;
   id: string;
+  subscriptionAmount: number;
 }
 
 const CancelReasons = ({
@@ -50,6 +51,7 @@ const CancelReasons = ({
   setStep,
   variant,
   id,
+  subscriptionAmount,
 }: Props) => {
   const [selectedReason, setSelectedReason] = useState<ReasonChoices | null>(
     null
@@ -350,8 +352,10 @@ const CancelReasons = ({
         <div className="space-y-4">
           {variant === "B" && (
             <Button variant="green">
-              Get $10 off | ${25 - 10}{" "}
-              <span className="text-xs line-through">$25</span>
+              Get $10 off | ${subscriptionAmount - 10}{" "}
+              <span className="text-xs line-through">
+                ${subscriptionAmount}
+              </span>
             </Button>
           )}
           <Button

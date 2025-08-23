@@ -6,14 +6,12 @@ import { DownsellVariant } from "@/lib/variant";
 import { Step } from "@/types/step";
 import { useEffect, useState } from "react";
 import AcceptedDownsell from "./AcceptedDownsell";
+import CancelComplete from "./CancelComplete";
 import CancelOffer from "./CancelOffer";
 import CancelReasonStep from "./CancelReasonStep";
 import CancelReasons from "./CancelReasons";
 import FoundJobQuestionnaire from "./FoundJobQuestionnaire";
 import NoJobQuestionnaireA from "./NoJobQuestionnaireA";
-import CancellationCard from "./CancellationCard";
-import HorizontalLine from "./ui/HorizontalLine";
-import Button from "./ui/Button";
 
 interface CancelModalProps {
   isOpen: boolean;
@@ -191,6 +189,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
             totalSteps={totalSteps}
             variant={variant}
             id={cancellationId}
+            subscriptionAmount={subscription?.monthly_price || 25}
           />
         );
       }
@@ -198,36 +197,13 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
     if (step.num === 3) {
       if (step.option === "cancel-complete") {
         return (
-          <CancellationCard
+          <CancelComplete 
             step={step}
             onClose={onClose}
             totalSteps={totalSteps}
-            onSetStep={setStep}
-          >
-            <div className="w-full space-y-5">
-              <div className="space-y-2">
-                <div>
-                  <p className="text-large mb-5">Sorry to see you go, mate.</p>
-                  <p className="text-3xl tracking-[-0.9px]">
-                    Thanks for being with us, and you’re always welcome back.
-                  </p>
-                </div>
-                <div>
-                  <p className="tracking-[-0.8px] mb-4">
-                    Your subscription is set to end on XX date. <br />
-                    You’ll still have full access until then. No further charges
-                    after that.
-                  </p>
-                  <p className="text-normal tracking-[-0.8px]">
-                    Changed your mind? You can reactivate anytime before your
-                    end date.
-                  </p>
-                </div>
-              </div>
-              <HorizontalLine />
-              <Button variant="primary">Back to Jobs</Button>{" "}
-            </div>
-          </CancellationCard>
+            setStep={setStep}
+            subscription={subscription}
+          />
         );
       }
     }

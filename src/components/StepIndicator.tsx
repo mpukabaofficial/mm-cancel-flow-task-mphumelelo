@@ -35,7 +35,7 @@ export default function StepIndicator({
 
       {/* Label */}
       <span className="text-sm text-gray-600">
-        Step {currentStep} of {totalSteps}
+        {currentStep > totalSteps ? "Completed" : `Step ${currentStep} of ${totalSteps}`}
       </span>
     </div>
   );
