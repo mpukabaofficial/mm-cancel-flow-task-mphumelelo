@@ -20,6 +20,7 @@ import CancellationCard from "./CancellationCard";
 import Button from "./ui/Button";
 import HorizontalLine from "./ui/HorizontalLine";
 import Image from "next/image";
+import CancellationVisaNoJob from "./CancellationVisaNoJob";
 
 interface CancelModalProps {
   isOpen: boolean;
@@ -194,17 +195,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
     // move to step 2,
     if (step.num === 2) {
       // how could we have
-      if (step.option === "withMM") {
-        return (
-          <CancelHow
-            step={step}
-            setStep={setStep}
-            onClose={handleClose}
-            totalSteps={totalSteps}
-            id={cancellationId}
-          />
-        );
-      } else if (step.option === "withoutMM") {
+      if (step.option === "withMM" || step.option === "withoutMM") {
         return (
           <CancelHow
             step={step}
@@ -274,6 +265,16 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
       } else if (step.option === "withMM") {
         return (
           <CancellationVisa
+            onClose={handleClose}
+            onSetStep={setStep}
+            step={step}
+            totalSteps={totalSteps}
+            id={cancellationId}
+          />
+        );
+      } else if (step.option === "withoutMM") {
+        return (
+          <CancellationVisaNoJob
             onClose={handleClose}
             onSetStep={setStep}
             step={step}

@@ -15,7 +15,7 @@ interface Props {
   id: string;
 }
 
-const CancellationVisa = ({
+const CancellationVisaNoJob = ({
   onClose,
   onSetStep,
   totalSteps,
@@ -48,6 +48,7 @@ const CancellationVisa = ({
         onClose={onClose}
         totalSteps={totalSteps}
         onSetStep={onSetStep}
+        completed
       >
         <div className="w-full flex justify-center items-center h-80">
           <div className="text-normal">Loading...</div>
@@ -58,23 +59,27 @@ const CancellationVisa = ({
 
   return (
     <CancellationCard
-      step={step}
       onClose={onClose}
-      totalSteps={totalSteps}
       onSetStep={onSetStep}
+      step={step}
+      totalSteps={totalSteps}
+      completed
     >
       <div className="w-full space-y-5">
-        <div>
+        <div className="space-y-3">
           <h1 className="text-large">
-            We helped you land the job, now let&apos;s help you secure your
-            visa.
+            You landed the job! <br />
+            <span className="italic">That&apos;s what we live for.</span>
           </h1>
-          <p className="text-normal">
-            Is your company providing an immigration lawyer to help with your
-            visa?
+          <p className="tracking-[-1px] text-xl">
+            Even if it wasn&apos;t through Migrate Mate, <br />
+            let us help get your visa sorted.
           </p>
         </div>
-
+        <p className="tracking-[-0.8px]">
+          Is your company providing an immigration lawyer to help with your
+          visa?
+        </p>
         <div className="space-y-4">
           {showError && (
             <ErrorMessage error="Please select an option to continue*" />
@@ -149,7 +154,6 @@ const CancellationVisa = ({
             </div>
           )}
         </div>
-
         <HorizontalLine />
         <Button
           disabled={!isFormValid() || loading || initialLoading}
@@ -162,4 +166,4 @@ const CancellationVisa = ({
   );
 };
 
-export default CancellationVisa;
+export default CancellationVisaNoJob;
