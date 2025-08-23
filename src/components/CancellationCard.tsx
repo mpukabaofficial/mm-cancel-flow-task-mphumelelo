@@ -12,6 +12,7 @@ interface Props {
   onSetStep: (step: Step) => void;
   totalSteps: number;
   hideNavigation?: boolean;
+  completed?: boolean;
 }
 
 const CancellationCard = ({
@@ -24,6 +25,7 @@ const CancellationCard = ({
   onSetStep,
   totalSteps,
   hideNavigation = false,
+  completed = false,
 }: Props) => {
   return (
     <div className="w-full max-w-[1000px] max-h-[90vh] overflow-y-auto rounded-[12px] sm:rounded-[20px] bg-white relative font-semibold text-gray-warm-800">
@@ -73,7 +75,7 @@ const CancellationCard = ({
         <p className="text-xs sm:text-sm">Subscription Cancellation</p>
         {!hideNavigation && step.num > 0 && (
           <div>
-            <StepIndicator currentStep={step.num} totalSteps={totalSteps} />
+            <StepIndicator currentStep={step.num} totalSteps={totalSteps} completed={completed} />
           </div>
         )}
       </div>

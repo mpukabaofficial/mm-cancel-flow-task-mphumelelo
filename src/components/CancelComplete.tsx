@@ -61,6 +61,7 @@ const CancelComplete = ({
       onClose={onClose}
       totalSteps={totalSteps}
       onSetStep={setStep}
+      completed={true}
     >
       <div className="w-full space-y-5">
         <div className="space-y-2">

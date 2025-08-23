@@ -2,6 +2,7 @@ interface StepIndicatorProps {
   currentStep: number;
   totalSteps: number;
   onChangeStep?: (step: number) => void;
+  completed?: boolean;
 }
 
 //TODO: Implement change step
@@ -9,6 +10,7 @@ interface StepIndicatorProps {
 export default function StepIndicator({
   currentStep,
   totalSteps,
+  completed = false,
 }: StepIndicatorProps) {
   return (
     <div className="flex items-center space-x-2">
@@ -18,7 +20,9 @@ export default function StepIndicator({
           const stepNumber = i + 1;
           let color = "bg-gray-200"; // default upcoming
 
-          if (stepNumber < currentStep) {
+          if (completed) {
+            color = "bg-green-500"; // all green when completed
+          } else if (stepNumber < currentStep) {
             color = "bg-green-500"; // completed
           } else if (stepNumber === currentStep) {
             color = "bg-gray-400"; // current
@@ -35,7 +39,7 @@ export default function StepIndicator({
 
       {/* Label */}
       <span className="text-sm text-gray-600">
-        {currentStep > totalSteps ? "Completed" : `Step ${currentStep} of ${totalSteps}`}
+        {completed ? "Completed" : `Step ${currentStep} of ${totalSteps}`}
       </span>
     </div>
   );
