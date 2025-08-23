@@ -98,7 +98,7 @@ const CancellationVisa = ({
       // Move to next step or complete cancellation
       onSetStep({
         num: step.num + 1,
-        option: "cancel-complete",
+        option: "job-cancel-complete",
       });
     } catch (error) {
       console.error("Error saving visa information:", error);

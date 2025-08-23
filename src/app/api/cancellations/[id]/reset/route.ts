@@ -31,7 +31,9 @@ export async function PATCH(
       found_job_with_migratemate: null,
       roles_applied_count: null,
       companies_emailed_count: null,
-      companies_interviewed_count: null
+      companies_interviewed_count: null,
+      has_immigration_lawyer: null,
+      visa_type: null
     }
     
     const { data, error } = await supabaseAdmin
