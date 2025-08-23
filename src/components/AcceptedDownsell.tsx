@@ -4,7 +4,7 @@ import { Step } from "@/types/step";
 import CancellationCard from "./CancellationCard";
 import Button from "./ui/Button";
 import HorizontalLine from "./ui/HorizontalLine";
-import { useRouter } from "next/navigation";
+import { useNavigateApp } from "@/hooks/useNavigateApp";
 import { Subscription } from "@/contexts/UserContext";
 
 interface Props {
@@ -22,20 +22,7 @@ const AcceptedDownsell = ({
   totalSteps,
   subscription,
 }: Props) => {
-  const router = useRouter();
-
-  const handleGoHome = () => {
-    try {
-      // Close the modal first for immediate UI feedback
-      onClose();
-      // Navigate to home page
-      router.replace("/");
-    } catch (error) {
-      console.error("Navigation error:", error);
-      // Still close modal even if navigation fails
-      onClose();
-    }
-  };
+  const { handleGoHome } = useNavigateApp();
 
   // Calculate billing dates based on subscription created_at date
   const calculateBillingDates = () => {
@@ -107,7 +94,7 @@ const AcceptedDownsell = ({
           <p className="fine-print">You can cancel anytime before then.</p>
         </div>
         <HorizontalLine />
-        <Button onClick={handleGoHome} variant="primary">
+        <Button onClick={() => handleGoHome(onClose)} variant="primary">
           Land your dream role
         </Button>
       </div>

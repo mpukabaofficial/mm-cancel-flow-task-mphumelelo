@@ -4,6 +4,7 @@ import HorizontalLine from "./ui/HorizontalLine";
 import Button from "./ui/Button";
 import { Subscription } from "@/contexts/UserContext";
 import { Step } from "@/types/step";
+import { useNavigateApp } from "@/hooks/useNavigateApp";
 
 interface Props {
   onClose: () => void;
@@ -50,6 +51,7 @@ const CancelComplete = ({
   };
 
   const expirationDate = calculateExpirationDate();
+  const { handleGoHome } = useNavigateApp();
 
   return (
     <CancellationCard
@@ -79,7 +81,9 @@ const CancelComplete = ({
           </div>
         </div>
         <HorizontalLine />
-        <Button variant="primary">Back to Jobs</Button>{" "}
+        <Button onClick={() => handleGoHome(onClose)} variant="primary">
+          Back to Jobs
+        </Button>{" "}
       </div>
     </CancellationCard>
   );
