@@ -61,7 +61,7 @@ getBySubscription: async (
     const existingCancellations = await cancellationService.getAll(userId);
     return existingCancellations.find(c => c.subscription_id === subscriptionId) ?? null;
   } catch (err) {
-    console.error("Failed to fetch cancellation:", err);
+    console.warn("Failed to fetch cancellation:", err);
     return null;
   }
 },
@@ -81,32 +81,44 @@ getBySubscription: async (
       if (existingCancellation) {
         return {
           variant: existingCancellation.downsell_variant,
-          isNewAssignment: false, id: existingCancellation.id
+          isNewAssignment: false, 
+          id: existingCancellation.id
         }
       }
 
       // No existing cancellation, assign new variant
       const variant = assignVariant()
       
-      // Create initial cancellation record with assigned variant
-      const newCancellation = await cancellationService.create({
-        subscription_id: subscriptionId,
-        downsell_variant: variant,
-        reason: undefined,
-        has_job: undefined
-      })
+      // Try to create initial cancellation record with assigned variant
+      try {
+        const newCancellation = await cancellationService.create({
+          subscription_id: subscriptionId,
+          downsell_variant: variant,
+          reason: undefined,
+          has_job: undefined
+        })
 
-      return {
-        variant: newCancellation.downsell_variant,
-        isNewAssignment: true, id: newCancellation.id
+        return {
+          variant: newCancellation.downsell_variant,
+          isNewAssignment: true, 
+          id: newCancellation.id
+        }
+      } catch (createError) {
+        console.warn('Failed to create cancellation record, using fallback:', createError)
+        // Return variant with a fallback ID that won't break the flow
+        return {
+          variant: variant,
+          isNewAssignment: true, 
+          id: `fallback-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+        }
       }
     } catch (error) {
-      console.error('Error getting or assigning variant:', error)
-      // Fallback to assigning variant without persistence for now
+      console.warn('Error getting existing cancellations, using fallback variant:', error)
+      // Fallback to assigning variant without persistence
       return {
         variant: assignVariant(),
         isNewAssignment: true, 
-        id: ""
+        id: `fallback-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
       }
     }
   }

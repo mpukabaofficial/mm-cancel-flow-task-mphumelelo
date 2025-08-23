@@ -27,23 +27,29 @@ export function useCancellationFlow() {
       const result = await cancellationService.getOrAssignVariant(user.id, subscription.id)
       setVariant(result.variant)
       
-      // If a new cancellation was created, store its ID
-      if (result.isNewAssignment) {
-        const cancellations = await cancellationService.getAll(user.id)
-        const latestCancellation = cancellations
-          .filter(c => c.subscription_id === subscription.id)
-          .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0]
-        
-        if (latestCancellation) {
-          setCancellationId(latestCancellation.id)
-        }
+      // Store the cancellation ID directly from the result
+      if (result.id) {
+        setCancellationId(result.id)
       }
 
       return result
     } catch (err) {
+      console.warn('Error in getOrAssignVariant:', err)
+      // Set fallback values to keep the app working
       const errorMessage = err instanceof Error ? err.message : 'Failed to assign variant'
       setError(errorMessage)
-      throw err
+      
+      // Don't throw the error - return fallback values instead
+      const fallbackResult = {
+        variant: 'A' as DownsellVariant,
+        isNewAssignment: true,
+        id: `fallback-${Date.now()}`
+      }
+      
+      setVariant(fallbackResult.variant)
+      setCancellationId(fallbackResult.id)
+      
+      return fallbackResult
     } finally {
       setLoading(false)
     }

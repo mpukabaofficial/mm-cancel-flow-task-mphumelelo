@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
-import { getMockUser, fetchMockUserSubscription } from '@/lib/mockUser'
+import { getUser, fetchUserSubscription } from '@/lib/user'
 
 export interface User {
   id: string
@@ -43,12 +43,12 @@ export function UserProvider({ children }: UserProviderProps) {
         setIsLoading(true)
         setError(null)
         
-        // Get mock user
-        const mockUser = getMockUser()
-        setUser(mockUser)
+        // Get user
+        const user = getUser()
+        setUser(user)
         
         // Fetch user's subscription
-        const userSubscription = await fetchMockUserSubscription()
+        const userSubscription = await fetchUserSubscription()
         setSubscription(userSubscription)
       } catch (err) {
         console.error('Failed to initialize user:', err)

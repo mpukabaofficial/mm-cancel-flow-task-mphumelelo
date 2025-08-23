@@ -1,7 +1,7 @@
 import { supabaseAdmin } from '@/lib/supabase'
 import { NextRequest, NextResponse } from 'next/server'
 import { createCancellationSchema, validateRequestBody, uuidSchema } from '@/lib/validations'
-import { getMockUser } from '@/lib/mockUser'
+import { getUser } from '@/lib/user'
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = validation.data
-    const mockUser = getMockUser()
+    const user = getUser()
     
     const { data, error } = await supabaseAdmin
       .from('cancellations')
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
           downsell_variant: body.downsell_variant,
           reason: body.reason,
           has_job: body.has_job,
-          user_id: mockUser.id // Use actual mock user ID
+          user_id: user.id
         }
       ])
       .select()
