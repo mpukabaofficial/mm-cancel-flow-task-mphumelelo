@@ -6,6 +6,9 @@ import QuestionComponent from "./QuestionComponent";
 import useNoJobQuestionnaire from "@/hooks/useNoJobQuestionnaire";
 import ErrorMessage from "./ErrorMessage";
 import QuestionnaireSkeleton from "./QuestionnaireSkeleton";
+import { DownsellVariant } from "@/lib/variant";
+import { cancellationService } from "@/lib/api";
+import { useState } from "react";
 
 interface Props {
   onClose: () => void;
@@ -13,6 +16,8 @@ interface Props {
   onSetStep: (step: Step) => void;
   totalSteps: number;
   id: string;
+  variant: DownsellVariant;
+  subscriptionAmount: number;
 }
 
 const NoJobQuestionnaire = ({
@@ -21,9 +26,35 @@ const NoJobQuestionnaire = ({
   step,
   totalSteps,
   id,
+  variant,
+  subscriptionAmount,
 }: Props) => {
   const { allAnswered, answers, error, handleSubmit, loading, setAnswers } =
     useNoJobQuestionnaire(id);
+  const [downsellLoading, setDownsellLoading] = useState(false);
+
+  const handleDownsellAccept = async () => {
+    setDownsellLoading(true);
+
+    try {
+      // Accept the downsell offer
+      const response = await cancellationService.update(id, {
+        accepted_downsell: true,
+      });
+
+      console.log("Downsell accepted successfully:", response);
+
+      // Navigate to downsell acceptance step
+      onSetStep({
+        num: 2,
+        option: "A",
+      });
+    } catch (error) {
+      console.error("Error accepting downsell:", error);
+    } finally {
+      setDownsellLoading(false);
+    }
+  };
 
   console.log("questions no job questionnaire a: ");
   console.log(step);
@@ -106,19 +137,33 @@ const NoJobQuestionnaire = ({
           />
         </div>
         <HorizontalLine />
-        <Button
-          disabled={!allAnswered}
-          variant="danger"
-          onClick={() => {
-            handleSubmit();
-            onSetStep({
-              num: step.num + 1,
-              option: "reasons",
-            });
-          }}
-        >
-          Continue
-        </Button>
+        <div className="space-y-4">
+          {variant === "B" && (
+            <Button 
+              variant="green" 
+              onClick={handleDownsellAccept}
+              disabled={downsellLoading || loading}
+            >
+              Get $10 off | ${subscriptionAmount - 10}{" "}
+              <span className="text-xs line-through">
+                ${subscriptionAmount}
+              </span>
+            </Button>
+          )}
+          <Button
+            disabled={!allAnswered || downsellLoading}
+            variant="danger"
+            onClick={() => {
+              handleSubmit();
+              onSetStep({
+                num: step.num + 1,
+                option: "reasons",
+              });
+            }}
+          >
+            Continue
+          </Button>
+        </div>
       </div>
     </CancellationCard>
   );

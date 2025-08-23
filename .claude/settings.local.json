@@ -24,7 +24,8 @@
       "Bash(supabase status:*)",
       "Bash(node:*)",
       "Bash(git add:*)",
-      "Bash(start http://localhost:3002)"
+      "Bash(start http://localhost:3002)",
+      "mcp__ide__getDiagnostics"
     ],
     "deny": [],
     "ask": []

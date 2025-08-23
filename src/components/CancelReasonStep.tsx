@@ -45,7 +45,7 @@ const CancelReasonStep = ({
 
         setStep({
           num: step.num + 1,
-          option: hasFoundJob ? "A" : "B",
+          option: hasFoundJob ? "job-found" : "job-notfound",
         });
       } catch (err) {
         console.error("Failed to update cancellation:", err);

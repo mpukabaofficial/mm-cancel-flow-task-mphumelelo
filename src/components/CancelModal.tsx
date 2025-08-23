@@ -144,7 +144,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
     // step 1 - has found job or not
     if (step.num === 1) {
       // has found job
-      if (step.option === "A") {
+      if (step.option === "job-found") {
         return (
           <FoundJobQuestionnaire
             step={step}
@@ -176,6 +176,8 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
               onClose={handleClose}
               totalSteps={totalSteps}
               id={id}
+              variant={variant}
+              subscriptionAmount={subscription?.monthly_price || 25}
             />
           );
         }
@@ -200,17 +202,31 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
           />
         );
       } else {
-        return (
-          <CancelReasons
-            step={step}
-            setStep={setStep}
-            onClose={handleClose}
-            totalSteps={totalSteps}
-            variant={variant}
-            id={cancellationId}
-            subscriptionAmount={subscription?.monthly_price || 25}
-          />
-        );
+        if (variant === "A") {
+          return (
+            <CancelReasons
+              step={step}
+              setStep={setStep}
+              onClose={handleClose}
+              totalSteps={totalSteps}
+              variant={variant}
+              id={cancellationId}
+              subscriptionAmount={subscription?.monthly_price || 25}
+            />
+          );
+        } else {
+          return (
+            <NoJobQuestionnaire
+              step={step}
+              onSetStep={setStep}
+              onClose={handleClose}
+              totalSteps={totalSteps}
+              id={id}
+              variant={variant}
+              subscriptionAmount={subscription?.monthly_price || 25}
+            />
+          );
+        }
       }
     }
     if (step.num === 3) {
@@ -227,7 +243,33 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
             }}
           />
         );
+      } else {
+        return (
+          <CancelReasons
+            step={step}
+            setStep={setStep}
+            onClose={handleClose}
+            totalSteps={totalSteps}
+            variant={variant}
+            id={cancellationId}
+            subscriptionAmount={subscription?.monthly_price || 25}
+          />
+        );
       }
+    }
+    if (step.num === 4) {
+      return (
+        <CancelComplete
+          step={step}
+          onClose={handleClose}
+          totalSteps={totalSteps}
+          setStep={setStep}
+          subscription={subscription}
+          setNavigatingHome={(value: boolean) => {
+            isNavigatingHome.current = value;
+          }}
+        />
+      );
     }
   };
 

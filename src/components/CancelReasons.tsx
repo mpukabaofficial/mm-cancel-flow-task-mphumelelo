@@ -149,6 +149,29 @@ const CancelReasons = ({
     return explanation.length >= 25;
   };
 
+  const handleDownsellAccept = async () => {
+    setLoading(true);
+
+    try {
+      // Accept the downsell offer
+      const response = await cancellationService.update(id, {
+        accepted_downsell: true,
+      });
+
+      console.log("Downsell accepted successfully:", response);
+
+      // Navigate to downsell acceptance step
+      setStep({
+        num: 2,
+        option: "A",
+      });
+    } catch (error) {
+      console.error("Error accepting downsell:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async () => {
     if (!selectedReason) {
       setShowError(true);
@@ -394,7 +417,11 @@ const CancelReasons = ({
         <HorizontalLine />
         <div className="space-y-4">
           {variant === "B" && (
-            <Button variant="green">
+            <Button 
+              variant="green" 
+              onClick={handleDownsellAccept}
+              disabled={loading}
+            >
               Get $10 off | ${subscriptionAmount - 10}{" "}
               <span className="text-xs line-through">
                 ${subscriptionAmount}
