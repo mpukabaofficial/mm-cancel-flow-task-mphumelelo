@@ -16,11 +16,9 @@ import CancelReasons from "./CancelReasons";
 import CancellationVisa from "./CancellationVisa";
 import FoundJobQuestionnaire from "./FoundJobQuestionnaire";
 import NoJobQuestionnaire from "./NoJobQuestionnaire";
-import CancellationCard from "./CancellationCard";
-import Button from "./ui/Button";
-import HorizontalLine from "./ui/HorizontalLine";
-import Image from "next/image";
 import CancellationVisaNoJob from "./CancellationVisaNoJob";
+import JobCancelComplete from "./JobCancelComplete";
+import CancelCompleteHelp from "./CancelCompleteHelp";
 
 interface CancelModalProps {
   isOpen: boolean;
@@ -119,15 +117,31 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
     );
   }
 
-  // Calculate total steps based on variant
+  // Calculate total steps based on current flow state
   const getTotalSteps = () => {
-    if (variant === "A") {
-      // Variant A: Step 0 (reason), skip downsell, Step 1 (final)
-      return 2;
-    } else {
-      // Variant B: Step 0 (reason), Step 1 (downsell), Step 2 (final)
-      return 3;
+    // Step 0 is always the initial reason step
+
+    // For job-found path: 0 → 1 (questionnaire) → 2 (how) → 3 (visa) → 4 (complete) = 5 steps
+    if (
+      step.option === "job-found" ||
+      (step.num >= 1 &&
+        (step.option === "withMM" || step.option === "withoutMM"))
+    ) {
+      return 5;
     }
+
+    // For variant B downsell flow: 0 → 1 (downsell) → 2 (accepted/declined) → 3 (complete) = 4 steps
+    if (variant === "B" && step.option !== "job-found") {
+      return 4;
+    }
+
+    // For variant A direct flow: 0 → 1 (questionnaire) → 2 (reasons) → 3 (complete) = 4 steps
+    if (variant === "A" && step.option !== "job-found") {
+      return 4;
+    }
+
+    // Default fallback
+    return 4;
   };
 
   const totalSteps = getTotalSteps();
@@ -135,249 +149,199 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
   console.log("[CancelModal.tsx] this is the step");
   console.log(step);
 
-  // Adjust step rendering based on variant
-  const renderStep = () => {
-    if (step.num === 0) {
+  // Common props for all components
+  const commonProps = {
+    step,
+    setStep,
+    onClose: handleClose,
+    totalSteps,
+  };
+
+  const subscriptionProps = {
+    subscription,
+    subscriptionAmount: subscription?.monthly_price || 25,
+  };
+
+  // Step-specific rendering functions
+  const renderInitialStep = () => (
+    <CancelReasonStep {...commonProps} id={cancellationId} />
+  );
+
+  const renderStep1 = () => {
+    if (step.option === "job-found") {
+      return <FoundJobQuestionnaire {...commonProps} id={cancellationId} />;
+    }
+
+    // Variant B: Show downsell offer
+    if (variant === "B") {
       return (
-        <CancelReasonStep
-          step={step}
-          setStep={setStep}
-          onClose={handleClose}
-          id={cancellationId}
-          totalSteps={totalSteps}
-        />
+        <CancelOffer {...commonProps} id={cancellationId} variant={variant} />
       );
     }
-    // step 1 - has found job or not
-    if (step.num === 1) {
-      // has found job
-      if (step.option === "job-found") {
-        return (
-          <FoundJobQuestionnaire
-            step={step}
-            setStep={setStep}
-            onClose={handleClose}
-            id={cancellationId}
-            totalSteps={totalSteps}
-          />
-        );
-      } else {
-        // downsell
-        if (variant === "B") {
-          return (
-            <CancelOffer
-              step={step}
-              setStep={setStep}
-              onClose={handleClose}
-              id={cancellationId}
-              variant={variant}
-              totalSteps={totalSteps}
-            />
-          );
-        } else {
-          // no downsell and questionnaire
-          return (
-            <NoJobQuestionnaire
-              step={step}
-              onSetStep={setStep}
-              onClose={handleClose}
-              totalSteps={totalSteps}
-              id={id}
-              variant={variant}
-              subscriptionAmount={subscription?.monthly_price || 25}
-            />
-          );
-        }
-      }
 
-      // downsell
+    // Variant A: Direct to questionnaire
+    return (
+      <NoJobQuestionnaire
+        {...commonProps}
+        onSetStep={setStep}
+        id={id}
+        variant={variant}
+        {...subscriptionProps}
+      />
+    );
+  };
+
+  const renderStep2 = () => {
+    // Job flow: How did we help
+    if (step.option === "withMM" || step.option === "withoutMM") {
+      return <CancelHow {...commonProps} id={cancellationId} />;
     }
-    // move to step 2,
-    if (step.num === 2) {
-      // how could we have
-      if (step.option === "withMM" || step.option === "withoutMM") {
-        return (
-          <CancelHow
-            step={step}
-            setStep={setStep}
-            onClose={handleClose}
-            totalSteps={totalSteps}
-            id={cancellationId}
-          />
-        );
-      }
-      // has accepted downsell
-      if (step.option === "A") {
-        return (
-          <AcceptedDownsell
-            step={step}
-            setStep={setStep}
-            onClose={handleClose}
-            totalSteps={totalSteps}
-            subscription={subscription}
-            setNavigatingHome={(value: boolean) => {
-              isNavigatingHome.current = value;
-            }}
-          />
-        );
-      } else {
-        if (variant === "A") {
-          return (
-            <CancelReasons
-              step={step}
-              setStep={setStep}
-              onClose={handleClose}
-              totalSteps={totalSteps}
-              variant={variant}
-              id={cancellationId}
-              subscriptionAmount={subscription?.monthly_price || 25}
-            />
-          );
-        } else {
-          return (
-            <NoJobQuestionnaire
-              step={step}
-              onSetStep={setStep}
-              onClose={handleClose}
-              totalSteps={totalSteps}
-              id={id}
-              variant={variant}
-              subscriptionAmount={subscription?.monthly_price || 25}
-            />
-          );
-        }
-      }
-    }
-    if (step.num === 3) {
-      if (step.option === "cancel-complete") {
-        return (
-          <CancelComplete
-            step={step}
-            onClose={handleClose}
-            totalSteps={totalSteps}
-            setStep={setStep}
-            subscription={subscription}
-            setNavigatingHome={(value: boolean) => {
-              isNavigatingHome.current = value;
-            }}
-          />
-        );
-      } else if (step.option === "withMM") {
-        return (
-          <CancellationVisa
-            onClose={handleClose}
-            onSetStep={setStep}
-            step={step}
-            totalSteps={totalSteps}
-            id={cancellationId}
-          />
-        );
-      } else if (step.option === "withoutMM") {
-        return (
-          <CancellationVisaNoJob
-            onClose={handleClose}
-            onSetStep={setStep}
-            step={step}
-            totalSteps={totalSteps}
-            id={cancellationId}
-          />
-        );
-      } else {
-        return (
-          <CancelReasons
-            step={step}
-            setStep={setStep}
-            onClose={handleClose}
-            totalSteps={totalSteps}
-            variant={variant}
-            id={cancellationId}
-            subscriptionAmount={subscription?.monthly_price || 25}
-          />
-        );
-      }
-    }
-    if (step.num === 4) {
-      if (step.option === "job-cancel-complete") {
-        return (
-          <CancellationCard
-            onClose={handleClose}
-            onSetStep={setStep}
-            step={step}
-            totalSteps={totalSteps}
-            completed
-          >
-            <div className="w-full space-y-5">
-              <h1 className="text-large">
-                All done, your cancellation’s been processed.
-              </h1>
-              <p className="tracking-[-1px] text-xl">
-                We’re stoked to hear you’ve landed a job and sorted your visa.
-                Big congrats from the team. 🙌
-              </p>
-              <HorizontalLine />
-              <Button variant="primary">Finish</Button>
-            </div>
-          </CancellationCard>
-        );
-      } else if (step.option === "get-visa-help") {
-        return (
-          <CancellationCard
-            onClose={handleClose}
-            onSetStep={setStep}
-            step={step}
-            totalSteps={totalSteps}
-            completed
-          >
-            <div className="w-full space-y-5">
-              <h1 className="text-large">
-                Your cancellation’s all sorted, mate, no more charges.
-              </h1>
-              <div className="p-4 space-y-2 bg-gray-warm-200 rounded-lg">
-                <div className="flex gap-3">
-                  <div className="size-12 relative rounded-full overflow-hidden">
-                    <Image src="/mihailo-profile.jpeg" alt={""} fill />
-                  </div>
-                  <div>
-                    <div className="space-y-1text-sm tracking-[-0.28px]">
-                      <p>Mihailo Bozic</p>
-                      <p className="font-normal">
-                        &lt;mihailo@migratemate.co&gt;
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="pl-15 space-y-5">
-                  <p>
-                    I’ll be reaching out soon to help with the visa side of
-                    things.
-                  </p>
-                  <p className="font-normal">
-                    We’ve got your back, whether it’s questions, paperwork, or
-                    just figuring out your options.
-                  </p>
-                  <p className="font-medium">
-                    Keep an eye on your inbox, I’ll be in touch shortly.
-                  </p>
-                </div>
-              </div>
-              <HorizontalLine />
-              <Button variant="primary">Finish</Button>
-            </div>
-          </CancellationCard>
-        );
-      }
+
+    // Downsell accepted
+    if (step.option === "A") {
       return (
-        <CancelComplete
-          step={step}
-          onClose={handleClose}
-          totalSteps={totalSteps}
-          setStep={setStep}
+        <AcceptedDownsell
+          {...commonProps}
           subscription={subscription}
           setNavigatingHome={(value: boolean) => {
             isNavigatingHome.current = value;
           }}
         />
       );
+    }
+
+    // Variant-based flow
+    if (variant === "A") {
+      return (
+        <CancelReasons
+          {...commonProps}
+          variant={variant}
+          id={cancellationId}
+          {...subscriptionProps}
+        />
+      );
+    }
+
+    // Variant B fallback
+    return (
+      <NoJobQuestionnaire
+        {...commonProps}
+        onSetStep={setStep}
+        id={id}
+        variant={variant}
+        {...subscriptionProps}
+      />
+    );
+  };
+
+  const renderStep3 = () => {
+    if (step.option === "cancel-complete") {
+      return (
+        <CancelComplete
+          {...commonProps}
+          subscription={subscription}
+          setNavigatingHome={(value: boolean) => {
+            isNavigatingHome.current = value;
+          }}
+        />
+      );
+    }
+
+    if (step.option === "withMM") {
+      return (
+        <CancellationVisa
+          onClose={handleClose}
+          onSetStep={setStep}
+          step={step}
+          totalSteps={totalSteps}
+          id={cancellationId}
+        />
+      );
+    }
+
+    if (step.option === "withoutMM") {
+      return (
+        <CancellationVisaNoJob
+          onClose={handleClose}
+          onSetStep={setStep}
+          step={step}
+          totalSteps={totalSteps}
+          id={cancellationId}
+        />
+      );
+    }
+
+    // Default: CancelReasons
+    return (
+      <CancelReasons
+        {...commonProps}
+        variant={variant}
+        id={cancellationId}
+        {...subscriptionProps}
+      />
+    );
+  };
+
+  const renderVisaHelpComplete = () => (
+    <CancelCompleteHelp
+      onClose={handleClose}
+      setStep={setStep}
+      step={step}
+      totalSteps={totalSteps}
+    />
+  );
+
+  const renderStep4 = () => {
+    if (step.option === "job-cancel-complete") {
+      return (
+        <JobCancelComplete
+          onClose={handleClose}
+          setStep={setStep}
+          step={step}
+          totalSteps={totalSteps}
+        />
+      );
+    }
+
+    if (step.option === "get-visa-help") {
+      return renderVisaHelpComplete();
+    }
+
+    // Default: CancelComplete
+    return (
+      <CancelComplete
+        {...commonProps}
+        subscription={subscription}
+        setNavigatingHome={(value: boolean) => {
+          isNavigatingHome.current = value;
+        }}
+      />
+    );
+  };
+
+  // Main step routing
+  const renderStep = () => {
+    switch (step.num) {
+      case 0:
+        return renderInitialStep();
+      case 1:
+        return renderStep1();
+      case 2:
+        return renderStep2();
+      case 3:
+        return renderStep3();
+      case 4:
+        return renderStep4();
+      default:
+        return (
+          <CancelComplete
+            {...commonProps}
+            subscription={subscription}
+            setNavigatingHome={(value: boolean) => {
+              isNavigatingHome.current = value;
+            }}
+          />
+        );
     }
   };
 
