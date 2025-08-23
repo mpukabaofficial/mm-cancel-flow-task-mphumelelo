@@ -40,7 +40,7 @@ const CancellationVisa = ({
         setInitialLoading(true);
         const cancellation = await cancellationService.getById(id);
 
-        if (cancellation.has_immigration_lawyer !== undefined) {
+        if (cancellation.has_immigration_lawyer !== null && cancellation.has_immigration_lawyer !== undefined) {
           setSelectedOption(cancellation.has_immigration_lawyer ? "Yes" : "No");
         }
         if (cancellation.visa_type) {
