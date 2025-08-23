@@ -98,7 +98,8 @@ const CancellationVisa = ({
       // Move to next step or complete cancellation
       onSetStep({
         num: step.num + 1,
-        option: "job-cancel-complete",
+        option:
+          selectedOption === "Yes" ? "job-cancel-complete" : "get-visa-help",
       });
     } catch (error) {
       console.error("Error saving visa information:", error);
