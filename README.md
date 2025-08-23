@@ -12,6 +12,7 @@ This is a fully functional Next.js application implementing a complete subscript
 - **Interactive Reason Selection**: Dynamic UI that shows/hides options based on selection
 - **Follow-up Validation**: Minimum character requirements and price validation for detailed feedback
 - **Job Status Questionnaire**: Comprehensive 4-question survey for users who found jobs
+- **Visa Consultation System**: Immigration lawyer availability assessment and visa type collection
 - **Downsell Offers**: Variant-based downsell presentations (A/B testing ready)
 - **Step Navigation**: Forward/backward navigation with progress indicators
 
@@ -22,17 +23,21 @@ This is a fully functional Next.js application implementing a complete subscript
 - **Migration System**: Incremental database migrations with schema simplification
 - **Mock User System**: Development-friendly user simulation
 
-### ✅ Job Questionnaire System
-- **Database Fields**: 4 new columns for job-related data collection
-- **Form Validation**: Client and server-side validation for all questionnaire fields
-- **API Integration**: PATCH endpoint updates for questionnaire responses
+### ✅ Job Questionnaire & Visa System
+- **Database Fields**: 6 new columns for comprehensive data collection (4 job-related + 2 visa-related)
+- **Form Validation**: Client and server-side validation for all questionnaire and visa fields
+- **API Integration**: PATCH endpoint updates for questionnaire and visa consultation responses
 - **Progress Tracking**: Seamless integration with step-based flow
+- **Shared Logic**: Custom useVisaForm hook for code reuse between visa components
 
 ### ✅ User Interface Components
-- **CancelModal**: Complete modal system with backdrop handling and keyboard navigation
+- **CancelModal**: Complete modal system with expert-level code organization and dynamic step calculation
 - **CancelReasons**: Advanced reason collection with dynamic follow-up questions and validation
 - **CancelReasonStep**: Initial reason selection with custom input option
 - **FoundJobQuestionnaire**: Multi-question survey with dynamic option selection
+- **CancellationVisa**: Immigration lawyer consultation with visa type input (job found path)
+- **CancellationVisaNoJob**: Visa consultation for non-MM job success with lawyer referral
+- **CancelHow**: Detailed feedback collection with database persistence
 - **CancelOffer**: Downsell presentation component
 - **CancellationCard**: Reusable card wrapper with step indicators
 - **Profile Page**: Full user profile with subscription management
@@ -57,6 +62,9 @@ This is a fully functional Next.js application implementing a complete subscript
   - `roles_applied_count` (0, 1–5, 6–20, 20+)
   - `companies_emailed_count` (0, 1–5, 6–20, 20+)
   - `companies_interviewed_count` (0, 1–2, 3–5, 5+)
+- **Visa Consultation Fields**: 2 additional columns for immigration lawyer assessment
+  - `has_immigration_lawyer` (boolean): Whether company provides immigration lawyer
+  - `visa_type` (text): Specific visa type user is applying for
 - **Security**: Row Level Security (RLS) policies with user-specific access controls
 - **Smart Constraints**: Database-level validation ensuring explanations meet minimum requirements
 
@@ -68,9 +76,10 @@ This is a fully functional Next.js application implementing a complete subscript
 
 ### Frontend Architecture
 - **Context Providers**: UserContext for global state management
-- **Custom Hooks**: `useCancellationFlow` for complex business logic
-- **Component Hierarchy**: Modular design with prop drilling prevention
+- **Custom Hooks**: `useCancellationFlow` for complex business logic, `useVisaForm` for shared visa functionality
+- **Component Hierarchy**: Modular design with prop drilling prevention and expert-level code organization
 - **State Management**: Optimistic updates with error recovery
+- **Code Organization**: Refactored renderStep function with common props extraction and dedicated step renderers
 
 ## Technical Stack
 
@@ -142,19 +151,33 @@ The `.env.local` file contains local Supabase connection details:
    - "How many companies did you email directly?" (0, 1–5, 6–20, 20+)
    - "How many companies did you interview with?" (0, 1–2, 3–5, 5+)
 
-5. **Downsell Offer** (`CancelOffer`) - Variant B Only
+5. **Job Success Feedback** (`CancelHow`) - For Job Found Path
+   - Detailed feedback collection on how MigrateMate helped
+   - Database persistence with prefill functionality
+
+6. **Visa Consultation** - For Job Found Path
+   - **CancellationVisa**: For users who found job through MigrateMate
+   - **CancellationVisaNoJob**: For users who found job independently
+   - Immigration lawyer availability assessment (Yes/No)
+   - Visa type specification with validation
+
+7. **Downsell Offer** (`CancelOffer`) - Variant B Only
    - Special pricing offer presentation
    - Accept/decline downsell options
 
-6. **Final Confirmation**
-   - Summary of user selections and feedback
-   - Complete cancellation processing
+8. **Final Confirmation**
+   - Multiple completion paths based on user journey
+   - **JobCancelComplete**: For job-found users with visa sorted
+   - **CancelCompleteHelp**: For users needing visa assistance
+   - **CancelComplete**: Standard cancellation completion
+   - Complete cancellation processing with database reset functionality
 
 ### A/B Testing Implementation
 
-- **Variant A**: Initial Reason → Advanced Reason Collection/Job Questionnaire → Final
-- **Variant B**: Initial Reason → Advanced Reason Collection/Job Questionnaire → Downsell → Final
+- **Variant A**: Initial Reason → Advanced Reason Collection/Job Questionnaire → Job Feedback → Visa Consultation → Final
+- **Variant B**: Initial Reason → Advanced Reason Collection/Job Questionnaire → Job Feedback → Visa Consultation → Downsell → Final
 - Secure random assignment using `crypto.getRandomValues()`
+- Dynamic step calculation based on user path and variant assignment
 
 ## Database Schema
 
@@ -174,7 +197,10 @@ cancellations (
   found_job_with_migratemate,
   roles_applied_count,
   companies_emailed_count,
-  companies_interviewed_count
+  companies_interviewed_count,
+  -- Visa consultation fields
+  has_immigration_lawyer,
+  visa_type
 )
 ```
 
@@ -184,11 +210,14 @@ cancellations (
 - Complete multi-step cancellation flow with advanced reason collection
 - Interactive cancel reasons UI with dynamic follow-ups and validation
 - Job questionnaire with backend integration and data persistence
-- A/B testing variant assignment with secure randomization
-- Simplified database schema with `reason` + `explanation` structure
-- Enhanced API endpoints with proper enum validation
+- Visa consultation system with immigration lawyer assessment and visa type collection
+- Job success feedback collection with database persistence and prefill functionality
+- Expert-level code organization with refactored renderStep function and shared hooks
+- A/B testing variant assignment with secure randomization and dynamic step calculation
+- Simplified database schema with `reason` + `explanation` + visa fields structure
+- Enhanced API endpoints with proper enum validation and reset functionality
 - Comprehensive form validation (client + server + database)
-- Modal navigation system with step progression
+- Modal navigation system with step progression and proper state management
 - Profile page with subscription management
 - Error handling, loading states, and user feedback
 
@@ -205,11 +234,14 @@ cancellations (
 2. Click "Manage Subscription" to expand  
 3. Click "Cancel Migrate Mate" (red button)
 4. Complete the cancellation flow:
-   - **Path A**: Select "Found a job" → Fill job questionnaire → Final step
-   - **Path B**: Select other reason → Choose specific reason + provide explanation → Final step
+   - **Job Found Path**: Select "Found a job" → Fill job questionnaire → Provide feedback on how MM helped → Visa consultation → Final step
+   - **No Job Path**: Select other reason → Choose specific reason + provide explanation → Final step
+   - **Visa Paths**: 
+     - If found job with MM: CancellationVisa component
+     - If found job without MM: CancellationVisaNoJob component
    - Test different reasons to see dynamic follow-up questions
-   - Verify validation requirements (25+ chars, valid price inputs)
-   - Observe step progression and data persistence
+   - Verify validation requirements (25+ chars, valid price inputs, visa type required)
+   - Observe step progression, data persistence, and reset functionality
 
 ### API Testing
 - All endpoints available at `/api/cancellations` and `/api/subscriptions`

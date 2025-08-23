@@ -9,10 +9,12 @@ interface Props {
   onClose: () => void;
   step: Step;
   children: ReactNode;
-  onSetStep: (step: Step) => void;
+  onSetStep?: (step: Step) => void;
   totalSteps: number;
   hideNavigation?: boolean;
   completed?: boolean;
+  canGoBack?: boolean;
+  onBack?: () => void;
 }
 
 const CancellationCard = ({
@@ -22,10 +24,11 @@ const CancellationCard = ({
     option: "A",
   },
   children,
-  onSetStep,
   totalSteps,
   hideNavigation = false,
   completed = false,
+  canGoBack = false,
+  onBack,
 }: Props) => {
   return (
     <div className="w-full max-w-[1000px] max-h-[90vh] overflow-y-auto rounded-[12px] sm:rounded-[20px] bg-white relative font-semibold text-gray-warm-800">
@@ -47,9 +50,9 @@ const CancellationCard = ({
         </svg>
       </button>
 
-      {!hideNavigation && step.num > 0 && (
+      {!hideNavigation && canGoBack && onBack && (
         <button
-          onClick={() => onSetStep({ ...step, num: step.num - 1 })}
+          onClick={onBack}
           className="absolute top-[12px] flex left-[12px] sm:top-[18px] sm:left-[20px] z-10"
         >
           <div className="size-6 flex justify-center items-center">

@@ -2,6 +2,7 @@
 "use client";
 
 import { useCancellationFlow } from "@/hooks/useCancellationFlow";
+import { useNavigationStack } from "@/hooks/useNavigationStack";
 import { cancellationService } from "@/lib/api";
 import { DownsellVariant } from "@/lib/variant";
 import { Step } from "@/types/step";
@@ -27,16 +28,31 @@ interface CancelModalProps {
 }
 
 export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
-  const [step, setStep] = useState<Step>({
-    num: 0,
-    option: "A",
-  });
   const [variant, setVariant] = useState<DownsellVariant | null>(null);
   const [cancellationId, setCancellationId] = useState<string | null>(null);
   const isNavigatingHome = useRef(false);
+  
+  const {
+    currentStep,
+    canGoBack,
+    pushStep,
+    goBack,
+    resetNavigation,
+    getNavigationPath
+  } = useNavigationStack({ num: 0, option: "A" });
 
   const { getOrAssignVariant, loading, error, subscription } =
     useCancellationFlow();
+
+  // Navigation wrapper function
+  const navigateToStep = useCallback((newStep: Step) => {
+    pushStep(newStep);
+  }, [pushStep]);
+
+  const navigateBack = useCallback(() => {
+    const previousStep = goBack();
+    return previousStep;
+  }, [goBack]);
 
   // Custom close handler that resets cancellation data
   const handleClose = useCallback(async () => {
@@ -56,14 +72,14 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
   // Reset state when modal opens/closes
   useEffect(() => {
     if (isOpen) {
-      setStep({ num: 0, option: "A" });
+      resetNavigation({ num: 0, option: "A" });
       isNavigatingHome.current = false;
     } else {
       // Reset state when modal closes
       setVariant(null);
       setCancellationId(null);
     }
-  }, [isOpen]);
+  }, [isOpen, resetNavigation]);
 
   // Get or assign variant when modal opens
   useEffect(() => {
@@ -123,20 +139,20 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
 
     // For job-found path: 0 → 1 (questionnaire) → 2 (how) → 3 (visa) → 4 (complete) = 5 steps
     if (
-      step.option === "job-found" ||
-      (step.num >= 1 &&
-        (step.option === "withMM" || step.option === "withoutMM"))
+      currentStep.option === "job-found" ||
+      (currentStep.num >= 1 &&
+        (currentStep.option === "withMM" || currentStep.option === "withoutMM"))
     ) {
       return 5;
     }
 
     // For variant B downsell flow: 0 → 1 (downsell) → 2 (accepted/declined) → 3 (complete) = 4 steps
-    if (variant === "B" && step.option !== "job-found") {
+    if (variant === "B" && currentStep.option !== "job-found") {
       return 4;
     }
 
     // For variant A direct flow: 0 → 1 (questionnaire) → 2 (reasons) → 3 (complete) = 4 steps
-    if (variant === "A" && step.option !== "job-found") {
+    if (variant === "A" && currentStep.option !== "job-found") {
       return 4;
     }
 
@@ -146,15 +162,17 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
 
   const totalSteps = getTotalSteps();
 
-  console.log("[CancelModal.tsx] this is the step");
-  console.log(step);
+  console.log("[CancelModal.tsx] Navigation path:", getNavigationPath());
+  console.log("[CancelModal.tsx] Current step:", currentStep);
 
   // Common props for all components
   const commonProps = {
-    step,
-    setStep,
+    step: currentStep,
+    setStep: navigateToStep,
     onClose: handleClose,
     totalSteps,
+    canGoBack,
+    onBack: navigateBack,
   };
 
   const subscriptionProps = {
@@ -168,7 +186,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
   );
 
   const renderStep1 = () => {
-    if (step.option === "job-found") {
+    if (currentStep.option === "job-found") {
       return <FoundJobQuestionnaire {...commonProps} id={cancellationId} />;
     }
 
@@ -183,7 +201,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
     return (
       <NoJobQuestionnaire
         {...commonProps}
-        onSetStep={setStep}
+        onSetStep={navigateToStep}
         id={id}
         variant={variant}
         {...subscriptionProps}
@@ -193,12 +211,12 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
 
   const renderStep2 = () => {
     // Job flow: How did we help
-    if (step.option === "withMM" || step.option === "withoutMM") {
+    if (currentStep.option === "withMM" || currentStep.option === "withoutMM") {
       return <CancelHow {...commonProps} id={cancellationId} />;
     }
 
     // Downsell accepted
-    if (step.option === "A") {
+    if (currentStep.option === "A") {
       return (
         <AcceptedDownsell
           {...commonProps}
@@ -226,7 +244,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
     return (
       <NoJobQuestionnaire
         {...commonProps}
-        onSetStep={setStep}
+        onSetStep={navigateToStep}
         id={id}
         variant={variant}
         {...subscriptionProps}
@@ -235,7 +253,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
   };
 
   const renderStep3 = () => {
-    if (step.option === "cancel-complete") {
+    if (currentStep.option === "cancel-complete") {
       return (
         <CancelComplete
           {...commonProps}
@@ -247,24 +265,24 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
       );
     }
 
-    if (step.option === "withMM") {
+    if (currentStep.option === "withMM") {
       return (
         <CancellationVisa
           onClose={handleClose}
-          onSetStep={setStep}
-          step={step}
+          onSetStep={navigateToStep}
+          step={currentStep}
           totalSteps={totalSteps}
           id={cancellationId}
         />
       );
     }
 
-    if (step.option === "withoutMM") {
+    if (currentStep.option === "withoutMM") {
       return (
         <CancellationVisaNoJob
           onClose={handleClose}
-          onSetStep={setStep}
-          step={step}
+          onSetStep={navigateToStep}
+          step={currentStep}
           totalSteps={totalSteps}
           id={cancellationId}
         />
@@ -285,25 +303,25 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
   const renderVisaHelpComplete = () => (
     <CancelCompleteHelp
       onClose={handleClose}
-      setStep={setStep}
-      step={step}
+      setStep={navigateToStep}
+      step={currentStep}
       totalSteps={totalSteps}
     />
   );
 
   const renderStep4 = () => {
-    if (step.option === "job-cancel-complete") {
+    if (currentStep.option === "job-cancel-complete") {
       return (
         <JobCancelComplete
           onClose={handleClose}
-          setStep={setStep}
-          step={step}
+          setStep={navigateToStep}
+          step={currentStep}
           totalSteps={totalSteps}
         />
       );
     }
 
-    if (step.option === "get-visa-help") {
+    if (currentStep.option === "get-visa-help") {
       return renderVisaHelpComplete();
     }
 
@@ -321,7 +339,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
 
   // Main step routing
   const renderStep = () => {
-    switch (step.num) {
+    switch (currentStep.num) {
       case 0:
         return renderInitialStep();
       case 1:
