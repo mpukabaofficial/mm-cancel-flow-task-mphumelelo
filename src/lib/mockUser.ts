@@ -28,7 +28,7 @@ export function getMockUser(): MockUser {
 export async function fetchMockUserSubscription() {
   try {
     const mockUser = getMockUser();
-    const response = await fetch(`/api/subscriptions/${mockUser.id}`);
+    const response = await fetch(`/api/subscriptions/user/${mockUser.id}`);
     
     if (!response.ok) {
       throw new Error('Failed to fetch subscription');

@@ -57,18 +57,20 @@ const CancelOffer = ({
 
         if (accepted) {
           // User accepted the downsell offer
-          // Calculate new price and update subscription
-          //   const newPrice = calculateDownsellPrice(subscription.monthly_price);
+          // Calculate new price (typically 50% discount)
+          const newPrice = Math.floor(subscription.monthly_price * 0.5);
 
-          // Update subscription status to active with new price
-          await subscriptionService.updateStatus(subscription.id, "active");
+          // Update subscription with new price and reset cancellation status
+          await subscriptionService.acceptDownsell(subscription.id, newPrice);
 
           // Update local subscription state
           updateSubscriptionStatus("active");
 
           setStep({ option: "A", num: step.num + 1 });
         } else {
-          // User declined the offer, continue with cancellation flow
+          // User declined the offer, cancel the subscription
+          await subscriptionService.cancel(subscription.id);
+          
           setStep({ option: "B", num: step.num + 1 });
         }
       } catch (err) {

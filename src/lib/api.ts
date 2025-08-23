@@ -122,6 +122,16 @@ export const subscriptionService = {
   updateStatus: async (id: string, status: 'active' | 'pending_cancellation' | 'cancelled'): Promise<Subscription> => {
     const response = await api.patch('/subscriptions', { id, status })
     return response.data
+  },
+
+  cancel: async (id: string): Promise<Subscription> => {
+    const response = await api.patch(`/subscriptions/${id}/cancel`)
+    return response.data
+  },
+
+  acceptDownsell: async (id: string, newPrice: number): Promise<Subscription> => {
+    const response = await api.patch(`/subscriptions/${id}/downsell`, { newPrice })
+    return response.data
   }
 }
 

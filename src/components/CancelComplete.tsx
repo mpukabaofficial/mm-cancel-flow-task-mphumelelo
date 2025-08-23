@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CancellationCard from "./CancellationCard";
 import HorizontalLine from "./ui/HorizontalLine";
 import Button from "./ui/Button";
 import { Subscription } from "@/contexts/UserContext";
 import { Step } from "@/types/step";
 import { useNavigateApp } from "@/hooks/useNavigateApp";
+import { subscriptionService } from "@/lib/api";
 
 interface Props {
   onClose: () => void;
@@ -23,6 +24,26 @@ const CancelComplete = ({
   subscription,
   setNavigatingHome,
 }: Props) => {
+  const [subscriptionCancelled, setSubscriptionCancelled] = useState(false);
+
+  // Cancel the subscription when this component mounts (final completion)
+  useEffect(() => {
+    const cancelSubscription = async () => {
+      if (subscription?.id && !subscriptionCancelled) {
+        try {
+          await subscriptionService.cancel(subscription.id);
+          setSubscriptionCancelled(true);
+          console.log('Subscription cancelled successfully');
+        } catch (error) {
+          console.error('Failed to cancel subscription:', error);
+          // Still show completion UI even if API call fails
+          setSubscriptionCancelled(true);
+        }
+      }
+    };
+
+    cancelSubscription();
+  }, [subscription?.id, subscriptionCancelled]);
   // Calculate when subscription expires (next billing date)
   const calculateExpirationDate = () => {
     if (!subscription || !subscription.created_at) {

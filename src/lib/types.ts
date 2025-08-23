@@ -9,6 +9,9 @@ export interface Subscription {
   user_id: string
   monthly_price: number
   status: 'active' | 'pending_cancellation' | 'cancelled'
+  has_cancelled: boolean
+  cancelled_at?: string
+  expires_at?: string
   created_at: string
   updated_at: string
 }

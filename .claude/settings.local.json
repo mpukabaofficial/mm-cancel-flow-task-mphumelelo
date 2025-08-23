@@ -26,7 +26,8 @@
       "Bash(git add:*)",
       "Bash(start http://localhost:3002)",
       "mcp__ide__getDiagnostics",
-      "Bash(tasklist:*)"
+      "Bash(tasklist:*)",
+      "Bash(move \"src/app/api/subscriptions/[userId]\" \"src/app/api/subscriptions/user/[userId]\")"
     ],
     "deny": [],
     "ask": []
