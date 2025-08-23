@@ -1,26 +1,25 @@
 // app/components/CancelModal.tsx
 "use client";
 
-import { useCancellationFlow } from "@/hooks/useCancellationFlow";
 import { useNavigationStack } from "@/hooks/useNavigationStack";
+import useVariant from "@/hooks/useVariant";
 import { cancellationService } from "@/lib/api";
-import { DownsellVariant } from "@/lib/variant";
 import { Step } from "@/types/step";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { getTotalSteps } from "@/utils/steps";
+import { useCallback, useEffect, useRef } from "react";
 import AcceptedDownsell from "./AcceptedDownsell";
 import CancelComplete from "./CancelComplete";
+import CancelCompleteHelp from "./CancelCompleteHelp";
 import CancelHow from "./CancelHow";
 import CancelModalSkeleton from "./CancelModalSkeleton";
 import CancelOffer from "./CancelOffer";
 import CancelReasonStep from "./CancelReasonStep";
 import CancelReasons from "./CancelReasons";
 import CancellationVisa from "./CancellationVisa";
-import FoundJobQuestionnaire from "./FoundJobQuestionnaire";
-import NoJobQuestionnaire from "./NoJobQuestionnaire";
 import CancellationVisaNoJob from "./CancellationVisaNoJob";
+import FoundJobQuestionnaire from "./FoundJobQuestionnaire";
 import JobCancelComplete from "./JobCancelComplete";
-import CancelCompleteHelp from "./CancelCompleteHelp";
-import { getTotalSteps } from "@/utils/steps";
+import NoJobQuestionnaire from "./NoJobQuestionnaire";
 
 interface CancelModalProps {
   isOpen: boolean;
@@ -29,8 +28,6 @@ interface CancelModalProps {
 }
 
 export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
-  const [variant, setVariant] = useState<DownsellVariant | null>(null);
-  const [cancellationId, setCancellationId] = useState<string | null>(null);
   const isNavigatingHome = useRef(false);
 
   const {
@@ -42,8 +39,15 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
     getNavigationPath,
   } = useNavigationStack({ num: 0, option: "A" });
 
-  const { getOrAssignVariant, loading, error, subscription } =
-    useCancellationFlow();
+  const {
+    cancellationId,
+    setVariant,
+    variant,
+    error,
+    loading,
+    subscription,
+    setCancellationId,
+  } = useVariant(isOpen, id);
 
   // Navigation wrapper function
   const navigateToStep = useCallback(
@@ -84,23 +88,6 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
       setCancellationId(null);
     }
   }, [isOpen, resetNavigation]);
-
-  // Get or assign variant when modal opens
-  useEffect(() => {
-    if (isOpen && !variant) {
-      getOrAssignVariant()
-        .then((result) => {
-          setVariant(result.variant);
-          setCancellationId(result.id);
-        })
-        .catch((err) => {
-          console.error("Failed to assign variant:", err);
-          // Fallback to variant B if assignment fails
-          setVariant("B");
-          setCancellationId(id);
-        });
-    }
-  }, [isOpen, variant, getOrAssignVariant, id]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {

@@ -6,6 +6,7 @@ export interface NavigationStep extends Step {
 }
 
 export const useNavigationStack = (initialStep: Step = { num: 0, option: 'A' }) => {
+  
   const [navigationStack, setNavigationStack] = useState<NavigationStep[]>([
     { ...initialStep, timestamp: Date.now() }
   ]);
