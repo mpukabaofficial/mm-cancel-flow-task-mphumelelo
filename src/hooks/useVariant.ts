@@ -2,11 +2,9 @@ import { DownsellVariant } from "@/lib/variant";
 import { useEffect, useState } from "react";
 import { useCancellationFlow } from "./useCancellationFlow";
 
-const useVariant = (isOpen: boolean, id:string) => {
+const useVariant = (isOpen: boolean) => {
   const [variant, setVariant] = useState<DownsellVariant | null>(null);
-    const [cancellationId, setCancellationId] = useState<string | null>(null);
   
-
     const { getOrAssignVariant, loading, error, subscription } =
     useCancellationFlow();
 
@@ -16,18 +14,16 @@ const useVariant = (isOpen: boolean, id:string) => {
         getOrAssignVariant()
           .then((result) => {
             setVariant(result.variant);
-            setCancellationId(result.id);
           })
           .catch((err) => {
             console.error("Failed to assign variant:", err);
             // Fallback to variant B if assignment fails
             setVariant("B");
-            setCancellationId(id);
           });
       }
-    }, [isOpen, variant, getOrAssignVariant, id]);
+    }, [isOpen, variant, getOrAssignVariant]);
 
-  return {cancellationId, variant, setVariant, loading, error, subscription, setCancellationId};
+  return {variant, setVariant, loading, error, subscription};
 };
 
 export default useVariant;

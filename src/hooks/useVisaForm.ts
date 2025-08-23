@@ -2,22 +2,26 @@ import { useState, useEffect } from "react";
 import { cancellationService } from "@/lib/api";
 import { UpdateCancellationRequest } from "@/lib/types";
 import { Step } from "@/types/step";
+import { useUser } from "@/contexts/UserContext";
 
 type VisaChoice = "Yes" | "No";
 
 interface UseVisaFormProps {
-  id: string;
+  
   step: Step;
   setStep: (step: Step) => void;
 }
 
-export const useVisaForm = ({ id, step, setStep }: UseVisaFormProps) => {
+export const useVisaForm = ({ step, setStep }: UseVisaFormProps) => {
   const [selectedOption, setSelectedOption] = useState<VisaChoice | null>(null);
   const [visaType, setVisaType] = useState<string>("");
   const [showError, setShowError] = useState(false);
   const [showFollowUpError, setShowFollowUpError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
+  const {cancellationId} = useUser()
+  const id = cancellationId || ""
+  
 
   // Load existing visa data on mount
   useEffect(() => {

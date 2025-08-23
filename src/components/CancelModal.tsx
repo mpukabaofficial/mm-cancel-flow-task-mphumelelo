@@ -1,27 +1,16 @@
 // app/components/CancelModal.tsx
 "use client";
 
+import { useUser } from "@/contexts/UserContext";
 import { useNavigationStack } from "@/hooks/useNavigationStack";
 import useVariant from "@/hooks/useVariant";
 import { cancellationService } from "@/lib/api";
 import { Step } from "@/types/step";
 import { getTotalSteps } from "@/utils/steps";
 import { useCallback, useEffect, useRef } from "react";
-import AcceptedDownsell from "./AcceptedDownsell";
-import CancelComplete from "./CancelComplete";
-import CancelCompleteHelp from "./CancelCompleteHelp";
-import CancelHow from "./CancelHow";
 import CancelModalSkeleton from "./CancelModalSkeleton";
-import CancelOffer from "./CancelOffer";
-import CancelReasonStep from "./CancelReasonStep";
-import CancelReasons from "./CancelReasons";
-import CancellationVisa from "./CancellationVisa";
-import CancellationVisaNoJob from "./CancellationVisaNoJob";
-import FoundJobQuestionnaire from "./FoundJobQuestionnaire";
-import JobCancelComplete from "./JobCancelComplete";
-import NoJobQuestionnaire from "./NoJobQuestionnaire";
 import CancellationCard from "./CancellationCard";
-import { useUser } from "@/contexts/UserContext";
+import { StepRenderer } from "./CancelModal/steps/StepRenderer";
 
 interface CancelModalProps {
   isOpen: boolean;
@@ -31,7 +20,6 @@ interface CancelModalProps {
 export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
   const isNavigatingHome = useRef(false);
   const { cancellationId } = useUser();
-  const id = cancellationId || "";
 
   const {
     currentStep,
@@ -49,8 +37,7 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
     error,
     loading,
     subscription,
-    setCancellationId,
-  } = useVariant(isOpen, id);
+  } = useVariant(isOpen);
 
   // Navigation wrapper function
   const navigateToStep = useCallback(
@@ -88,7 +75,6 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
     } else {
       // Reset state when modal closes
       setVariant(null);
-      setCancellationId(null);
     }
   }, [isOpen, resetNavigation]);
 
@@ -179,190 +165,20 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
     completed: isCompleted,
   };
 
-  // Step-specific rendering functions
-  const renderInitialStep = () => (
-    <CancelReasonStep
-      id={cancellationId}
-      setStep={navigateToStep}
-      resetNavigation={resetNavigation}
-    />
-  );
-
-  const renderStep1 = () => {
-    if (currentStep.option === "job-found") {
-      return (
-        <FoundJobQuestionnaire
-          id={cancellationId}
-          step={currentStep}
-          setStep={navigateToStep}
-        />
-      );
-    }
-
-    // Variant B: Show downsell offer
-    if (variant === "B") {
-      return (
-        <CancelOffer
-          id={cancellationId}
-          step={currentStep}
-          setStep={navigateToStep}
-          variant={variant}
-        />
-      );
-    }
-
-    // Variant A: Direct to questionnaire
-    return (
-      <NoJobQuestionnaire
-        step={currentStep}
-        onSetStep={navigateToStep}
-        id={id}
-        variant={variant}
-        subscriptionAmount={subscription?.monthly_price || 25}
-      />
-    );
-  };
-
-  const renderStep2 = () => {
-    // Job flow: How did we help
-    if (currentStep.option === "withMM" || currentStep.option === "withoutMM") {
-      return (
-        <CancelHow
-          id={cancellationId}
-          step={currentStep}
-          setStep={navigateToStep}
-        />
-      );
-    }
-
-    // Downsell accepted
-    if (currentStep.option === "A") {
-      return (
-        <AcceptedDownsell
-          onClose={handleClose}
-          subscription={subscription}
-          setNavigatingHome={(value: boolean) => {
-            isNavigatingHome.current = value;
-          }}
-        />
-      );
-    }
-
-    // Variant-based flow
-    if (variant === "A") {
-      return (
-        <CancelReasons
-          setStep={navigateToStep}
-          variant={variant}
-          id={cancellationId}
-          subscriptionAmount={subscription?.monthly_price || 25}
-        />
-      );
-    }
-
-    // Variant B fallback
-    return (
-      <NoJobQuestionnaire
-        step={currentStep}
-        onSetStep={navigateToStep}
-        id={id}
-        variant={variant}
-        subscriptionAmount={subscription?.monthly_price || 25}
-      />
-    );
-  };
-
-  const renderStep3 = () => {
-    if (currentStep.option === "cancel-complete") {
-      return (
-        <CancelComplete
-          onClose={handleClose}
-          subscription={subscription}
-          setNavigatingHome={(value: boolean) => {
-            isNavigatingHome.current = value;
-          }}
-        />
-      );
-    }
-
-    if (currentStep.option === "withMM") {
-      return (
-        <CancellationVisa
-          onSetStep={navigateToStep}
-          step={currentStep}
-          id={cancellationId}
-        />
-      );
-    }
-
-    if (currentStep.option === "withoutMM") {
-      return (
-        <CancellationVisaNoJob
-          onSetStep={navigateToStep}
-          step={currentStep}
-          id={cancellationId}
-        />
-      );
-    }
-
-    // Default: CancelReasons
-    return (
-      <CancelReasons
-        setStep={navigateToStep}
-        variant={variant}
-        id={cancellationId}
-        subscriptionAmount={subscription?.monthly_price || 25}
-      />
-    );
-  };
-
-  const renderVisaHelpComplete = () => <CancelCompleteHelp />;
-
-  const renderStep4 = () => {
-    if (currentStep.option === "job-cancel-complete") {
-      return <JobCancelComplete />;
-    }
-
-    if (currentStep.option === "get-visa-help") {
-      return renderVisaHelpComplete();
-    }
-
-    // Default: CancelComplete
-    return (
-      <CancelComplete
-        onClose={handleClose}
-        subscription={subscription}
-        setNavigatingHome={(value: boolean) => {
-          isNavigatingHome.current = value;
-        }}
-      />
-    );
-  };
-
-  // Main step routing
+  // Main step routing using StepRenderer
   const renderStep = () => {
-    switch (currentStep.num) {
-      case 0:
-        return renderInitialStep();
-      case 1:
-        return renderStep1();
-      case 2:
-        return renderStep2();
-      case 3:
-        return renderStep3();
-      case 4:
-        return renderStep4();
-      default:
-        return (
-          <CancelComplete
-            onClose={handleClose}
-            subscription={subscription}
-            setNavigatingHome={(value: boolean) => {
-              isNavigatingHome.current = value;
-            }}
-          />
-        );
-    }
+    const stepRendererProps = {
+      currentStep,
+      variant,
+      subscription,
+      navigateToStep,
+      navigateBack,
+      resetNavigation,
+      handleClose,
+      isNavigatingHome,
+    };
+
+    return StepRenderer.renderStep(currentStep.num, stepRendererProps);
   };
 
   return (
