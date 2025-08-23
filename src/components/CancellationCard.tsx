@@ -50,7 +50,7 @@ const CancellationCard = ({
         </svg>
       </button>
 
-      {!hideNavigation && canGoBack && onBack && (
+      {!hideNavigation && step.num > 0 && onBack && (
         <button
           onClick={onBack}
           className="absolute top-[12px] flex left-[12px] sm:top-[18px] sm:left-[20px] z-10"

@@ -164,6 +164,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
 
   console.log("[CancelModal.tsx] Navigation path:", getNavigationPath());
   console.log("[CancelModal.tsx] Current step:", currentStep);
+  console.log("[CancelModal.tsx] Can go back:", canGoBack);
 
   // Common props for all components
   const commonProps = {
