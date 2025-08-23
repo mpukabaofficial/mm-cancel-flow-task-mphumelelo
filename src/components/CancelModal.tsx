@@ -20,6 +20,7 @@ import NoJobQuestionnaire from "./NoJobQuestionnaire";
 import CancellationVisaNoJob from "./CancellationVisaNoJob";
 import JobCancelComplete from "./JobCancelComplete";
 import CancelCompleteHelp from "./CancelCompleteHelp";
+import { getTotalSteps } from "@/utils/steps";
 
 interface CancelModalProps {
   isOpen: boolean;
@@ -31,23 +32,26 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
   const [variant, setVariant] = useState<DownsellVariant | null>(null);
   const [cancellationId, setCancellationId] = useState<string | null>(null);
   const isNavigatingHome = useRef(false);
-  
+
   const {
     currentStep,
     canGoBack,
     pushStep,
     goBack,
     resetNavigation,
-    getNavigationPath
+    getNavigationPath,
   } = useNavigationStack({ num: 0, option: "A" });
 
   const { getOrAssignVariant, loading, error, subscription } =
     useCancellationFlow();
 
   // Navigation wrapper function
-  const navigateToStep = useCallback((newStep: Step) => {
-    pushStep(newStep);
-  }, [pushStep]);
+  const navigateToStep = useCallback(
+    (newStep: Step) => {
+      pushStep(newStep);
+    },
+    [pushStep]
+  );
 
   const navigateBack = useCallback(() => {
     const previousStep = goBack();
@@ -133,35 +137,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
     );
   }
 
-  // Calculate total steps based on current flow state
-  const getTotalSteps = () => {
-    // Step 0 is not counted - only steps 1, 2, 3, 4... are shown in the indicator
-    // Return the number of steps excluding the initial step 0
-
-    // For job-found path: 1 (questionnaire) → 2 (how) → 3 (visa) → 4 (complete) = 4 steps
-    if (
-      currentStep.option === "job-found" ||
-      (currentStep.num >= 1 &&
-        (currentStep.option === "withMM" || currentStep.option === "withoutMM"))
-    ) {
-      return 4;
-    }
-
-    // For variant B downsell flow: 1 (downsell) → 2 (accepted/declined) → 3 (complete) = 3 steps
-    if (variant === "B" && currentStep.option !== "job-found") {
-      return 3;
-    }
-
-    // For variant A direct flow: 1 (questionnaire) → 2 (reasons) → 3 (complete) = 3 steps
-    if (variant === "A" && currentStep.option !== "job-found") {
-      return 3;
-    }
-
-    // Default fallback
-    return 3;
-  };
-
-  const totalSteps = getTotalSteps();
+  const totalSteps = getTotalSteps(currentStep, variant);
 
   console.log("[CancelModal.tsx] Navigation path:", getNavigationPath());
   console.log("[CancelModal.tsx] Current step:", currentStep);
