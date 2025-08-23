@@ -252,6 +252,11 @@ export default function ProfilePage() {
                           Active
                         </span>
                       )}
+                    {mockSubscriptionData.status === "pending_cancellation" && (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-red-50 text-red-700 border border-red-200">
+                        Cancelled
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -291,6 +296,41 @@ export default function ProfilePage() {
                       </p>
                     </div>
                   )}
+
+                {mockSubscriptionData.status === "pending_cancellation" && (
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <div className="flex-shrink-0">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5 text-gray-400"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
+                        </svg>
+                      </div>
+                      <p className="text-sm font-medium text-gray-900">
+                        Expires on
+                      </p>
+                    </div>
+                    <p className="text-sm font-medium text-gray-900">
+                      {mockSubscriptionData.currentPeriodEnd &&
+                        new Date(
+                          mockSubscriptionData.currentPeriodEnd
+                        ).toLocaleDateString("en-US", {
+                          month: "long",
+                          day: "numeric",
+                        })}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
