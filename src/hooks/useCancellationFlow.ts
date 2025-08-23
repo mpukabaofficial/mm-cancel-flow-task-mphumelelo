@@ -50,7 +50,7 @@ export function useCancellationFlow() {
   }
 
   const updateCancellation = async (updates: {
-    reason?: string
+    reason?: 'Too expensive' | 'Platform not helpful' | 'Not enough relevant jobs' | 'Decided not to move' | 'Other'
     accepted_downsell?: boolean
     has_job?: boolean
   }) => {

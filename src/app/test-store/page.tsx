@@ -29,7 +29,7 @@ export default function TestStorePage() {
     try {
       await updateCancellation({
         has_job: true,
-        reason: 'Found a job through the platform'
+        reason: 'Other'
       })
       console.log('Cancellation updated successfully')
     } catch (error) {

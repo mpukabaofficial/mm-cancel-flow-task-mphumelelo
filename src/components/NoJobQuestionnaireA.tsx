@@ -2,8 +2,8 @@ import { Step } from "@/types/step";
 import CancellationCard from "./CancellationCard";
 import Button from "./ui/Button";
 import HorizontalLine from "./ui/HorizontalLine";
-import Questionnaire from "./Questionnaire";
-import useQuestionnaire from "@/hooks/useQuestionnaire";
+import QuestionComponent from "./QuestionComponent";
+import useNoJobQuestionnaire from "@/hooks/useNoJobQuestionnaire";
 import ErrorMessage from "./ErrorMessage";
 import QuestionnaireSkeleton from "./QuestionnaireSkeleton";
 
@@ -23,7 +23,7 @@ const NoJobQuestionnaireA = ({
   id,
 }: Props) => {
   const { allAnswered, answers, error, handleSubmit, loading, setAnswers } =
-    useQuestionnaire(id);
+    useNoJobQuestionnaire(id);
   
   console.log("questions no job questionnaire a: ");
   console.log(step);
@@ -51,7 +51,58 @@ const NoJobQuestionnaireA = ({
           Help us understand how you were using Migrate Mate.
         </h1>
         <ErrorMessage error={error} />
-        <Questionnaire answers={answers} onSetAnswers={setAnswers} />
+        <div className="space-y-9">
+          <QuestionComponent
+            question={
+              <>
+                How many roles did you{" "}
+                <span className="underline underline-offset-2">apply</span> for
+                through MigrateMate?*
+              </>
+            }
+            options={["0", "1–5", "6–20", "20+"]}
+            selected={answers[0]}
+            onSelect={(opt: string) => {
+              const next = [...answers];
+              next[0] = opt;
+              setAnswers(next);
+            }}
+          />
+
+          <QuestionComponent
+            question={
+              <>
+                How many companies did you{" "}
+                <span className="underline underline-offset-2">email</span> through
+                MigrateMate?*
+              </>
+            }
+            options={["0", "1–5", "6–20", "20+"]}
+            selected={answers[1]}
+            onSelect={(opt: string) => {
+              const next = [...answers];
+              next[1] = opt;
+              setAnswers(next);
+            }}
+          />
+
+          <QuestionComponent
+            question={
+              <>
+                How many companies{" "}
+                <span className="underline underline-offset-2">interviewed</span>{" "}
+                you through MigrateMate leads?*
+              </>
+            }
+            options={["0", "1–2", "3–5", "5+"]}
+            selected={answers[2]}
+            onSelect={(opt: string) => {
+              const next = [...answers];
+              next[2] = opt;
+              setAnswers(next);
+            }}
+          />
+        </div>
         <HorizontalLine />
         <Button
           disabled={!allAnswered}

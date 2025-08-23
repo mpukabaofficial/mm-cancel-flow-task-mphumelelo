@@ -26,7 +26,7 @@ export default function TestApiPage() {
       const response = await cancellationService.create({
         subscription_id: '123e4567-e89b-12d3-a456-426614174000',
         downsell_variant: 'A',
-        reason: 'Test cancellation',
+        reason: 'Too expensive',
         has_job: true
       })
       setResult(JSON.stringify(response, null, 2))
