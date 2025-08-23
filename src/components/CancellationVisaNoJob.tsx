@@ -13,6 +13,7 @@ interface Props {
   onSetStep: (step: Step) => void;
   totalSteps: number;
   id: string;
+  canGoBack?: boolean;
   onBack?: () => void;
 }
 
@@ -22,6 +23,7 @@ const CancellationVisaNoJob = ({
   totalSteps,
   step,
   id,
+  canGoBack,
   onBack,
 }: Props) => {
   const {
@@ -50,6 +52,7 @@ const CancellationVisaNoJob = ({
         onClose={onClose}
         totalSteps={totalSteps}
         onSetStep={onSetStep}
+        canGoBack={canGoBack}
         onBack={onBack}
         completed
       >
@@ -66,6 +69,7 @@ const CancellationVisaNoJob = ({
       onSetStep={onSetStep}
       step={step}
       totalSteps={totalSteps}
+      canGoBack={canGoBack}
       onBack={onBack}
       completed
     >

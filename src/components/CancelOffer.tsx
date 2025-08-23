@@ -14,6 +14,7 @@ interface Props {
   setStep: (step: Step) => void;
   variant: DownsellVariant;
   totalSteps: number;
+  canGoBack?: boolean;
   onBack?: () => void;
 }
 const CancelOffer = ({
@@ -23,6 +24,7 @@ const CancelOffer = ({
   step,
   variant,
   totalSteps,
+  canGoBack,
   onBack,
 }: Props) => {
   const [submitting, setSubmitting] = useState(false);
@@ -108,6 +110,7 @@ const CancelOffer = ({
       onSetStep={setStep}
       onClose={onClose}
       step={step}
+      canGoBack={canGoBack}
       onBack={onBack}
     >
       {/* handle error globally */}

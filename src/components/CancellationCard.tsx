@@ -13,6 +13,7 @@ interface Props {
   totalSteps: number;
   hideNavigation?: boolean;
   completed?: boolean;
+  canGoBack?: boolean;
   onBack?: () => void;
 }
 
@@ -26,6 +27,7 @@ const CancellationCard = ({
   totalSteps,
   hideNavigation = false,
   completed = false,
+  canGoBack = false,
   onBack,
 }: Props) => {
   return (
@@ -48,7 +50,7 @@ const CancellationCard = ({
         </svg>
       </button>
 
-      {!hideNavigation && step.num > 0 && onBack && (
+      {!hideNavigation && canGoBack && onBack && (
         <button
           onClick={onBack}
           className="absolute top-[12px] flex left-[12px] sm:top-[18px] sm:left-[20px] z-10"

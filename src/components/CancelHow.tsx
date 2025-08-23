@@ -11,10 +11,11 @@ interface Props {
   step: Step;
   totalSteps: number;
   id: string;
+  canGoBack?: boolean;
   onBack?: () => void;
 }
 
-const CancelHow = ({ onClose, setStep, step, totalSteps, id, onBack }: Props) => {
+const CancelHow = ({ onClose, setStep, step, totalSteps, id, canGoBack, onBack }: Props) => {
   const [text, setText] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -70,6 +71,7 @@ const CancelHow = ({ onClose, setStep, step, totalSteps, id, onBack }: Props) =>
       onSetStep={setStep}
       step={step}
       totalSteps={totalSteps}
+      canGoBack={canGoBack}
       onBack={onBack}
     >
       <div className="w-full space-y-5">

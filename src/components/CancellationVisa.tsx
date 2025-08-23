@@ -13,6 +13,7 @@ interface Props {
   onSetStep: (step: Step) => void;
   totalSteps: number;
   id: string;
+  canGoBack?: boolean;
   onBack?: () => void;
 }
 
@@ -22,6 +23,7 @@ const CancellationVisa = ({
   totalSteps,
   step,
   id,
+  canGoBack,
   onBack,
 }: Props) => {
   const {
@@ -50,6 +52,7 @@ const CancellationVisa = ({
         onClose={onClose}
         totalSteps={totalSteps}
         onSetStep={onSetStep}
+        canGoBack={canGoBack}
         onBack={onBack}
       >
         <div className="w-full flex justify-center items-center h-80">
@@ -65,6 +68,7 @@ const CancellationVisa = ({
       onClose={onClose}
       totalSteps={totalSteps}
       onSetStep={onSetStep}
+      canGoBack={canGoBack}
       onBack={onBack}
     >
       <div className="w-full space-y-5">

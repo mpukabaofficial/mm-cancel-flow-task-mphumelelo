@@ -18,6 +18,7 @@ interface Props {
   id: string;
   variant: DownsellVariant;
   subscriptionAmount: number;
+  canGoBack?: boolean;
   onBack?: () => void;
 }
 
@@ -29,6 +30,7 @@ const NoJobQuestionnaire = ({
   id,
   variant,
   subscriptionAmount,
+  canGoBack,
   onBack,
 }: Props) => {
   const { allAnswered, answers, error, handleSubmit, loading, setAnswers } =
@@ -78,6 +80,7 @@ const NoJobQuestionnaire = ({
       step={step}
       onSetStep={onSetStep}
       onClose={onClose}
+      canGoBack={canGoBack}
       onBack={onBack}
     >
       <div className="w-full space-y-5">

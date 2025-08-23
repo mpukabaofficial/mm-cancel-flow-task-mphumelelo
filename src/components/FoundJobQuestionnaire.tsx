@@ -14,6 +14,7 @@ interface Props {
   step: Step;
   setStep: (step: Step) => void;
   totalSteps: number;
+  canGoBack?: boolean;
   onBack?: () => void;
 }
 // TODO: Handle set step after submission.
@@ -24,6 +25,7 @@ const FoundJobQuestionnaire = ({
   setStep,
   step,
   totalSteps,
+  canGoBack,
   onBack,
 }: Props) => {
   const { error, handleSubmit, loading, allAnswered, answers, setAnswers } =
@@ -46,6 +48,7 @@ const FoundJobQuestionnaire = ({
       step={step}
       onSetStep={setStep}
       onClose={onClose}
+      canGoBack={canGoBack}
       onBack={onBack}
     >
       <div className="w-full space-y-5">

@@ -15,6 +15,7 @@ interface Props {
   step: Step;
   setStep: (step: Step) => void;
   totalSteps: number;
+  canGoBack?: boolean;
   onBack?: () => void;
 }
 
@@ -24,6 +25,7 @@ const CancelReasonStep = ({
   step,
   setStep,
   totalSteps,
+  canGoBack,
   onBack,
 }: Props) => {
   const [selected, setSelected] = useState<"yes" | "no" | null>(null);
@@ -96,6 +98,7 @@ const CancelReasonStep = ({
       onSetStep={setStep}
       onClose={onClose}
       step={step}
+      canGoBack={canGoBack}
       onBack={onBack}
     >
       <div className="order-2 md:order-1 space-y-5 w-full">
