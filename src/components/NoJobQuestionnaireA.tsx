@@ -5,6 +5,7 @@ import HorizontalLine from "./ui/HorizontalLine";
 import Questionnaire from "./Questionnaire";
 import useQuestionnaire from "@/hooks/useQuestionnaire";
 import ErrorMessage from "./ErrorMessage";
+import QuestionnaireSkeleton from "./QuestionnaireSkeleton";
 
 interface Props {
   onClose: () => void;
@@ -23,9 +24,21 @@ const NoJobQuestionnaireA = ({
 }: Props) => {
   const { allAnswered, answers, error, handleSubmit, loading, setAnswers } =
     useQuestionnaire(id);
-  console.log(loading); // TODO: handle universal loading component
+  
   console.log("questions no job questionnaire a: ");
   console.log(step);
+
+  if (loading) {
+    return (
+      <QuestionnaireSkeleton
+        totalSteps={totalSteps}
+        step={step}
+        onSetStep={onSetStep}
+        onClose={onClose}
+      />
+    );
+  }
+
   return (
     <CancellationCard
       totalSteps={totalSteps}

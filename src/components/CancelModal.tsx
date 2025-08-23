@@ -13,6 +13,7 @@ import CancelReasonStep from "./CancelReasonStep";
 import CancelReasons from "./CancelReasons";
 import FoundJobQuestionnaire from "./FoundJobQuestionnaire";
 import NoJobQuestionnaireA from "./NoJobQuestionnaireA";
+import CancelModalSkeleton from "./CancelModalSkeleton";
 
 interface CancelModalProps {
   isOpen: boolean;
@@ -106,10 +107,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
   if (loading || !variant || !cancellationId) {
     return (
       <div className="bg-black/30 fixed inset-0 flex items-center justify-center p-2 sm:p-4 z-50">
-        <div className="bg-white rounded-lg p-8 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-6 w-6 border-2 border-gray-300 border-t-blue-600"></div>
-          <span className="ml-3">Loading...</span>
-        </div>
+        <CancelModalSkeleton />
       </div>
     );
   }

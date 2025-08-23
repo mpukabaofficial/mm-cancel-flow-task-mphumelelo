@@ -6,6 +6,7 @@ import Button from "./ui/Button";
 import HorizontalLine from "./ui/HorizontalLine";
 import Questionnaire from "./Questionnaire";
 import ErrorMessage from "./ErrorMessage";
+import QuestionnaireSkeleton from "./QuestionnaireSkeleton";
 
 interface Props {
   onClose: () => void;
@@ -28,17 +29,12 @@ const FoundJobQuestionnaire = ({
 
   if (loading) {
     return (
-      <CancellationCard
+      <QuestionnaireSkeleton
         totalSteps={totalSteps}
         step={step}
         onSetStep={setStep}
         onClose={onClose}
-      >
-        <div className="w-full flex items-center justify-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-2 border-gray-300 border-t-gray-900"></div>
-          <span className="ml-3 text-gray-600">Loading questionnaire...</span>
-        </div>
-      </CancellationCard>
+      />
     );
   }
 
