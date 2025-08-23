@@ -6,6 +6,7 @@ import HorizontalLine from "./ui/HorizontalLine";
 import Questionnaire from "./Questionnaire";
 import ErrorMessage from "./ErrorMessage";
 import QuestionnaireSkeleton from "./QuestionnaireSkeleton";
+import { Skeleton, SkeletonText, SkeletonButton } from "./ui/Skeleton";
 
 interface Props {
   id: string;
@@ -23,7 +24,24 @@ const FoundJobQuestionnaire = ({
     useQuestionnaire(id);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-full space-y-5">
+        <Skeleton className="h-8 w-64" />
+        <div className="space-y-6">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <div key={i} className="space-y-3">
+              <Skeleton className="h-6 w-5/6" />
+              <div className="space-y-2">
+                <Skeleton className="h-10 w-full rounded-lg" />
+                <Skeleton className="h-10 w-full rounded-lg" />
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="border-t border-gray-200" />
+        <SkeletonButton />
+      </div>
+    );
   }
 
   return (

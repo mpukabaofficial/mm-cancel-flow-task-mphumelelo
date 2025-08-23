@@ -99,8 +99,10 @@ const CancellationCard = ({
             priority
           />
         </div>
-        {/* Content */}
-        {children}
+        <div className="w-full space-y-5">
+          {/* Content */}
+          {children}
+        </div>
       </div>
     </div>
   );

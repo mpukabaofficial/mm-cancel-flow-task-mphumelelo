@@ -20,8 +20,8 @@ import CancellationVisaNoJob from "./CancellationVisaNoJob";
 import FoundJobQuestionnaire from "./FoundJobQuestionnaire";
 import JobCancelComplete from "./JobCancelComplete";
 import NoJobQuestionnaire from "./NoJobQuestionnaire";
-import { useCancellation } from "@/context/CancellationContext";
 import CancellationCard from "./CancellationCard";
+import { useUser } from "@/contexts/UserContext";
 
 interface CancelModalProps {
   isOpen: boolean;
@@ -30,7 +30,7 @@ interface CancelModalProps {
 
 export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
   const isNavigatingHome = useRef(false);
-  const { cancellationId } = useCancellation();
+  const { cancellationId } = useUser();
   const id = cancellationId || "";
 
   const {
@@ -120,9 +120,35 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
 
   // Show loading while variant is being assigned
   if (loading || !variant || !cancellationId) {
+    // Determine skeleton variant based on current step
+    let skeletonVariant: "loading" | "questionnaire" | "form" | "completion" =
+      "loading";
+
+    if (currentStep.num === 0) {
+      skeletonVariant = "form"; // Initial job decision step
+    } else if (
+      currentStep.option === "job-found" ||
+      currentStep.option === "reasons" ||
+      currentStep.num === 1
+    ) {
+      skeletonVariant = "questionnaire";
+    } else if (
+      currentStep.option === "cancel-complete" ||
+      currentStep.option === "job-cancel-complete" ||
+      currentStep.option === "get-visa-help"
+    ) {
+      skeletonVariant = "completion";
+    } else if (currentStep.num >= 2) {
+      skeletonVariant = "form";
+    }
+
     return (
       <div className="bg-black/30 fixed inset-0 flex items-center justify-center p-2 sm:p-4 z-50">
-        <CancelModalSkeleton />
+        <CancelModalSkeleton
+          variant={skeletonVariant}
+          showStepIndicator={currentStep.num > 0}
+          showBackButton={canGoBack && currentStep.num > 0}
+        />
       </div>
     );
   }
@@ -130,10 +156,11 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
   const totalSteps = getTotalSteps(currentStep, variant);
 
   // Check if we're on a completion step
-  const isCompleted = currentStep.option === "cancel-complete" || 
-                     currentStep.option === "job-cancel-complete" || 
-                     currentStep.option === "get-visa-help" ||
-                     currentStep.num > totalSteps;
+  const isCompleted =
+    currentStep.option === "cancel-complete" ||
+    currentStep.option === "job-cancel-complete" ||
+    currentStep.option === "get-visa-help" ||
+    currentStep.num > totalSteps;
 
   console.log("[CancelModal.tsx] Navigation path:", getNavigationPath());
   console.log("[CancelModal.tsx] Current step:", currentStep);
@@ -289,15 +316,11 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
     );
   };
 
-  const renderVisaHelpComplete = () => (
-    <CancelCompleteHelp />
-  );
+  const renderVisaHelpComplete = () => <CancelCompleteHelp />;
 
   const renderStep4 = () => {
     if (currentStep.option === "job-cancel-complete") {
-      return (
-        <JobCancelComplete />
-      );
+      return <JobCancelComplete />;
     }
 
     if (currentStep.option === "get-visa-help") {
@@ -352,9 +375,7 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
           {error}
         </div>
       )}
-      <CancellationCard {...commonProps}>
-        <div className="w-full space-y-5">{renderStep()}</div>
-      </CancellationCard>
+      <CancellationCard {...commonProps}>{renderStep()}</CancellationCard>
     </div>
   );
 }

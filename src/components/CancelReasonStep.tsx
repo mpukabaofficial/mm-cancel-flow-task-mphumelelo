@@ -7,6 +7,7 @@ import { cancellationService } from "@/lib/api";
 import { Loader2Icon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Step } from "@/types/step";
+import { Skeleton, SkeletonText, SkeletonButton } from "./ui/Skeleton";
 
 interface Props {
   id: string;
@@ -102,6 +103,29 @@ const CancelReasonStep = ({
 
     loadCancellation();
   }, [user?.id, subscription?.id, userLoading]);
+
+  // Show skeleton while loading user data or cancellation data
+  if (loading || userLoading) {
+    return (
+      <div className="order-2 md:order-1 space-y-5 w-full">
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-8 w-64" />
+          </div>
+          <Skeleton className="h-8 w-80" />
+        </div>
+        <div className="w-full md:w-[469px]">
+          <SkeletonText lines={3} />
+        </div>
+        <div className="border-t border-gray-200" />
+        <div className="w-full space-y-4">
+          <SkeletonButton />
+          <SkeletonButton />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="order-2 md:order-1 space-y-5 w-full">

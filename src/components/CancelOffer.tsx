@@ -5,6 +5,7 @@ import { cancellationService, subscriptionService } from "@/lib/api";
 import { useUser } from "@/contexts/UserContext";
 import { DownsellVariant, calculateDownsellPrice } from "@/lib/variant";
 import { Step } from "@/types/step";
+import { Skeleton, SkeletonText, SkeletonButton } from "./ui/Skeleton";
 
 interface Props {
   id: string;
@@ -21,8 +22,9 @@ const CancelOffer = ({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isVariantA, setIsVariantA] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const { subscription, user, updateSubscriptionStatus } = useUser();
+  const { subscription, user, updateSubscriptionStatus, isLoading: userLoading } = useUser();
 
   // Check if this is variant A (skip downsell step)
   useEffect(() => {
@@ -35,7 +37,15 @@ const CancelOffer = ({
       }, 0);
       return () => clearTimeout(timer);
     }
+    setLoading(false);
   }, [variant, step, setStep]);
+
+  // Set loading to false when user data is loaded
+  useEffect(() => {
+    if (!userLoading && subscription) {
+      setLoading(false);
+    }
+  }, [userLoading, subscription]);
 
   const handleDownsellResponse = useCallback(
     async (accepted: boolean) => {
@@ -91,6 +101,29 @@ const CancelOffer = ({
     return null;
   }
 
+  // Show skeleton while loading
+  if (loading || userLoading || !subscription) {
+    return (
+      <div className="w-full space-y-5">
+        <div className="space-y-3">
+          <Skeleton className="h-8 w-4/5" />
+          <SkeletonText lines={1} />
+        </div>
+        <div className="p-3 border border-gray-200 bg-gray-50 rounded-xl space-y-4">
+          <Skeleton className="h-8 w-3/4 mx-auto" />
+          <div className="flex gap-[10px] items-end justify-center w-full">
+            <Skeleton className="h-8 w-20" />
+            <Skeleton className="h-6 w-16" />
+          </div>
+          <SkeletonButton className="bg-green-100" />
+          <Skeleton className="h-4 w-2/3 mx-auto" />
+        </div>
+        <div className="border-t border-gray-200" />
+        <SkeletonButton />
+      </div>
+    );
+  }
+
   // Calculate discounted price for display
   const originalPrice = subscription?.monthly_price || 25;
   const discountedPrice = calculateDownsellPrice(originalPrice);
@@ -101,7 +134,7 @@ const CancelOffer = ({
           We built this to help you land the job, this makes it a little easier.
         </h1>
         <p className="text-2xl tracking-[-1.2px] text-gray-warm-700">
-          We’ve been there and we’re here to help you.
+          We've been there and we're here to help you.
         </p>
         <div className="p-3 border border-Brand-Migrate-Mate bg-Brand-Background rounded-xl">
           <h2 className="text-[28px] mb-2 tracking-[-1.2px] text-center">

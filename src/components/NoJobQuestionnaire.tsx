@@ -5,6 +5,7 @@ import QuestionComponent from "./QuestionComponent";
 import useNoJobQuestionnaire from "@/hooks/useNoJobQuestionnaire";
 import ErrorMessage from "./ErrorMessage";
 import QuestionnaireSkeleton from "./QuestionnaireSkeleton";
+import { Skeleton, SkeletonText, SkeletonButton } from "./ui/Skeleton";
 import { DownsellVariant } from "@/lib/variant";
 import { cancellationService } from "@/lib/api";
 import { useState } from "react";
@@ -55,7 +56,28 @@ const NoJobQuestionnaire = ({
   console.log(step);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-full space-y-5">
+        <Skeleton className="h-8 w-4/5" />
+        <div className="space-y-9">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="space-y-2">
+              <Skeleton className="h-5 w-5/6" />
+              <div className="space-y-2">
+                <Skeleton className="h-10 w-full rounded-lg" />
+                <Skeleton className="h-10 w-full rounded-lg" />
+                <Skeleton className="h-10 w-4/5 rounded-lg" />
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="border-t border-gray-200" />
+        <div className="space-y-4">
+          <SkeletonButton className="bg-green-100" />
+          <SkeletonButton className="bg-red-100" />
+        </div>
+      </div>
+    );
   }
 
   return (

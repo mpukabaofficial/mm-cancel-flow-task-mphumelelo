@@ -1,95 +1,102 @@
-'use client'
+"use client";
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
-import { getUser, fetchUserSubscription } from '@/lib/user'
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
+import { getUser, fetchUserSubscription } from "@/lib/user";
 
 export interface User {
-  id: string
-  email: string
+  id: string;
+  email: string;
 }
 
 export interface Subscription {
-  id: string
-  user_id: string
-  monthly_price: number
-  status: 'active' | 'pending_cancellation' | 'cancelled'
-  created_at?: string
-  updated_at?: string
+  id: string;
+  user_id: string;
+  monthly_price: number;
+  status: "active" | "pending_cancellation" | "cancelled";
+  created_at?: string;
+  updated_at?: string;
 }
 
 interface UserContextType {
-  user: User | null
-  subscription: Subscription | null
-  isLoading: boolean
-  error: string | null
-  updateSubscriptionStatus: (status: Subscription['status']) => void
+  user: User | null;
+  subscription: Subscription | null;
+  isLoading: boolean;
+  error: string | null;
+  updateSubscriptionStatus: (status: Subscription["status"]) => void;
+  cancellationId: string | null;
+  setCancellationId: (cancellationId: string | null) => void;
 }
 
-const UserContext = createContext<UserContextType | undefined>(undefined)
+const UserContext = createContext<UserContextType | undefined>(undefined);
 
 interface UserProviderProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export function UserProvider({ children }: UserProviderProps) {
-  const [user, setUser] = useState<User | null>(null)
-  const [subscription, setSubscription] = useState<Subscription | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [user, setUser] = useState<User | null>(null);
+  const [subscription, setSubscription] = useState<Subscription | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [cancellationId, setCancellationId] = useState<string | null>(null);
 
   useEffect(() => {
     const initializeUser = async () => {
       try {
-        setIsLoading(true)
-        setError(null)
-        
+        setIsLoading(true);
+        setError(null);
+
         // Get user
-        const user = getUser()
-        setUser(user)
-        
+        const user = getUser();
+        setUser(user);
+
         // Fetch user's subscription
-        const userSubscription = await fetchUserSubscription()
-        setSubscription(userSubscription)
+        const userSubscription = await fetchUserSubscription();
+        setSubscription(userSubscription);
       } catch (err) {
-        console.error('Failed to initialize user:', err)
-        setError('Failed to load user data')
+        console.error("Failed to initialize user:", err);
+        setError("Failed to load user data");
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
+    };
 
-    initializeUser()
-  }, [])
+    initializeUser();
+  }, []);
 
-  const updateSubscriptionStatus = (status: Subscription['status']) => {
+  const updateSubscriptionStatus = (status: Subscription["status"]) => {
     if (subscription) {
       setSubscription({
         ...subscription,
         status,
-        updated_at: new Date().toISOString()
-      })
+        updated_at: new Date().toISOString(),
+      });
     }
-  }
+  };
 
   const value: UserContextType = {
     user,
     subscription,
     isLoading,
     error,
-    updateSubscriptionStatus
-  }
+    updateSubscriptionStatus,
+    setCancellationId,
+    cancellationId,
+  };
 
-  return (
-    <UserContext.Provider value={value}>
-      {children}
-    </UserContext.Provider>
-  )
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 }
 
 export function useUser() {
-  const context = useContext(UserContext)
+  const context = useContext(UserContext);
   if (context === undefined) {
-    throw new Error('useUser must be used within a UserProvider')
+    throw new Error("useUser must be used within a UserProvider");
   }
-  return context
+  return context;
 }
