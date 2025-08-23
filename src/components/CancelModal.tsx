@@ -135,29 +135,30 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
 
   // Calculate total steps based on current flow state
   const getTotalSteps = () => {
-    // Step 0 is always the initial reason step
+    // Step 0 is not counted - only steps 1, 2, 3, 4... are shown in the indicator
+    // Return the number of steps excluding the initial step 0
 
-    // For job-found path: 0 → 1 (questionnaire) → 2 (how) → 3 (visa) → 4 (complete) = 5 steps
+    // For job-found path: 1 (questionnaire) → 2 (how) → 3 (visa) → 4 (complete) = 4 steps
     if (
       currentStep.option === "job-found" ||
       (currentStep.num >= 1 &&
         (currentStep.option === "withMM" || currentStep.option === "withoutMM"))
     ) {
-      return 5;
+      return 4;
     }
 
-    // For variant B downsell flow: 0 → 1 (downsell) → 2 (accepted/declined) → 3 (complete) = 4 steps
+    // For variant B downsell flow: 1 (downsell) → 2 (accepted/declined) → 3 (complete) = 3 steps
     if (variant === "B" && currentStep.option !== "job-found") {
-      return 4;
+      return 3;
     }
 
-    // For variant A direct flow: 0 → 1 (questionnaire) → 2 (reasons) → 3 (complete) = 4 steps
+    // For variant A direct flow: 1 (questionnaire) → 2 (reasons) → 3 (complete) = 3 steps
     if (variant === "A" && currentStep.option !== "job-found") {
-      return 4;
+      return 3;
     }
 
     // Default fallback
-    return 4;
+    return 3;
   };
 
   const totalSteps = getTotalSteps();
@@ -174,6 +175,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
     totalSteps,
     canGoBack,
     onBack: navigateBack,
+    resetNavigation,
   };
 
   const subscriptionProps = {

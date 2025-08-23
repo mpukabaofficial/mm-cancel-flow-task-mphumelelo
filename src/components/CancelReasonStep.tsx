@@ -17,6 +17,7 @@ interface Props {
   totalSteps: number;
   canGoBack?: boolean;
   onBack?: () => void;
+  resetNavigation?: (step?: Step) => void;
 }
 
 const CancelReasonStep = ({
@@ -27,8 +28,10 @@ const CancelReasonStep = ({
   totalSteps,
   canGoBack,
   onBack,
+  resetNavigation,
 }: Props) => {
   const [selected, setSelected] = useState<"yes" | "no" | null>(null);
+  const [previousJobStatus, setPreviousJobStatus] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,9 +46,25 @@ const CancelReasonStep = ({
       setError(null);
 
       try {
+        // Check if user is changing their previous decision
+        const isChangingDecision = previousJobStatus !== null && previousJobStatus !== hasFoundJob;
+        
+        if (isChangingDecision) {
+          // Reset all form data if user is changing their job status decision
+          await cancellationService.resetToBasic(id);
+          // Reset navigation stack to start fresh
+          if (resetNavigation) {
+            resetNavigation({ num: 0, option: "A" });
+          }
+        }
+
+        // Update with new job status
         await cancellationService.update(id, {
           has_job: hasFoundJob,
         });
+
+        // Update the previous job status tracker
+        setPreviousJobStatus(hasFoundJob);
 
         setStep({
           num: step.num + 1,
@@ -58,7 +77,7 @@ const CancelReasonStep = ({
         setSubmitting(false);
       }
     },
-    [id, subscription?.id, submitting, setStep, step]
+    [id, subscription?.id, submitting, setStep, step, previousJobStatus, resetNavigation]
   );
 
   useEffect(() => {
@@ -76,10 +95,13 @@ const CancelReasonStep = ({
 
         if (cancellation?.has_job === true) {
           setSelected("yes");
+          setPreviousJobStatus(true);
         } else if (cancellation?.has_job === false) {
           setSelected("no");
+          setPreviousJobStatus(false);
         } else {
           setSelected(null);
+          setPreviousJobStatus(null);
         }
       } catch (err) {
         console.error("Failed to load cancellation:", err);
