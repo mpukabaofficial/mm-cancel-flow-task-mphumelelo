@@ -129,9 +129,16 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
 
   const totalSteps = getTotalSteps(currentStep, variant);
 
+  // Check if we're on a completion step
+  const isCompleted = currentStep.option === "cancel-complete" || 
+                     currentStep.option === "job-cancel-complete" || 
+                     currentStep.option === "get-visa-help" ||
+                     currentStep.num > totalSteps;
+
   console.log("[CancelModal.tsx] Navigation path:", getNavigationPath());
   console.log("[CancelModal.tsx] Current step:", currentStep);
   console.log("[CancelModal.tsx] Can go back:", canGoBack);
+  console.log("[CancelModal.tsx] Is completed:", isCompleted);
 
   // Common props for all components
   const commonProps = {
@@ -142,6 +149,7 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
     canGoBack,
     onBack: navigateBack,
     resetNavigation,
+    completed: isCompleted,
   };
 
   // Step-specific rendering functions
