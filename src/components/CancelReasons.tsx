@@ -24,6 +24,7 @@ interface Props {
   variant: DownsellVariant;
   id: string;
   subscriptionAmount: number;
+  onBack?: () => void;
 }
 
 const CancelReasons = ({
@@ -34,6 +35,7 @@ const CancelReasons = ({
   variant,
   id,
   subscriptionAmount,
+  onBack,
 }: Props) => {
   const [selectedReason, setSelectedReason] = useState<ReasonChoices | null>(
     null
@@ -219,6 +221,7 @@ const CancelReasons = ({
       step={step}
       onSetStep={setStep}
       onClose={onClose}
+      onBack={onBack}
     >
       <div className="w-full space-y-5">
         <div>

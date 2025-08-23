@@ -14,6 +14,7 @@ interface Props {
   setStep: (step: Step) => void;
   variant: DownsellVariant;
   totalSteps: number;
+  onBack?: () => void;
 }
 const CancelOffer = ({
   onClose,
@@ -22,6 +23,7 @@ const CancelOffer = ({
   step,
   variant,
   totalSteps,
+  onBack,
 }: Props) => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -106,6 +108,7 @@ const CancelOffer = ({
       onSetStep={setStep}
       onClose={onClose}
       step={step}
+      onBack={onBack}
     >
       {/* handle error globally */}
       <div className="w-full space-y-5">

@@ -18,6 +18,7 @@ interface Props {
   id: string;
   variant: DownsellVariant;
   subscriptionAmount: number;
+  onBack?: () => void;
 }
 
 const NoJobQuestionnaire = ({
@@ -28,6 +29,7 @@ const NoJobQuestionnaire = ({
   id,
   variant,
   subscriptionAmount,
+  onBack,
 }: Props) => {
   const { allAnswered, answers, error, handleSubmit, loading, setAnswers } =
     useNoJobQuestionnaire(id);
@@ -76,6 +78,7 @@ const NoJobQuestionnaire = ({
       step={step}
       onSetStep={onSetStep}
       onClose={onClose}
+      onBack={onBack}
     >
       <div className="w-full space-y-5">
         <h1 className="text-large">

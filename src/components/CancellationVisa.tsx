@@ -13,6 +13,7 @@ interface Props {
   onSetStep: (step: Step) => void;
   totalSteps: number;
   id: string;
+  onBack?: () => void;
 }
 
 const CancellationVisa = ({
@@ -21,6 +22,7 @@ const CancellationVisa = ({
   totalSteps,
   step,
   id,
+  onBack,
 }: Props) => {
   const {
     selectedOption,
@@ -48,6 +50,7 @@ const CancellationVisa = ({
         onClose={onClose}
         totalSteps={totalSteps}
         onSetStep={onSetStep}
+        onBack={onBack}
       >
         <div className="w-full flex justify-center items-center h-80">
           <div className="text-normal">Loading...</div>
@@ -62,6 +65,7 @@ const CancellationVisa = ({
       onClose={onClose}
       totalSteps={totalSteps}
       onSetStep={onSetStep}
+      onBack={onBack}
     >
       <div className="w-full space-y-5">
         <div>

@@ -11,9 +11,10 @@ interface Props {
   step: Step;
   totalSteps: number;
   id: string;
+  onBack?: () => void;
 }
 
-const CancelHow = ({ onClose, setStep, step, totalSteps, id }: Props) => {
+const CancelHow = ({ onClose, setStep, step, totalSteps, id, onBack }: Props) => {
   const [text, setText] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -69,6 +70,7 @@ const CancelHow = ({ onClose, setStep, step, totalSteps, id }: Props) => {
       onSetStep={setStep}
       step={step}
       totalSteps={totalSteps}
+      onBack={onBack}
     >
       <div className="w-full space-y-5">
         <h1 className="text-large">

@@ -15,6 +15,7 @@ interface Props {
   step: Step;
   setStep: (step: Step) => void;
   totalSteps: number;
+  onBack?: () => void;
 }
 
 const CancelReasonStep = ({
@@ -23,6 +24,7 @@ const CancelReasonStep = ({
   step,
   setStep,
   totalSteps,
+  onBack,
 }: Props) => {
   const [selected, setSelected] = useState<"yes" | "no" | null>(null);
   const [loading, setLoading] = useState(false);
@@ -94,6 +96,7 @@ const CancelReasonStep = ({
       onSetStep={setStep}
       onClose={onClose}
       step={step}
+      onBack={onBack}
     >
       <div className="order-2 md:order-1 space-y-5 w-full">
         <div className="font-semibold space-y-4">
