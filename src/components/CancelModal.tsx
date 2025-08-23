@@ -13,6 +13,7 @@ import CancelModalSkeleton from "./CancelModalSkeleton";
 import CancelOffer from "./CancelOffer";
 import CancelReasonStep from "./CancelReasonStep";
 import CancelReasons from "./CancelReasons";
+import CancellationVisa from "./CancellationVisa";
 import FoundJobQuestionnaire from "./FoundJobQuestionnaire";
 import NoJobQuestionnaire from "./NoJobQuestionnaire";
 
@@ -196,9 +197,19 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
             setStep={setStep}
             onClose={handleClose}
             totalSteps={totalSteps}
+            id={cancellationId}
           />
         );
       } else if (step.option === "withoutMM") {
+        return (
+          <CancelHow
+            step={step}
+            setStep={setStep}
+            onClose={handleClose}
+            totalSteps={totalSteps}
+            id={cancellationId}
+          />
+        );
       }
       // has accepted downsell
       if (step.option === "A") {
@@ -254,6 +265,16 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
             setNavigatingHome={(value: boolean) => {
               isNavigatingHome.current = value;
             }}
+          />
+        );
+      } else if (step.option === "withMM") {
+        return (
+          <CancellationVisa
+            onClose={handleClose}
+            onSetStep={setStep}
+            step={step}
+            totalSteps={totalSteps}
+            id={cancellationId}
           />
         );
       } else {

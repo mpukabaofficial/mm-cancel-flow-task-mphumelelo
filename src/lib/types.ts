@@ -27,6 +27,8 @@ export interface Cancellation {
   roles_applied_count?: '0' | '1–5' | '6–20' | '20+'
   companies_emailed_count?: '0' | '1–5' | '6–20' | '20+'
   companies_interviewed_count?: '0' | '1–2' | '3–5' | '5+'
+  has_immigration_lawyer?: boolean
+  visa_type?: string
 }
 
 export interface CreateCancellationRequest {
@@ -46,4 +48,6 @@ export interface UpdateCancellationRequest {
   roles_applied_count?: '0' | '1–5' | '6–20' | '20+'
   companies_emailed_count?: '0' | '1–5' | '6–20' | '20+'
   companies_interviewed_count?: '0' | '1–2' | '3–5' | '5+'
+  has_immigration_lawyer?: boolean
+  visa_type?: string
 }

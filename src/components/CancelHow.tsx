@@ -2,20 +2,65 @@ import { Step } from "@/types/step";
 import CancellationCard from "./CancellationCard";
 import Button from "./ui/Button";
 import HorizontalLine from "./ui/HorizontalLine";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { cancellationService } from "@/lib/api";
 
 interface Props {
   onClose: () => void;
   setStep: (step: Step) => void;
   step: Step;
   totalSteps: number;
+  id: string;
 }
 
-const CancelHow = ({ onClose, setStep, step, totalSteps }: Props) => {
+const CancelHow = ({ onClose, setStep, step, totalSteps, id }: Props) => {
   const [text, setText] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  function handleSubmit() {
-    console.log("submitted");
+  // Load existing explanation on mount
+  useEffect(() => {
+    const loadExistingData = async () => {
+      try {
+        setLoading(true);
+        const cancellation = await cancellationService.getById(id);
+        if (cancellation.explanation) {
+          setText(cancellation.explanation);
+        }
+      } catch (err) {
+        console.error("Failed to load existing data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      loadExistingData();
+    } else {
+      setLoading(false);
+    }
+  }, [id]);
+
+  async function handleSubmit() {
+    if (text.length < 25 || submitting) return;
+
+    setSubmitting(true);
+    setError(null);
+
+    try {
+      await cancellationService.update(id, {
+        explanation: text,
+      });
+
+      // Move to next step after successful save
+      setStep({ ...step, num: step.num + 1 });
+    } catch (err) {
+      console.error("Failed to save feedback:", err);
+      setError("Failed to save your feedback. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -37,16 +82,21 @@ const CancelHow = ({ onClose, setStep, step, totalSteps }: Props) => {
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            className="rounded-lg w-full border p-3 outline-none font-normal tracking-[-0.6px] min-h-[150px] resize-none"
+            disabled={loading}
+            className="rounded-lg w-full border p-3 outline-none font-normal tracking-[-0.6px] min-h-[150px] resize-none disabled:opacity-50 disabled:cursor-not-allowed"
           />
           <span className="absolute bottom-2 right-3 text-xs font-normal text-gray-warm-700 tracking-[-0.6px]">
             Min 25 characters ({text.length}/25)
           </span>
         </div>
         <HorizontalLine />
-        <Button disabled={text.length < 25} onClick={handleSubmit}>
-          Continue
+        <Button
+          disabled={text.length < 25 || submitting || loading}
+          onClick={handleSubmit}
+        >
+          {submitting ? "Saving..." : "Continue"}
         </Button>
+        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
       </div>
     </CancellationCard>
   );

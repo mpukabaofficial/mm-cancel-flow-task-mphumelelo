@@ -1,13 +1,13 @@
+import { cancellationService } from "@/lib/api";
 import { DownsellVariant } from "@/lib/variant";
 import { Step } from "@/types/step";
+import { useEffect, useState } from "react";
 import CancellationCard from "./CancellationCard";
 import ErrorMessage from "./ErrorMessage";
-import Button from "./ui/Button";
-import CheckedIcon from "./ui/CheckedIcon";
-import HorizontalLine from "./ui/HorizontalLine";
-import { useState, useEffect } from "react";
 import FollowUp from "./FollowUp";
-import { cancellationService } from "@/lib/api";
+import OptionItem from "./OptionItem";
+import Button from "./ui/Button";
+import HorizontalLine from "./ui/HorizontalLine";
 
 type ReasonChoices =
   | "Too expensive"
@@ -15,24 +15,6 @@ type ReasonChoices =
   | "Not enough relevant jobs"
   | "Decided not to move"
   | "Other";
-
-const OptionItem = ({
-  checked,
-  text,
-  onClick,
-}: {
-  checked: boolean;
-  text: string;
-  onClick?: () => void;
-}) => (
-  <div
-    className={`flex gap-3 items-center ${onClick ? "cursor-pointer" : ""}`}
-    onClick={onClick}
-  >
-    <CheckedIcon checked={checked} />
-    <span className="text-normal">{text}</span>
-  </div>
-);
 
 interface Props {
   totalSteps: number;
@@ -73,13 +55,13 @@ const CancelReasons = ({
         const cancellation = await cancellationService.getById(id);
         if (cancellation.reason) {
           setSelectedReason(cancellation.reason);
-          
+
           // Populate existing explanation data
           if (cancellation.explanation) {
             switch (cancellation.reason) {
               case "Too expensive":
                 // Extract price from explanation (format: "$25")
-                const price = cancellation.explanation.replace('$', '');
+                const price = cancellation.explanation.replace("$", "");
                 setMaxPrice(price);
                 break;
               case "Platform not helpful":
@@ -417,8 +399,8 @@ const CancelReasons = ({
         <HorizontalLine />
         <div className="space-y-4">
           {variant === "B" && (
-            <Button 
-              variant="green" 
+            <Button
+              variant="green"
               onClick={handleDownsellAccept}
               disabled={loading}
             >

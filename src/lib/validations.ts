@@ -36,7 +36,9 @@ export const updateCancellationSchema = z.object({
   found_job_with_migratemate: z.enum(['Yes', 'No']).optional(),
   roles_applied_count: z.enum(["0", "1–5", "6–20", "20+"]).optional(),
   companies_emailed_count: z.enum(["0", "1–5", "6–20", "20+"]).optional(),
-  companies_interviewed_count: z.enum(["0", "1–2", "3–5", "5+"]).optional()
+  companies_interviewed_count: z.enum(["0", "1–2", "3–5", "5+"]).optional(),
+  has_immigration_lawyer: z.boolean().optional(),
+  visa_type: z.string().min(1, 'Visa type cannot be empty').max(100, 'Visa type must be 100 characters or less').optional()
 }).strict()
 
 export const updateSubscriptionSchema = z.object({
