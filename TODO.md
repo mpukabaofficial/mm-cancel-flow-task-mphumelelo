@@ -1,4 +1,4 @@
 - fix the screen change issues
 - fix the step 1 UI got ruined
 - update the smaller screen sizes issue.
--
+- make sure you update the subscription status. to show that it is cancelled but active.

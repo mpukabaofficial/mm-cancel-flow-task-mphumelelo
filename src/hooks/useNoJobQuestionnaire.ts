@@ -16,12 +16,18 @@ const useNoJobQuestionnaire = (id: string) => {
         setLoading(true);
         const data = await cancellationService.getById(id);
         
-        // Set existing answers if they exist
-        setAnswers([
-          data.roles_applied_count || null,
-          data.companies_emailed_count || null, 
-          data.companies_interviewed_count || null,
-        ]);
+        // Prepopulate answers only if they exist
+        if (
+          data.roles_applied_count ||
+          data.companies_emailed_count ||
+          data.companies_interviewed_count
+        ) {
+          setAnswers([
+            data.roles_applied_count || null,
+            data.companies_emailed_count || null, 
+            data.companies_interviewed_count || null,
+          ]);
+        }
       } catch (err) {
         console.error("Error fetching questionnaire data:", err);
         setError("Failed to load questionnaire data");

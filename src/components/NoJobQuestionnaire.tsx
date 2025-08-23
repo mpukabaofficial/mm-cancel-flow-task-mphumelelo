@@ -15,7 +15,7 @@ interface Props {
   id: string;
 }
 
-const NoJobQuestionnaireA = ({
+const NoJobQuestionnaire = ({
   onClose,
   onSetStep,
   step,
@@ -24,7 +24,7 @@ const NoJobQuestionnaireA = ({
 }: Props) => {
   const { allAnswered, answers, error, handleSubmit, loading, setAnswers } =
     useNoJobQuestionnaire(id);
-  
+
   console.log("questions no job questionnaire a: ");
   console.log(step);
 
@@ -73,8 +73,8 @@ const NoJobQuestionnaireA = ({
             question={
               <>
                 How many companies did you{" "}
-                <span className="underline underline-offset-2">email</span> through
-                MigrateMate?*
+                <span className="underline underline-offset-2">email</span>{" "}
+                through MigrateMate?*
               </>
             }
             options={["0", "1–5", "6–20", "20+"]}
@@ -90,7 +90,9 @@ const NoJobQuestionnaireA = ({
             question={
               <>
                 How many companies{" "}
-                <span className="underline underline-offset-2">interviewed</span>{" "}
+                <span className="underline underline-offset-2">
+                  interviewed
+                </span>{" "}
                 you through MigrateMate leads?*
               </>
             }
@@ -122,4 +124,4 @@ const NoJobQuestionnaireA = ({
   );
 };
 
-export default NoJobQuestionnaireA;
+export default NoJobQuestionnaire;

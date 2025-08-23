@@ -12,7 +12,7 @@ import CancelOffer from "./CancelOffer";
 import CancelReasonStep from "./CancelReasonStep";
 import CancelReasons from "./CancelReasons";
 import FoundJobQuestionnaire from "./FoundJobQuestionnaire";
-import NoJobQuestionnaireA from "./NoJobQuestionnaireA";
+import NoJobQuestionnaire from "./NoJobQuestionnaire";
 import CancelModalSkeleton from "./CancelModalSkeleton";
 
 interface CancelModalProps {
@@ -42,7 +42,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
         console.error("Error resetting cancellation:", error);
       }
     }
-    
+
     // Reset local state
     isNavigatingHome.current = false;
     onClose();
@@ -170,7 +170,7 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
         } else {
           // no downsell and questionnaire
           return (
-            <NoJobQuestionnaireA
+            <NoJobQuestionnaire
               step={step}
               onSetStep={setStep}
               onClose={handleClose}
@@ -194,7 +194,9 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
             onClose={handleClose}
             totalSteps={totalSteps}
             subscription={subscription}
-            setNavigatingHome={(value: boolean) => { isNavigatingHome.current = value; }}
+            setNavigatingHome={(value: boolean) => {
+              isNavigatingHome.current = value;
+            }}
           />
         );
       } else {
@@ -214,13 +216,15 @@ export default function CancelModal({ isOpen, onClose, id }: CancelModalProps) {
     if (step.num === 3) {
       if (step.option === "cancel-complete") {
         return (
-          <CancelComplete 
+          <CancelComplete
             step={step}
             onClose={handleClose}
             totalSteps={totalSteps}
             setStep={setStep}
             subscription={subscription}
-            setNavigatingHome={(value: boolean) => { isNavigatingHome.current = value; }}
+            setNavigatingHome={(value: boolean) => {
+              isNavigatingHome.current = value;
+            }}
           />
         );
       }
