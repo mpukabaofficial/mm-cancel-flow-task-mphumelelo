@@ -1,28 +1,11 @@
-import CancellationCard from "./CancellationCard";
 import { Skeleton, SkeletonText, SkeletonButton } from "./ui/Skeleton";
 import { Step } from "@/types/step";
 
-interface Props {
-  totalSteps: number;
-  step: Step;
-  onSetStep: (step: Step) => void;
-  onClose: () => void;
-}
+interface Props {}
 
-const QuestionnaireSkeleton = ({
-  totalSteps,
-  step,
-  onSetStep,
-  onClose,
-}: Props) => {
+const QuestionnaireSkeleton = ({}: Props) => {
   return (
-    <CancellationCard
-      totalSteps={totalSteps}
-      step={step}
-      onSetStep={onSetStep}
-      onClose={onClose}
-    >
-      <div className="w-full space-y-5">
+    <div className="w-full space-y-5">
         {/* Title skeleton */}
         <div className="space-y-2">
           <Skeleton className="h-8 w-3/4" />
@@ -48,8 +31,7 @@ const QuestionnaireSkeleton = ({
 
         {/* Button skeleton */}
         <SkeletonButton />
-      </div>
-    </CancellationCard>
+    </div>
   );
 };
 

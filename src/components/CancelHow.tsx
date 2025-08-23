@@ -1,21 +1,16 @@
 import { Step } from "@/types/step";
-import CancellationCard from "./CancellationCard";
 import Button from "./ui/Button";
 import HorizontalLine from "./ui/HorizontalLine";
 import { useState, useEffect } from "react";
 import { cancellationService } from "@/lib/api";
 
 interface Props {
-  onClose: () => void;
   setStep: (step: Step) => void;
   step: Step;
-  totalSteps: number;
   id: string;
-  canGoBack?: boolean;
-  onBack?: () => void;
 }
 
-const CancelHow = ({ onClose, setStep, step, totalSteps, id, canGoBack, onBack }: Props) => {
+const CancelHow = ({ setStep, step, id }: Props) => {
   const [text, setText] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -66,15 +61,7 @@ const CancelHow = ({ onClose, setStep, step, totalSteps, id, canGoBack, onBack }
   }
 
   return (
-    <CancellationCard
-      onClose={onClose}
-      onSetStep={setStep}
-      step={step}
-      totalSteps={totalSteps}
-      canGoBack={canGoBack}
-      onBack={onBack}
-    >
-      <div className="w-full space-y-5">
+    <div className="w-full space-y-5">
         <h1 className="text-large">
           What’s one thing you wish we could’ve helped you with?
         </h1>
@@ -102,7 +89,6 @@ const CancelHow = ({ onClose, setStep, step, totalSteps, id, canGoBack, onBack }
         </Button>
         {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
       </div>
-    </CancellationCard>
   );
 };
 

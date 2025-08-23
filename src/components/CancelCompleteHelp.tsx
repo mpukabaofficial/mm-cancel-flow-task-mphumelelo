@@ -1,27 +1,14 @@
 import React from "react";
-import CancellationCard from "./CancellationCard";
 import Image from "next/image";
 import Button from "./ui/Button";
 import HorizontalLine from "./ui/HorizontalLine";
 import { Step } from "@/types/step";
 
-interface Props {
-  onClose: () => void;
-  step: Step;
-  setStep: (step: Step) => void;
-  totalSteps: number;
-}
+interface Props {}
 
-const CancelCompleteHelp = ({ onClose, setStep, step, totalSteps }: Props) => {
+const CancelCompleteHelp = ({}: Props) => {
   return (
-    <CancellationCard
-      onClose={onClose}
-      onSetStep={setStep}
-      step={step}
-      totalSteps={totalSteps}
-      completed
-    >
-      <div className="w-full space-y-5">
+    <div className="w-full space-y-5">
         <h1 className="text-large">
           Your cancellation’s all sorted, mate, no more charges.
         </h1>
@@ -52,8 +39,7 @@ const CancelCompleteHelp = ({ onClose, setStep, step, totalSteps }: Props) => {
         </div>
         <HorizontalLine />
         <Button variant="primary">Finish</Button>
-      </div>
-    </CancellationCard>
+    </div>
   );
 };
 

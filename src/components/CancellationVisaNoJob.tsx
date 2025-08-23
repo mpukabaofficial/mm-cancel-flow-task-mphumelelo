@@ -1,5 +1,4 @@
 import { Step } from "@/types/step";
-import CancellationCard from "./CancellationCard";
 import OptionItem from "./OptionItem";
 import Button from "./ui/Button";
 import HorizontalLine from "./ui/HorizontalLine";
@@ -8,23 +7,15 @@ import FollowUp from "./FollowUp";
 import { useVisaForm } from "@/hooks/useVisaForm";
 
 interface Props {
-  onClose: () => void;
   step: Step;
   onSetStep: (step: Step) => void;
-  totalSteps: number;
   id: string;
-  canGoBack?: boolean;
-  onBack?: () => void;
 }
 
 const CancellationVisaNoJob = ({
-  onClose,
   onSetStep,
-  totalSteps,
   step,
   id,
-  canGoBack,
-  onBack,
 }: Props) => {
   const {
     selectedOption,
@@ -47,33 +38,14 @@ const CancellationVisaNoJob = ({
 
   if (initialLoading) {
     return (
-      <CancellationCard
-        step={step}
-        onClose={onClose}
-        totalSteps={totalSteps}
-        onSetStep={onSetStep}
-        canGoBack={canGoBack}
-        onBack={onBack}
-        completed
-      >
-        <div className="w-full flex justify-center items-center h-80">
-          <div className="text-normal">Loading...</div>
-        </div>
-      </CancellationCard>
+      <div className="w-full flex justify-center items-center h-80">
+        <div className="text-normal">Loading...</div>
+      </div>
     );
   }
 
   return (
-    <CancellationCard
-      onClose={onClose}
-      onSetStep={onSetStep}
-      step={step}
-      totalSteps={totalSteps}
-      canGoBack={canGoBack}
-      onBack={onBack}
-      completed
-    >
-      <div className="w-full space-y-5">
+    <div className="w-full space-y-5">
         <div className="space-y-3">
           <h1 className="text-large">
             You landed the job! <br />
@@ -169,8 +141,7 @@ const CancellationVisaNoJob = ({
         >
           {loading ? "Saving..." : "Complete cancellation"}
         </Button>
-      </div>
-    </CancellationCard>
+    </div>
   );
 };
 

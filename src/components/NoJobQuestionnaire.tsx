@@ -1,5 +1,4 @@
 import { Step } from "@/types/step";
-import CancellationCard from "./CancellationCard";
 import Button from "./ui/Button";
 import HorizontalLine from "./ui/HorizontalLine";
 import QuestionComponent from "./QuestionComponent";
@@ -11,27 +10,19 @@ import { cancellationService } from "@/lib/api";
 import { useState } from "react";
 
 interface Props {
-  onClose: () => void;
   step: Step;
   onSetStep: (step: Step) => void;
-  totalSteps: number;
   id: string;
   variant: DownsellVariant;
   subscriptionAmount: number;
-  canGoBack?: boolean;
-  onBack?: () => void;
 }
 
 const NoJobQuestionnaire = ({
-  onClose,
   onSetStep,
   step,
-  totalSteps,
   id,
   variant,
   subscriptionAmount,
-  canGoBack,
-  onBack,
 }: Props) => {
   const { allAnswered, answers, error, handleSubmit, loading, setAnswers } =
     useNoJobQuestionnaire(id);
@@ -64,26 +55,11 @@ const NoJobQuestionnaire = ({
   console.log(step);
 
   if (loading) {
-    return (
-      <QuestionnaireSkeleton
-        totalSteps={totalSteps}
-        step={step}
-        onSetStep={onSetStep}
-        onClose={onClose}
-      />
-    );
+    return <div>Loading...</div>;
   }
 
   return (
-    <CancellationCard
-      totalSteps={totalSteps}
-      step={step}
-      onSetStep={onSetStep}
-      onClose={onClose}
-      canGoBack={canGoBack}
-      onBack={onBack}
-    >
-      <div className="w-full space-y-5">
+    <div className="w-full space-y-5">
         <h1 className="text-large">
           Help us understand how you were using Migrate Mate.
         </h1>
@@ -171,7 +147,6 @@ const NoJobQuestionnaire = ({
           </Button>
         </div>
       </div>
-    </CancellationCard>
   );
 };
 

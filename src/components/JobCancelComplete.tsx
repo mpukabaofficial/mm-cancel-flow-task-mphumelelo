@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from "react";
-import CancellationCard from "./CancellationCard";
 import Button from "./ui/Button";
 import HorizontalLine from "./ui/HorizontalLine";
 import { Step } from "@/types/step";
 import { subscriptionService } from "@/lib/api";
 import { useUser } from "@/contexts/UserContext";
 
-interface Props {
-  onClose: () => void;
-  step: Step;
-  setStep: (step: Step) => void;
-  totalSteps: number;
-}
+interface Props {}
 
-const JobCancelComplete = ({ onClose, setStep, step, totalSteps }: Props) => {
+const JobCancelComplete = ({}: Props) => {
   const [subscriptionCancelled, setSubscriptionCancelled] = useState(false);
   const { subscription } = useUser();
 
@@ -36,14 +30,7 @@ const JobCancelComplete = ({ onClose, setStep, step, totalSteps }: Props) => {
     cancelSubscription();
   }, [subscription?.id, subscriptionCancelled]);
   return (
-    <CancellationCard
-      onClose={onClose}
-      onSetStep={setStep}
-      step={step}
-      totalSteps={totalSteps}
-      completed
-    >
-      <div className="w-full space-y-5">
+    <div className="w-full space-y-5">
         <h1 className="text-large">
           All done, your cancellation’s been processed.
         </h1>
@@ -53,8 +40,7 @@ const JobCancelComplete = ({ onClose, setStep, step, totalSteps }: Props) => {
         </p>
         <HorizontalLine />
         <Button variant="primary">Finish</Button>
-      </div>
-    </CancellationCard>
+    </div>
   );
 };
 

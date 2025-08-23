@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import CancellationCard from "./CancellationCard";
 import Button from "./ui/Button";
 import HorizontalLine from "./ui/HorizontalLine";
 import { cancellationService, subscriptionService } from "@/lib/api";
@@ -8,24 +7,16 @@ import { DownsellVariant, calculateDownsellPrice } from "@/lib/variant";
 import { Step } from "@/types/step";
 
 interface Props {
-  onClose: () => void;
   id: string;
   step: Step;
   setStep: (step: Step) => void;
   variant: DownsellVariant;
-  totalSteps: number;
-  canGoBack?: boolean;
-  onBack?: () => void;
 }
 const CancelOffer = ({
-  onClose,
   id,
   setStep,
   step,
   variant,
-  totalSteps,
-  canGoBack,
-  onBack,
 }: Props) => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -105,16 +96,7 @@ const CancelOffer = ({
   const discountedPrice = calculateDownsellPrice(originalPrice);
 
   return (
-    <CancellationCard
-      totalSteps={totalSteps}
-      onSetStep={setStep}
-      onClose={onClose}
-      step={step}
-      canGoBack={canGoBack}
-      onBack={onBack}
-    >
-      {/* handle error globally */}
-      <div className="w-full space-y-5">
+    <div className="w-full space-y-5">
         <h1 className="text-large">
           We built this to help you land the job, this makes it a little easier.
         </h1>
@@ -154,9 +136,8 @@ const CancelOffer = ({
         >
           No thanks
         </Button>
+        {error && <p className="text-red-500">{error}</p>}
       </div>
-      {error && <p className="text-red-500">{error}</p>}
-    </CancellationCard>
   );
 };
 

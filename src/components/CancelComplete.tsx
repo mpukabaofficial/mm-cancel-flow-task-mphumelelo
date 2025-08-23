@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import CancellationCard from "./CancellationCard";
 import HorizontalLine from "./ui/HorizontalLine";
 import Button from "./ui/Button";
 import { Subscription } from "@/contexts/UserContext";
@@ -9,18 +8,12 @@ import { subscriptionService } from "@/lib/api";
 
 interface Props {
   onClose: () => void;
-  step: Step;
-  setStep: (step: Step) => void;
-  totalSteps: number;
   subscription: Subscription | null;
   setNavigatingHome?: (value: boolean) => void;
 }
 
 const CancelComplete = ({
   onClose,
-  setStep,
-  step,
-  totalSteps,
   subscription,
   setNavigatingHome,
 }: Props) => {
@@ -77,14 +70,7 @@ const CancelComplete = ({
   const { handleGoHome } = useNavigateApp();
 
   return (
-    <CancellationCard
-      step={step}
-      onClose={onClose}
-      totalSteps={totalSteps}
-      onSetStep={setStep}
-      completed={true}
-    >
-      <div className="w-full space-y-5">
+    <div className="w-full space-y-5">
         <div className="space-y-2">
           <div>
             <p className="text-large mb-5">Sorry to see you go, mate.</p>
@@ -107,9 +93,8 @@ const CancelComplete = ({
         <HorizontalLine />
         <Button onClick={() => handleGoHome(onClose, setNavigatingHome)} variant="primary">
           Back to Jobs
-        </Button>{" "}
+        </Button>
       </div>
-    </CancellationCard>
   );
 };
 

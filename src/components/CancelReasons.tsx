@@ -23,15 +23,10 @@ interface Props {
 }
 
 const CancelReasons = ({
-  totalSteps,
-  step,
-  onClose,
   setStep,
   variant,
   id,
   subscriptionAmount,
-  canGoBack,
-  onBack,
 }: Props) => {
   const [selectedReason, setSelectedReason] = useState<ReasonChoices | null>(
     null
@@ -212,15 +207,7 @@ const CancelReasons = ({
   };
 
   return (
-    <CancellationCard
-      totalSteps={totalSteps}
-      step={step}
-      onSetStep={setStep}
-      onClose={onClose}
-      canGoBack={canGoBack}
-      onBack={onBack}
-    >
-      <div className="w-full space-y-5">
+    <div className="w-full space-y-5">
         <div>
           <h1 className="text-large">
             What’s the main <br />
@@ -419,7 +406,6 @@ const CancelReasons = ({
           </Button>
         </div>
       </div>
-    </CancellationCard>
   );
 };
 

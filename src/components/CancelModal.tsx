@@ -144,36 +144,46 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
     resetNavigation,
   };
 
-  const subscriptionProps = {
-    subscription,
-    subscriptionAmount: subscription?.monthly_price || 25,
-  };
-
   // Step-specific rendering functions
   const renderInitialStep = () => (
-    <CancelReasonStep {...commonProps} id={cancellationId} />
+    <CancelReasonStep
+      id={cancellationId}
+      setStep={navigateToStep}
+      resetNavigation={resetNavigation}
+    />
   );
 
   const renderStep1 = () => {
     if (currentStep.option === "job-found") {
-      return <FoundJobQuestionnaire {...commonProps} id={cancellationId} />;
+      return (
+        <FoundJobQuestionnaire
+          id={cancellationId}
+          step={currentStep}
+          setStep={navigateToStep}
+        />
+      );
     }
 
     // Variant B: Show downsell offer
     if (variant === "B") {
       return (
-        <CancelOffer {...commonProps} id={cancellationId} variant={variant} />
+        <CancelOffer
+          id={cancellationId}
+          step={currentStep}
+          setStep={navigateToStep}
+          variant={variant}
+        />
       );
     }
 
     // Variant A: Direct to questionnaire
     return (
       <NoJobQuestionnaire
-        {...commonProps}
+        step={currentStep}
         onSetStep={navigateToStep}
         id={id}
         variant={variant}
-        {...subscriptionProps}
+        subscriptionAmount={subscription?.monthly_price || 25}
       />
     );
   };
@@ -181,14 +191,20 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
   const renderStep2 = () => {
     // Job flow: How did we help
     if (currentStep.option === "withMM" || currentStep.option === "withoutMM") {
-      return <CancelHow {...commonProps} id={cancellationId} />;
+      return (
+        <CancelHow
+          id={cancellationId}
+          step={currentStep}
+          setStep={navigateToStep}
+        />
+      );
     }
 
     // Downsell accepted
     if (currentStep.option === "A") {
       return (
         <AcceptedDownsell
-          {...commonProps}
+          onClose={handleClose}
           subscription={subscription}
           setNavigatingHome={(value: boolean) => {
             isNavigatingHome.current = value;
@@ -201,10 +217,10 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
     if (variant === "A") {
       return (
         <CancelReasons
-          {...commonProps}
+          setStep={navigateToStep}
           variant={variant}
           id={cancellationId}
-          {...subscriptionProps}
+          subscriptionAmount={subscription?.monthly_price || 25}
         />
       );
     }
@@ -212,11 +228,11 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
     // Variant B fallback
     return (
       <NoJobQuestionnaire
-        {...commonProps}
+        step={currentStep}
         onSetStep={navigateToStep}
         id={id}
         variant={variant}
-        {...subscriptionProps}
+        subscriptionAmount={subscription?.monthly_price || 25}
       />
     );
   };
@@ -225,7 +241,7 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
     if (currentStep.option === "cancel-complete") {
       return (
         <CancelComplete
-          {...commonProps}
+          onClose={handleClose}
           subscription={subscription}
           setNavigatingHome={(value: boolean) => {
             isNavigatingHome.current = value;
@@ -237,10 +253,8 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
     if (currentStep.option === "withMM") {
       return (
         <CancellationVisa
-          onClose={handleClose}
           onSetStep={navigateToStep}
           step={currentStep}
-          totalSteps={totalSteps}
           id={cancellationId}
         />
       );
@@ -249,10 +263,8 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
     if (currentStep.option === "withoutMM") {
       return (
         <CancellationVisaNoJob
-          onClose={handleClose}
           onSetStep={navigateToStep}
           step={currentStep}
-          totalSteps={totalSteps}
           id={cancellationId}
         />
       );
@@ -261,32 +273,22 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
     // Default: CancelReasons
     return (
       <CancelReasons
-        {...commonProps}
+        setStep={navigateToStep}
         variant={variant}
         id={cancellationId}
-        {...subscriptionProps}
+        subscriptionAmount={subscription?.monthly_price || 25}
       />
     );
   };
 
   const renderVisaHelpComplete = () => (
-    <CancelCompleteHelp
-      onClose={handleClose}
-      setStep={navigateToStep}
-      step={currentStep}
-      totalSteps={totalSteps}
-    />
+    <CancelCompleteHelp />
   );
 
   const renderStep4 = () => {
     if (currentStep.option === "job-cancel-complete") {
       return (
-        <JobCancelComplete
-          onClose={handleClose}
-          setStep={navigateToStep}
-          step={currentStep}
-          totalSteps={totalSteps}
-        />
+        <JobCancelComplete />
       );
     }
 
@@ -297,7 +299,7 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
     // Default: CancelComplete
     return (
       <CancelComplete
-        {...commonProps}
+        onClose={handleClose}
         subscription={subscription}
         setNavigatingHome={(value: boolean) => {
           isNavigatingHome.current = value;
@@ -322,7 +324,7 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
       default:
         return (
           <CancelComplete
-            {...commonProps}
+            onClose={handleClose}
             subscription={subscription}
             setNavigatingHome={(value: boolean) => {
               isNavigatingHome.current = value;

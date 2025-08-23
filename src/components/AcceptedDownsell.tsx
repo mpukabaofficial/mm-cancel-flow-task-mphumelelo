@@ -1,7 +1,6 @@
 "use client";
 
 import { Step } from "@/types/step";
-import CancellationCard from "./CancellationCard";
 import Button from "./ui/Button";
 import HorizontalLine from "./ui/HorizontalLine";
 import { useNavigateApp } from "@/hooks/useNavigateApp";
@@ -9,18 +8,12 @@ import { Subscription } from "@/contexts/UserContext";
 
 interface Props {
   onClose: () => void;
-  step: Step;
-  setStep: (step: Step) => void;
-  totalSteps: number;
   subscription?: Subscription | null;
   setNavigatingHome?: (value: boolean) => void;
 }
 
 const AcceptedDownsell = ({
   onClose,
-  setStep,
-  step,
-  totalSteps,
   subscription,
   setNavigatingHome,
 }: Props) => {
@@ -67,14 +60,7 @@ const AcceptedDownsell = ({
 
   const { daysLeft, nextBillingDate } = calculateBillingDates();
   return (
-    <CancellationCard
-      totalSteps={totalSteps}
-      step={step}
-      onSetStep={setStep}
-      onClose={onClose}
-      hideNavigation={true}
-    >
-      <div className="w-full space-y-5 ">
+    <div className="w-full space-y-5 ">
         <div className="text-large ">
           <p className="mb-5">Great choice, mate!</p>
           <p className="tracking-[-2.9px] ">
@@ -100,7 +86,6 @@ const AcceptedDownsell = ({
           Land your dream role
         </Button>
       </div>
-    </CancellationCard>
   );
 };
 
