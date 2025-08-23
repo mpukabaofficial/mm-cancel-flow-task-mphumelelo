@@ -10,15 +10,27 @@ export const subscriptionStatusSchema = z.enum(['active', 'pending_cancellation'
   message: 'Invalid subscription status'
 })
 
+export const cancelReasonSchema = z.enum([
+  'Too expensive', 
+  'Platform not helpful', 
+  'Not enough relevant jobs', 
+  'Decided not to move', 
+  'Other'
+], {
+  message: 'Invalid cancellation reason'
+})
+
 export const createCancellationSchema = z.object({
   subscription_id: z.uuid('Invalid subscription ID format'),
   downsell_variant: downsellVariantSchema,
-  reason: z.string().max(500, 'Reason must be 500 characters or less').optional(),
+  reason: cancelReasonSchema.optional(),
+  explanation: z.string().max(1000, 'Explanation must be 1000 characters or less').optional(),
   has_job: z.boolean().optional()
 }).strict()
 
 export const updateCancellationSchema = z.object({
-  reason: z.string().max(500, 'Reason must be 500 characters or less').optional(),
+  reason: cancelReasonSchema.optional(),
+  explanation: z.string().max(1000, 'Explanation must be 1000 characters or less').optional(),
   accepted_downsell: z.boolean().optional(),
   has_job: z.boolean().optional(),
   found_job_with_migratemate: z.enum(['Yes', 'No']).optional(),

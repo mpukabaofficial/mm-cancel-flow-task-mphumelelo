@@ -18,7 +18,8 @@ export interface Cancellation {
   user_id: string
   subscription_id: string
   downsell_variant: 'A' | 'B'
-  reason?: string
+  reason?: 'Too expensive' | 'Platform not helpful' | 'Not enough relevant jobs' | 'Decided not to move' | 'Other'
+  explanation?: string
   accepted_downsell: boolean
   has_job?: boolean
   created_at: string
@@ -31,13 +32,15 @@ export interface Cancellation {
 export interface CreateCancellationRequest {
   subscription_id: string
   downsell_variant: 'A' | 'B'
-  reason?: string
+  reason?: 'Too expensive' | 'Platform not helpful' | 'Not enough relevant jobs' | 'Decided not to move' | 'Other'
+  explanation?: string
   has_job?: boolean
 }
 
 export interface UpdateCancellationRequest {
   accepted_downsell?: boolean
-  reason?: string
+  reason?: 'Too expensive' | 'Platform not helpful' | 'Not enough relevant jobs' | 'Decided not to move' | 'Other'
+  explanation?: string
   has_job?: boolean
   found_job_with_migratemate?: 'Yes' | 'No'
   roles_applied_count?: '0' | '1–5' | '6–20' | '20+'

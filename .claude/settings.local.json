@@ -23,7 +23,8 @@
       "Bash(powershell:*)",
       "Bash(supabase status:*)",
       "Bash(node:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(start http://localhost:3002)"
     ],
     "deny": [],
     "ask": []
