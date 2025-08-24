@@ -51,10 +51,24 @@ const CancelReasonStep = ({ setStep, resetNavigation }: Props) => {
           }
         }
 
-        // Update with new job status
-        await cancellationService.update(id, {
-          has_job: hasFoundJob,
-        });
+        // Check if user has previously accepted a downsell offer
+        const updateData: { has_job: boolean; downsell_variant?: 'A' | 'B' } = { has_job: hasFoundJob };
+        
+        if (!hasFoundJob && user?.id && subscription?.id) {
+          // User selected "no job" - check if they've used downsell before
+          const hasUsedDownsell = await cancellationService.hasUsedDownsell(
+            subscription.id,
+            user.id
+          );
+          
+          if (hasUsedDownsell) {
+            // User has previously accepted downsell, set them to variant A
+            updateData.downsell_variant = 'A';
+          }
+        }
+
+        // Update with new job status and potentially new variant
+        await cancellationService.update(id, updateData);
 
         // Update the previous job status tracker
         setPreviousJobStatus(hasFoundJob);
@@ -77,6 +91,7 @@ const CancelReasonStep = ({ setStep, resetNavigation }: Props) => {
       id,
       setStep,
       resetNavigation,
+      user?.id,
     ]
   );
 
@@ -128,7 +143,7 @@ const CancelReasonStep = ({ setStep, resetNavigation }: Props) => {
           Have you found a job yet?
         </p>
       </div>
-      <p className="text-gray-warm-700 text-base tracking-tighter w-full md:w-[469px]">
+      <p className="text-gray-warm-700 text-sm md:text-base tracking-tighter w-full md:w-[469px]">
         Whatever your answer, we just want to help you take the next step. With
         visa support, or by hearing how we can do better.
       </p>

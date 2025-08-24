@@ -10,7 +10,20 @@ interface Props {
 }
 
 const CancellationVisaNoJob = ({ onSetStep, step }: Props) => {
-  const { loading, initialLoading, isFormValid, handleSubmit } = useVisaForm({
+  const { 
+    loading, 
+    initialLoading, 
+    isFormValid, 
+    handleSubmit,
+    selectedOption,
+    setSelectedOption,
+    visaType,
+    setVisaType,
+    showError,
+    showFollowUpError,
+    setShowFollowUpError,
+    handleOptionSelect
+  } = useVisaForm({
     step,
     setStep: onSetStep,
   });
@@ -38,7 +51,19 @@ const CancellationVisaNoJob = ({ onSetStep, step }: Props) => {
       <p className="tracking-[-0.8px]">
         Is your company providing an immigration lawyer to help with your visa?
       </p>
-      <VisaQuestions step={step} onSetStep={onSetStep} />
+      <VisaQuestions 
+        step={step} 
+        onSetStep={onSetStep}
+        selectedOption={selectedOption}
+        setSelectedOption={setSelectedOption}
+        visaType={visaType}
+        setVisaType={setVisaType}
+        showError={showError}
+        showFollowUpError={showFollowUpError}
+        setShowFollowUpError={setShowFollowUpError}
+        initialLoading={initialLoading}
+        handleOptionSelect={handleOptionSelect}
+      />
       <HorizontalLine />
       <Button
         disabled={!isFormValid() || loading || initialLoading}

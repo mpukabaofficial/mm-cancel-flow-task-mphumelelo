@@ -19,6 +19,7 @@ interface Props {
   onBack?: () => void;
   isLoading?: boolean;
   skeletonVariant?: "loading" | "questionnaire" | "form" | "completion";
+  showImage?: boolean | "mobile-hidden";
 }
 
 const CancellationCard = ({
@@ -35,6 +36,7 @@ const CancellationCard = ({
   onBack,
   isLoading = false,
   skeletonVariant = "loading",
+  showImage = true,
 }: Props) => {
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
@@ -103,17 +105,12 @@ const CancellationCard = ({
       ref={containerRef}
       className="w-full sm:max-w-[1000px] h-[90vh] sm:max-h-[90vh] sm:h-fit overflow-y-auto 
                  fixed bottom-0 left-0 sm:relative sm:bottom-auto sm:left-auto
-                 rounded-t-[20px] sm:rounded-[20px] bg-white font-semibold text-gray-warm-800"
+                 rounded-t-2xl sm:rounded-[20px] bg-white font-semibold text-gray-warm-800"
       style={dragStyle}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Mobile drag handle - only visible on small screens */}
-      <div className="sm:hidden w-full flex justify-center pt-3 pb-2">
-        <div className="w-8 h-1 bg-gray-warm-300 rounded-full"></div>
-      </div>
-
       <button
         onClick={handleClose}
         className="absolute top-[12px] right-[12px] sm:top-[18px] sm:right-[20px] z-10"
@@ -132,18 +129,23 @@ const CancellationCard = ({
         </svg>
       </button>
 
-      {!hideNavigation && canGoBack && onBack && (
+      {!hideNavigation && canGoBack && onBack && step.option !== "A" && 
+       step.option !== "cancel-complete" && 
+       step.option !== "job-cancel-complete" && 
+       step.option !== "get-visa-help" && (
         <button
           onClick={onBack}
-          className="absolute top-[12px] flex left-[12px] sm:top-[18px] sm:left-[20px] z-10"
+          className="absolute hidden sm:flex sm:left-[12px] left-[16px] top-[18px]  z-10"
         >
           <ChevronLeft />
           <span className="text-gray-warm-700">Back</span>
         </button>
       )}
-      <div className="h-[50px] sm:h-[60px] flex justify-center items-center gap-4 border-gray-warm-300 border-b px-2">
-        <p className="text-xs sm:text-sm">Subscription Cancellation</p>
-        {!hideNavigation && step.num > 0 && (
+      <div className="h-[60px] flex flex-col sm:flex-row sm:justify-center justify-center sm:items-center sm:gap-4 border-gray-warm-300 border-b px-4">
+        <p className="text-sm sm:text-base">
+          {step.option === "A" && step.num > 0 ? "Subscription Continued" : "Subscription Cancellation"}
+        </p>
+        {!hideNavigation && step.num > 0 && step.option !== "A" && (
           <div>
             <StepIndicator
               currentStep={step.num}
@@ -155,32 +157,55 @@ const CancellationCard = ({
       </div>
       {/* main */}
       <div className="flex-1 overflow-y-auto">
-        <div className="p-3 sm:p-5 flex flex-col md:flex-row gap-3 sm:gap-5">
-        {/* Image on top for mobile, right side for desktop */}
-        <div className="order-first md:order-2 h-[100px] sm:h-[122px] md:h-auto w-full md:w-[400px] relative flex-shrink-0 self-stretch">
-          <Image
-            src="/empire-state-compressed.jpg"
-            alt="New York skyline"
-            className="rounded-lg object-cover"
-            fill
-            sizes="(max-width: 768px) 100vw, 400px"
-            priority
-          />
-        </div>
+        <div
+          className={`p-3 sm:p-5 flex flex-col ${
+            showImage ? "sm:flex-row" : ""
+          } gap-3 sm:gap-5`}
+        >
+          {/* Back button - first on mobile, hidden on desktop */}
+          {!hideNavigation && canGoBack && onBack && step.option !== "A" && 
+           step.option !== "cancel-complete" && 
+           step.option !== "job-cancel-complete" && 
+           step.option !== "get-visa-help" && (
+            <div className="order-first sm:hidden">
+              <button onClick={onBack} className="flex items-center gap-1 mb-3">
+                <ChevronLeft />
+                <span className="text-gray-warm-700">Back</span>
+              </button>
+            </div>
+          )}
 
-        {/* Show skeleton content if loading, otherwise show children */}
-        {isLoading ? (
-          <div className="w-full animate-pulse order-last md:order-1">
-            <CancelModalSkeleton
-              variant={skeletonVariant}
-              showStepIndicator={step.num > 0}
-              showBackButton={canGoBack && step.num > 0}
-              isContentOnly={true}
-            />
-          </div>
-        ) : (
-          <div className="w-full animate-fade-in order-last md:order-1">{children}</div>
-        )}
+          {/* Image - second on mobile, right side on desktop - conditional */}
+          {(showImage === true || showImage === "mobile-hidden") && (
+            <div className={`order-2 sm:order-2 h-[122px] sm:h-auto w-full sm:w-[400px] relative flex-shrink-0 self-stretch ${
+              showImage === "mobile-hidden" ? "hidden sm:block" : ""
+            }`}>
+              <Image
+                src="/empire-state-compressed.jpg"
+                alt="New York skyline"
+                className="rounded-lg object-cover"
+                fill
+                sizes="(max-width: 768px) 100vw, 400px"
+                priority
+              />
+            </div>
+          )}
+
+          {/* Content - third on mobile, left side on desktop */}
+          {isLoading ? (
+            <div className="w-full animate-pulse order-3 sm:order-1">
+              <CancelModalSkeleton
+                variant={skeletonVariant}
+                showStepIndicator={step.num > 0}
+                showBackButton={canGoBack && step.num > 0}
+                isContentOnly={true}
+              />
+            </div>
+          ) : (
+            <div className="w-full animate-fade-in order-3 sm:order-1">
+              {children}
+            </div>
+          )}
         </div>
       </div>
     </div>

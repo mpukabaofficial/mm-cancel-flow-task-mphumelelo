@@ -37,7 +37,7 @@ const CancellationVisa = ({ onSetStep, step }: Props) => {
   const safeHandleOptionSelect = handleOptionSelect || ((option: "Yes" | "No") => {
     setSelectedOption(option);
     // Reset errors when option is selected
-    if (showError && setSelectedOption) {
+    if (showError) {
       // We can't directly set showError to false here, but selecting an option should clear it
     }
   });

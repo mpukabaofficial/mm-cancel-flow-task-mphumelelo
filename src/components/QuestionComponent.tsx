@@ -15,7 +15,9 @@ const QuestionComponent = ({
   onSelect,
 }: QuestionComponentProps) => (
   <div className="space-y-4">
-    <div className="text-gray-warm-700 font-medium">{question}</div>
+    <div className="text-gray-warm-700 text-xs sm:text-base font-medium">
+      {question}
+    </div>
     <div className="flex gap-2 mb-4">
       {options.map((option) => {
         const isActive = selected === option;

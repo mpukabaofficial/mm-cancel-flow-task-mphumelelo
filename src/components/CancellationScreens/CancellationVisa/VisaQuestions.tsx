@@ -20,8 +20,8 @@ interface Props {
 }
 
 const VisaQuestions = ({ 
-  onSetStep, 
-  step,
+  onSetStep: _onSetStep, // eslint-disable-line @typescript-eslint/no-unused-vars
+  step: _step, // eslint-disable-line @typescript-eslint/no-unused-vars
   selectedOption,
   setSelectedOption,
   visaType,

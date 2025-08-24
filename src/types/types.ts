@@ -44,6 +44,7 @@ export interface CreateCancellationRequest {
 
 export interface UpdateCancellationRequest {
   accepted_downsell?: boolean
+  downsell_variant?: 'A' | 'B'
   reason?: 'Too expensive' | 'Platform not helpful' | 'Not enough relevant jobs' | 'Decided not to move' | 'Other'
   explanation?: string
   has_job?: boolean

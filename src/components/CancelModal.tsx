@@ -140,6 +140,33 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
   console.log("[CancelModal.tsx] Can go back:", canGoBack);
   console.log("[CancelModal.tsx] Is completed:", isCompleted);
 
+  // Determine which screens should show the image
+  const shouldShowImage = (): boolean | "mobile-hidden" => {
+    // Always show image on larger screens, conditional on smaller screens
+    // The conditional logic will be handled in the component with responsive classes
+    
+    // Hide for completion screens on mobile only
+    if (currentStep.option === "get-visa-help") return "mobile-hidden";
+    
+    // Hide image for CancelOffer screen (variant B, step 1, job-notfound) on mobile only
+    if (currentStep.num === 1 && currentStep.option === "job-notfound" && variant === "B") return "mobile-hidden";
+    
+    // Hide image for questionnaire screens on mobile only
+    if (currentStep.option === "job-found") return "mobile-hidden"; // FoundJobQuestionnaire
+    if (currentStep.option === "job-notfound" && variant === "A") return "mobile-hidden"; // NoJobQuestionnaire variant A
+    if (currentStep.num === 2 && (variant === "A" || variant === "B")) return "mobile-hidden"; // NoJobQuestionnaire step 2
+    
+    // Hide image for CancelReasons screen on mobile only
+    if (currentStep.option === "reasons") return "mobile-hidden"; // CancelReasons
+    if (currentStep.num === 3 && currentStep.option === "reasons") return "mobile-hidden"; // CancelReasons (step 3)
+    
+    // Show image by default
+    return true;
+  };
+
+  console.log("[CancelModal.tsx] Should show image:", shouldShowImage());
+  console.log("[CancelModal.tsx] Current step option:", currentStep.option);
+
   // Common props for all components
   const commonProps = {
     step: currentStep,
@@ -152,6 +179,7 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
     completed: isCompleted,
     isLoading: isModalLoading,
     skeletonVariant,
+    showImage: shouldShowImage(),
   };
 
   // Main step routing using StepRenderer

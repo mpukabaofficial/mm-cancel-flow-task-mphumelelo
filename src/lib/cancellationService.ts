@@ -67,6 +67,24 @@ export const cancellationService = {
   },
 
   /**
+   * Check if user has already used the downsell offer
+   */
+  hasUsedDownsell: async (
+    subscriptionId: string,
+    userId: string
+  ): Promise<boolean> => {
+    try {
+      const existingCancellations = await cancellationService.getAll(userId);
+      return existingCancellations.some(
+        (c) => c.subscription_id === subscriptionId && c.accepted_downsell === true
+      );
+    } catch (err) {
+      console.warn("Failed to check downsell usage:", err);
+      return false;
+    }
+  },
+
+  /**
    * Get or assign variant for a user's cancellation flow
    * Checks if user has existing cancellation, if so returns existing variant
    * If not, assigns new variant using secure RNG

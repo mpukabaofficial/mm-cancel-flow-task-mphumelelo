@@ -7,14 +7,15 @@ This is a fully functional Next.js application implementing a complete subscript
 ## What's Built
 
 ### ✅ Complete Cancellation Flow
-- **Multi-Step Modal Interface**: Dynamic step progression with A/B testing support
+- **Multi-Step Modal Interface**: Dynamic step progression with A/B testing support and responsive mobile design
 - **Advanced Reason Collection**: Structured cancellation reasons with follow-up explanations
 - **Interactive Reason Selection**: Dynamic UI that shows/hides options based on selection
 - **Follow-up Validation**: Minimum character requirements and price validation for detailed feedback
 - **Job Status Questionnaire**: Comprehensive 4-question survey for users who found jobs
 - **Visa Consultation System**: Immigration lawyer availability assessment and visa type collection
-- **Downsell Offers**: Variant-based downsell presentations (A/B testing ready)
-- **Step Navigation**: Forward/backward navigation with progress indicators
+- **Smart Downsell System**: $10 discount offers with double-dip prevention and automatic variant switching
+- **Responsive Navigation**: Conditional back button visibility and mobile-optimized step progression
+- **Mobile-First Design**: Swipe-to-close modal, responsive image handling, and mobile-optimized layouts
 
 ### ✅ Advanced Backend Infrastructure
 - **Simplified Database Schema**: Optimized `reason` + `explanation` structure for cancel reasons
@@ -31,15 +32,15 @@ This is a fully functional Next.js application implementing a complete subscript
 - **Shared Logic**: Custom useVisaForm hook for code reuse between visa components
 
 ### ✅ User Interface Components
-- **CancelModal**: Complete modal system with expert-level code organization and dynamic step calculation
+- **CancelModal**: Complete modal system with expert-level code organization and responsive image handling
 - **CancelReasons**: Advanced reason collection with dynamic follow-up questions and validation
 - **CancelReasonStep**: Initial reason selection with custom input option
 - **FoundJobQuestionnaire**: Multi-question survey with dynamic option selection
 - **CancellationVisa**: Immigration lawyer consultation with visa type input (job found path)
 - **CancellationVisaNoJob**: Visa consultation for non-MM job success with lawyer referral
 - **CancelHow**: Detailed feedback collection with database persistence
-- **CancelOffer**: Downsell presentation component
-- **CancellationCard**: Reusable card wrapper with step indicators
+- **CancelOffer**: Smart downsell presentation with usage tracking and prevention logic
+- **CancellationCard**: Responsive card wrapper with conditional back buttons and mobile navigation
 - **Profile Page**: Full user profile with subscription management
 
 ### ✅ Cancel Reasons System
@@ -65,6 +66,8 @@ This is a fully functional Next.js application implementing a complete subscript
 - **Visa Consultation Fields**: 2 additional columns for immigration lawyer assessment
   - `has_immigration_lawyer` (boolean): Whether company provides immigration lawyer
   - `visa_type` (text): Specific visa type user is applying for
+- **Smart Downsell Tracking**: Prevents double-dipping with `accepted_downsell` tracking and automatic variant switching
+- **Dynamic Variant Assignment**: Updates user variant to 'A' after downsell usage to skip future offers
 - **Security**: Row Level Security (RLS) policies with user-specific access controls
 - **Smart Constraints**: Database-level validation ensuring explanations meet minimum requirements
 
@@ -78,7 +81,9 @@ This is a fully functional Next.js application implementing a complete subscript
 - **Context Providers**: UserContext for global state management
 - **Custom Hooks**: `useCancellationFlow` for complex business logic, `useVisaForm` for shared visa functionality
 - **Component Hierarchy**: Modular design with prop drilling prevention and expert-level code organization
-- **State Management**: Optimistic updates with error recovery
+- **Responsive Design**: Mobile-first approach with conditional rendering and responsive image handling
+- **State Management**: Optimistic updates with error recovery and downsell usage tracking
+- **Smart Navigation**: Conditional back button visibility and mobile-optimized step progression
 - **Code Organization**: Refactored renderStep function with common props extraction and dedicated step renderers
 
 ## Technical Stack
@@ -161,23 +166,26 @@ The `.env.local` file contains local Supabase connection details:
    - Immigration lawyer availability assessment (Yes/No)
    - Visa type specification with validation
 
-7. **Downsell Offer** (`CancelOffer`) - Variant B Only
-   - Special pricing offer presentation
-   - Accept/decline downsell options
+7. **Smart Downsell Offer** (`CancelOffer`) - Variant B Only
+   - $10 discount offer presentation with dynamic pricing calculation
+   - Accept/decline downsell options with double-dip prevention
+   - Automatic variant switching to prevent repeated offers
 
 8. **Final Confirmation**
-   - Multiple completion paths based on user journey
-   - **JobCancelComplete**: For job-found users with visa sorted
-   - **CancelCompleteHelp**: For users needing visa assistance
-   - **CancelComplete**: Standard cancellation completion
+   - Multiple completion paths based on user journey with responsive design
+   - **JobCancelComplete**: For job-found users with visa sorted (no back button on mobile)
+   - **CancelCompleteHelp**: For users needing visa assistance (no back button on mobile)
+   - **CancelComplete**: Standard cancellation completion (no back button on mobile)
    - Complete cancellation processing with database reset functionality
 
 ### A/B Testing Implementation
 
 - **Variant A**: Initial Reason → Advanced Reason Collection/Job Questionnaire → Job Feedback → Visa Consultation → Final
 - **Variant B**: Initial Reason → Advanced Reason Collection/Job Questionnaire → Job Feedback → Visa Consultation → Downsell → Final
+- **Smart Variant Switching**: Users who accept downsell offers are automatically switched to Variant A for future cancellation attempts
 - Secure random assignment using `crypto.getRandomValues()`
 - Dynamic step calculation based on user path and variant assignment
+- Downsell usage tracking prevents users from seeing offers multiple times
 
 ## Database Schema
 
@@ -207,17 +215,18 @@ cancellations (
 ## Development Status
 
 ### ✅ Fully Completed
-- Complete multi-step cancellation flow with advanced reason collection
+- Complete multi-step cancellation flow with advanced reason collection and mobile responsiveness
 - Interactive cancel reasons UI with dynamic follow-ups and validation
 - Job questionnaire with backend integration and data persistence
 - Visa consultation system with immigration lawyer assessment and visa type collection
 - Job success feedback collection with database persistence and prefill functionality
+- Smart downsell system with $10 discount, double-dip prevention, and automatic variant switching
+- Responsive design with mobile-first approach, swipe-to-close modals, and conditional navigation
 - Expert-level code organization with refactored renderStep function and shared hooks
-- A/B testing variant assignment with secure randomization and dynamic step calculation
-- Simplified database schema with `reason` + `explanation` + visa fields structure
-- Enhanced API endpoints with proper enum validation and reset functionality
+- A/B testing variant assignment with secure randomization and smart variant switching
+- Enhanced API endpoints with downsell tracking and variant update capabilities
 - Comprehensive form validation (client + server + database)
-- Modal navigation system with step progression and proper state management
+- Modal navigation system with conditional back buttons and mobile-optimized layouts
 - Profile page with subscription management
 - Error handling, loading states, and user feedback
 

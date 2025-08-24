@@ -23,11 +23,11 @@
 }
 
 .text-large {
-  @apply text-4xl;
+  @apply text-2xl md:text-4xl;
   letter-spacing: -1.08px;
 }
 .text-normal {
-  @apply font-normal tracking-[-0.8px];
+  @apply font-normal text-sm sm:text-base tracking-[-0.8px];
 }
 
 .fine-print {

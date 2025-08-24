@@ -32,6 +32,7 @@ export const updateCancellationSchema = z.object({
   reason: cancelReasonSchema.optional(),
   explanation: z.string().max(1000, 'Explanation must be 1000 characters or less').optional(),
   accepted_downsell: z.boolean().optional(),
+  downsell_variant: z.enum(['A', 'B']).optional(),
   has_job: z.boolean().optional(),
   found_job_with_migratemate: z.enum(['Yes', 'No']).optional(),
   roles_applied_count: z.enum(["0", "1–5", "6–20", "20+"]).optional(),

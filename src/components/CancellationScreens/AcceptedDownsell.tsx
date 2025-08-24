@@ -60,9 +60,9 @@ const AcceptedDownsell = ({
   const { daysLeft, nextBillingDate } = calculateBillingDates();
   return (
     <div className="w-full space-y-5 ">
-      <div className="text-large ">
-        <p className="mb-5">Great choice, mate!</p>
-        <p className="tracking-[-2.9px] ">
+      <div className=" ">
+        <p className="mb-5 text-large">Great choice, mate!</p>
+        <p className="tracking-[-1.96px] text-[32px]">
           <span>You&apos;re still on the path to your dream role.</span>{" "}
           <span className="text-Brand-Migrate-Mate">
             Let’s make it happen together!

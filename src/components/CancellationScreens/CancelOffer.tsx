@@ -55,7 +55,7 @@ const CancelOffer = ({ setStep, step, variant }: Props) => {
       <h1 className="text-large">
         We built this to help you land the job, this makes it a little easier.
       </h1>
-      <p className="text-2xl tracking-[-1.2px] text-gray-warm-700">
+      <p className="text-2xl hidden sm:inline-block tracking-[-1.2px] text-gray-warm-700">
         We&apos;ve been there and we&apos;re here to help you.
       </p>
       <div className="p-3 border border-Brand-Migrate-Mate bg-Brand-Background rounded-xl">

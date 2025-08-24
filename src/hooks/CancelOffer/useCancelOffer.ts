@@ -41,8 +41,8 @@ const useCancelOffer = () => {
         });
 
         if (accepted) {
-          // User accepted the downsell offer
-          const newPrice = Math.floor(subscription.monthly_price * 0.5);
+          // User accepted the downsell offer - subtract $10 from current price
+          const newPrice = Math.max(0, (subscription.monthly_price - 10)) * 100; // Convert to cents
 
           await subscriptionService.acceptDownsell(subscription.id, newPrice);
 
