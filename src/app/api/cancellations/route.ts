@@ -82,11 +82,12 @@ export async function GET(request: NextRequest) {
 
     // Validate user_id if provided
     if (userId) {
-      const validation = validateRequestBody(uuidSchema, userId)
-      if (!validation.success) {
+      try {
+        uuidSchema.parse(userId)
+      } catch (error) {
         return NextResponse.json({ 
           error: 'Invalid user_id format', 
-          details: validation.error 
+          details: 'user_id must be a valid UUID' 
         }, { status: 400 })
       }
     }

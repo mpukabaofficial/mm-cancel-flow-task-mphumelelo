@@ -29,7 +29,7 @@ export async function validateRouteParams(
     };
   }
 
-  return { data: resolvedParams };
+  return { data: validation.data };
 }
 
 // Helper: Standardized error responses

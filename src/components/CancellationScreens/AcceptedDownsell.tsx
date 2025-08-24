@@ -74,7 +74,7 @@ const AcceptedDownsell = ({
           You&apos;ve got {daysLeft} days left on your current plan. Starting
           from {nextBillingDate}, your monthly payment will be $
           {subscription?.monthly_price
-            ? (subscription.monthly_price - 10).toFixed(2)
+            ? ((subscription.monthly_price - 1000) / 100).toFixed(2)
             : "15.00"}
           .
         </p>

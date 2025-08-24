@@ -59,7 +59,7 @@ export const userService = {
       return {
         id: subscription.id,
         user_id: subscription.user_id,
-        monthly_price: subscription.monthly_price / 100, // Convert cents to dollars
+        monthly_price: subscription.monthly_price, // Keep price in cents
         status: subscription.status,
         created_at: subscription.created_at,
         updated_at: subscription.updated_at,

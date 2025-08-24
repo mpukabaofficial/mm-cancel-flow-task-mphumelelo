@@ -7,14 +7,14 @@ import { useState } from "react";
 
 // Get subscription data for UI display
 const getSubscriptionData = (
-  subscription: { status?: string; monthly_price?: number } | null
+  subscription: { status?: string; monthly_price?: number; expires_at?: string } | null
 ) => ({
   status: subscription?.status || "active",
   isTrialSubscription: false,
   cancelAtPeriodEnd: false,
-  currentPeriodEnd: new Date(
+  currentPeriodEnd: subscription?.expires_at || new Date(
     Date.now() + 30 * 24 * 60 * 60 * 1000
-  ).toISOString(), // 30 days from now
+  ).toISOString(), // Use expires_at if available, otherwise 30 days from now
   monthlyPrice: subscription?.monthly_price || 25,
   isUCStudent: false,
   hasManagedAccess: false,
