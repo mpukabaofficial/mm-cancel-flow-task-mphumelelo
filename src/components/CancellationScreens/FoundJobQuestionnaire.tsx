@@ -1,7 +1,7 @@
 "use client";
 import useQuestionnaire from "@/hooks/useQuestionnaire";
 import { Step } from "@/types/step";
-import ErrorMessage from "../ErrorMessage";
+import ErrorMessage from "../ui/ErrorMessage";
 import Questionnaire from "../Questionnaire";
 import Button from "../ui/Button";
 import HorizontalLine from "../ui/HorizontalLine";

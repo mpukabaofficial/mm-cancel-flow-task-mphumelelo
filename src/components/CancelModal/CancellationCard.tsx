@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import { ReactNode } from "react";
-import StepIndicator from "./StepIndicator";
+import StepIndicator from "../StepIndicator";
 import { Step } from "@/types/step";
-import ChevronLeft from "./ui/icons/ChevronLeft";
+import ChevronLeft from "../ui/icons/ChevronLeft";
 
 interface Props {
   onClose: () => void;

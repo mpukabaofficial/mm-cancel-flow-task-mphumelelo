@@ -2,7 +2,7 @@ import { cancellationService } from "@/lib/api";
 import { DownsellVariant } from "@/lib/variant";
 import { Step } from "@/types/step";
 import { useEffect, useState } from "react";
-import ErrorMessage from "../ErrorMessage";
+import ErrorMessage from "../ui/ErrorMessage";
 import FollowUp from "../FollowUp";
 import OptionItem from "../OptionItem";
 import Button from "../ui/Button";

@@ -1,4 +1,4 @@
-import { Skeleton, SkeletonText, SkeletonButton } from "./ui/Skeleton";
+import { Skeleton, SkeletonText, SkeletonButton } from "../ui/Skeleton";
 
 const QuestionnaireSkeleton = () => {
   return (

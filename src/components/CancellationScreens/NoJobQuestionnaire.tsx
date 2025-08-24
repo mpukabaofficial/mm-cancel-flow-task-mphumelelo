@@ -4,7 +4,7 @@ import { cancellationService } from "@/lib/api";
 import { DownsellVariant } from "@/lib/variant";
 import { Step } from "@/types/step";
 import { useState } from "react";
-import ErrorMessage from "../ErrorMessage";
+import ErrorMessage from "../ui/ErrorMessage";
 import QuestionComponent from "../QuestionComponent";
 import Button from "../ui/Button";
 import HorizontalLine from "../ui/HorizontalLine";

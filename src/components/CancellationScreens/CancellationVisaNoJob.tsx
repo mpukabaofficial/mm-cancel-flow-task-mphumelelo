@@ -2,7 +2,7 @@ import { Step } from "@/types/step";
 import OptionItem from "../OptionItem";
 import Button from "../ui/Button";
 import HorizontalLine from "../ui/HorizontalLine";
-import ErrorMessage from "../ErrorMessage";
+import ErrorMessage from "../ui/ErrorMessage";
 import FollowUp from "../FollowUp";
 import { useVisaForm } from "@/hooks/useVisaForm";
 

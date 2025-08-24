@@ -8,9 +8,9 @@ import { cancellationService } from "@/lib/api";
 import { Step } from "@/types/step";
 import { getTotalSteps } from "@/utils/steps";
 import { useCallback, useEffect, useRef } from "react";
-import CancelModalSkeleton from "./CancelModalSkeleton";
-import CancellationCard from "../CancellationCard";
-import { StepRenderer } from "../CancelModal/steps/StepRenderer";
+import CancelModalSkeleton from "./CancellationScreens/CancelModalSkeleton";
+import CancellationCard from "./CancelModal/CancellationCard";
+import { StepRenderer } from "./CancelModal/steps/StepRenderer";
 
 interface CancelModalProps {
   isOpen: boolean;
