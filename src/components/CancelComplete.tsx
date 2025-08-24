@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
-import HorizontalLine from "./ui/HorizontalLine";
-import Button from "./ui/Button";
 import { Subscription } from "@/contexts/UserContext";
-import { Step } from "@/types/step";
 import { useNavigateApp } from "@/hooks/useNavigateApp";
 import { subscriptionService } from "@/lib/api";
+import { useEffect, useState } from "react";
+import Button from "./ui/Button";
+import HorizontalLine from "./ui/HorizontalLine";
 
 interface Props {
   onClose: () => void;
@@ -26,9 +25,9 @@ const CancelComplete = ({
         try {
           await subscriptionService.cancel(subscription.id);
           setSubscriptionCancelled(true);
-          console.log('Subscription cancelled successfully');
+          console.log("Subscription cancelled successfully");
         } catch (error) {
-          console.error('Failed to cancel subscription:', error);
+          console.error("Failed to cancel subscription:", error);
           // Still show completion UI even if API call fails
           setSubscriptionCancelled(true);
         }
@@ -71,30 +70,32 @@ const CancelComplete = ({
 
   return (
     <div className="w-full space-y-5">
-        <div className="space-y-2">
-          <div>
-            <p className="text-large mb-5">Sorry to see you go, mate.</p>
-            <p className="text-3xl tracking-[-0.9px]">
-              Thanks for being with us, and you’re always welcome back.
-            </p>
-          </div>
-          <div>
-            <p className="tracking-[-0.8px] mb-4">
-              Your subscription is set to end on {expirationDate}. <br />
-              You&apos;ll still have full access until then. No further charges
-              after that.
-            </p>
-            <p className="text-normal tracking-[-0.8px]">
-              Changed your mind? You can reactivate anytime before your end
-              date.
-            </p>
-          </div>
+      <div className="space-y-2">
+        <div>
+          <p className="text-large mb-5">Sorry to see you go, mate.</p>
+          <p className="text-3xl tracking-[-0.9px]">
+            Thanks for being with us, and you’re always welcome back.
+          </p>
         </div>
-        <HorizontalLine />
-        <Button onClick={() => handleGoHome(onClose, setNavigatingHome)} variant="primary">
-          Back to Jobs
-        </Button>
+        <div>
+          <p className="tracking-[-0.8px] mb-4">
+            Your subscription is set to end on {expirationDate}. <br />
+            You&apos;ll still have full access until then. No further charges
+            after that.
+          </p>
+          <p className="text-normal tracking-[-0.8px]">
+            Changed your mind? You can reactivate anytime before your end date.
+          </p>
+        </div>
       </div>
+      <HorizontalLine />
+      <Button
+        onClick={() => handleGoHome(onClose, setNavigatingHome)}
+        variant="primary"
+      >
+        Back to Jobs
+      </Button>
+    </div>
   );
 };
 

@@ -71,7 +71,14 @@ const CancelReasonStep = ({ setStep, resetNavigation }: Props) => {
         setSubmitting(false);
       }
     },
-    [subscription?.id, submitting, setStep, previousJobStatus, resetNavigation]
+    [
+      subscription?.id,
+      submitting,
+      previousJobStatus,
+      id,
+      setStep,
+      resetNavigation,
+    ]
   );
 
   useEffect(() => {

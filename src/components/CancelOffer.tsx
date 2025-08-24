@@ -87,12 +87,14 @@ const CancelOffer = ({ setStep, step, variant }: Props) => {
       }
     },
     [
-      subscription,
+      subscription?.id,
+      subscription?.monthly_price,
       submitting,
       user?.id,
-      setStep,
-      step,
+      id,
       updateSubscriptionStatus,
+      setStep,
+      step.num,
     ]
   );
 
