@@ -4,7 +4,7 @@ import {
   CreateCancellationRequest, 
   UpdateCancellationRequest,
   Subscription 
-} from './types'
+} from '../types/types'
 import { DownsellVariant, assignVariant } from './variant'
 
 const api = axios.create({

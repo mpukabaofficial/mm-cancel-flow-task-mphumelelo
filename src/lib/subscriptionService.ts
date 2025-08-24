@@ -1,5 +1,5 @@
 import { supabaseAdmin } from './supabase'
-import { Subscription } from './types'
+import { Subscription } from '../types/types'
 
 export class SubscriptionService {
   /**
