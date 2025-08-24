@@ -1,10 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { ReactNode } from "react";
+import { ReactNode, useRef, useState, useEffect } from "react";
 import StepIndicator from "../StepIndicator";
 import { Step } from "@/types/step";
 import ChevronLeft from "../ui/icons/ChevronLeft";
+import CancelModalSkeleton from "../skeletons/CancelModalSkeleton";
 
 interface Props {
   onClose: () => void;
@@ -16,6 +17,8 @@ interface Props {
   completed?: boolean;
   canGoBack?: boolean;
   onBack?: () => void;
+  isLoading?: boolean;
+  skeletonVariant?: "loading" | "questionnaire" | "form" | "completion";
 }
 
 const CancellationCard = ({
@@ -30,11 +33,103 @@ const CancellationCard = ({
   completed = false,
   canGoBack = false,
   onBack,
+  isLoading = false,
+  skeletonVariant = "loading",
 }: Props) => {
+  const [isClosing, setIsClosing] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Minimum swipe distance to trigger close (in pixels)
+  const minSwipeDistance = 50;
+
+  const handleClose = () => {
+    setIsClosing(true);
+    // Wait for animation to complete before actually closing
+    setTimeout(() => {
+      onClose();
+    }, 300);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (window.innerWidth >= 640) return; // Only on mobile
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientY);
+    setIsDragging(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (window.innerWidth >= 640 || !isDragging || touchStart === null) return;
+    
+    const currentTouch = e.targetTouches[0].clientY;
+    const diff = currentTouch - touchStart;
+    
+    // Only allow downward dragging
+    if (diff > 0) {
+      setDragOffset(diff);
+      setTouchEnd(currentTouch);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (window.innerWidth >= 640 || !isDragging) return;
+    
+    if (!touchStart || !touchEnd) {
+      setIsDragging(false);
+      setDragOffset(0);
+      return;
+    }
+
+    const distance = touchEnd - touchStart;
+    const isDownSwipe = distance > minSwipeDistance;
+
+    if (isDownSwipe) {
+      handleClose();
+    } else {
+      // Snap back to original position
+      setDragOffset(0);
+    }
+    
+    setIsDragging(false);
+    setTouchStart(null);
+    setTouchEnd(null);
+  };
+
+  // Reset drag state when closing starts
+  useEffect(() => {
+    if (isClosing) {
+      setDragOffset(0);
+      setIsDragging(false);
+    }
+  }, [isClosing]);
+
+  const dragStyle = isDragging && dragOffset > 0 
+    ? { transform: `translateY(${Math.min(dragOffset, 200)}px)` }
+    : {};
+
   return (
-    <div className="w-full max-w-[1000px] max-h-[90vh] overflow-y-auto rounded-[12px] sm:rounded-[20px] bg-white relative font-semibold text-gray-warm-800">
+    <div 
+      ref={containerRef}
+      className={`w-full sm:max-w-[1000px] h-[90vh] sm:max-h-[90vh] overflow-y-auto 
+                 fixed bottom-0 left-0 sm:relative sm:bottom-auto sm:left-auto
+                 rounded-t-[20px] sm:rounded-[20px] bg-white font-semibold text-gray-warm-800 
+                 ${isClosing ? 'animate-slide-down sm:animate-none' : 'animate-slide-up sm:animate-none'}
+                 transition-transform duration-200 ease-out`}
+      style={dragStyle}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* Mobile drag handle - only visible on small screens */}
+      <div className="sm:hidden w-full flex justify-center pt-3 pb-2">
+        <div className="w-8 h-1 bg-gray-warm-300 rounded-full"></div>
+      </div>
+      
       <button
-        onClick={onClose}
+        onClick={handleClose}
         className="absolute top-[12px] right-[12px] sm:top-[18px] sm:right-[20px] z-10"
       >
         <svg
@@ -86,7 +181,21 @@ const CancellationCard = ({
           />
         </div>
 
-        {children}
+        {/* Show skeleton content if loading, otherwise show children */}
+        {isLoading ? (
+          <div className="w-full animate-pulse">
+            <CancelModalSkeleton
+              variant={skeletonVariant}
+              showStepIndicator={step.num > 0}
+              showBackButton={canGoBack && step.num > 0}
+              isContentOnly={true}
+            />
+          </div>
+        ) : (
+          <div className="w-full animate-fade-in">
+            {children}
+          </div>
+        )}
       </div>
     </div>
   );

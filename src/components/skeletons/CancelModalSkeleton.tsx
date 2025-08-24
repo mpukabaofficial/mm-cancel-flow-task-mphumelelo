@@ -4,15 +4,112 @@ interface CancelModalSkeletonProps {
   variant?: "loading" | "questionnaire" | "form" | "completion";
   showStepIndicator?: boolean;
   showBackButton?: boolean;
+  isContentOnly?: boolean;
 }
 
 const CancelModalSkeleton = ({
   variant = "loading",
   showStepIndicator = true,
   showBackButton = false,
+  isContentOnly = false,
 }: CancelModalSkeletonProps) => {
+  // Skeleton content based on variant
+  const renderSkeletonContent = () => (
+    <div className="w-full space-y-5">
+      {variant === "loading" && (
+        <>
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-3/4" />
+            <SkeletonText lines={2} />
+          </div>
+          <div className="space-y-3">
+            <Skeleton className="h-12 w-full rounded-lg" />
+            <Skeleton className="h-12 w-full rounded-lg" />
+          </div>
+          <div className="border-t border-gray-200" />
+          <div className="space-y-3">
+            <SkeletonButton className="bg-green-100" />
+            <SkeletonButton className="bg-red-100" />
+          </div>
+        </>
+      )}
+
+      {variant === "questionnaire" && (
+        <>
+          <div className="space-y-3">
+            <Skeleton className="h-8 w-4/5" />
+            <SkeletonText lines={1} />
+          </div>
+          <div className="space-y-4">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="space-y-2">
+                <Skeleton className="h-5 w-5/6" />
+                <div className="space-y-2">
+                  <Skeleton className="h-10 w-full rounded-lg" />
+                  <Skeleton className="h-10 w-full rounded-lg" />
+                  <Skeleton className="h-10 w-4/5 rounded-lg" />
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="border-t border-gray-200" />
+          <SkeletonButton />
+        </>
+      )}
+
+      {variant === "form" && (
+        <>
+          <div className="space-y-3">
+            <Skeleton className="h-8 w-3/4" />
+            <SkeletonText lines={2} />
+          </div>
+          <div className="space-y-3">
+            <Skeleton className="h-10 w-full rounded-lg" />
+            <Skeleton className="h-10 w-full rounded-lg" />
+            <div className="space-y-2">
+              <Skeleton className="h-5 w-1/2" />
+              <Skeleton className="h-32 w-full rounded-lg" />
+            </div>
+          </div>
+          <div className="border-t border-gray-200" />
+          <div className="space-y-3">
+            <SkeletonButton className="bg-green-100" />
+            <SkeletonButton className="bg-red-100" />
+          </div>
+        </>
+      )}
+
+      {variant === "completion" && (
+        <>
+          <div className="space-y-3">
+            <Skeleton className="h-8 w-3/5" />
+            <Skeleton className="h-7 w-4/5" />
+          </div>
+          <div className="space-y-2">
+            <SkeletonText lines={3} />
+          </div>
+          <div className="border-t border-gray-200" />
+          <SkeletonButton className="bg-blue-100" />
+        </>
+      )}
+    </div>
+  );
+
+  // If content-only mode, just return the skeleton content
+  if (isContentOnly) {
+    return renderSkeletonContent();
+  }
+
+  // Full modal skeleton with card wrapper
   return (
-    <div className="w-full max-w-[1000px] max-h-[90vh] overflow-y-auto rounded-[12px] sm:rounded-[20px] bg-white relative font-semibold text-gray-warm-800">
+    <div className="w-full sm:max-w-[1000px] h-[90vh] sm:max-h-[90vh] overflow-y-auto 
+                   fixed bottom-0 left-0 sm:relative sm:bottom-auto sm:left-auto
+                   rounded-t-[20px] sm:rounded-[20px] bg-white font-semibold text-gray-warm-800 
+                   animate-slide-up sm:animate-none">
+      {/* Mobile drag handle - only visible on small screens */}
+      <div className="sm:hidden w-full flex justify-center pt-3 pb-2">
+        <div className="w-8 h-1 bg-gray-warm-300 rounded-full"></div>
+      </div>
       {/* Close button skeleton */}
       <div className="absolute top-[12px] right-[12px] sm:top-[18px] sm:right-[20px] z-10">
         <Skeleton className="size-6 rounded-full" />
@@ -49,84 +146,7 @@ const CancelModalSkeleton = ({
         </div>
 
         {/* Content skeleton - varies by variant */}
-        <div className="w-full space-y-5">
-          {variant === "loading" && (
-            <>
-              <div className="space-y-2">
-                <Skeleton className="h-8 w-3/4" />
-                <SkeletonText lines={2} />
-              </div>
-              <div className="space-y-3">
-                <Skeleton className="h-12 w-full rounded-lg" />
-                <Skeleton className="h-12 w-full rounded-lg" />
-              </div>
-              <div className="border-t border-gray-200" />
-              <div className="space-y-3">
-                <SkeletonButton className="bg-green-100" />
-                <SkeletonButton className="bg-red-100" />
-              </div>
-            </>
-          )}
-
-          {variant === "questionnaire" && (
-            <>
-              <div className="space-y-3">
-                <Skeleton className="h-8 w-4/5" />
-                <SkeletonText lines={1} />
-              </div>
-              <div className="space-y-4">
-                {Array.from({ length: 3 }).map((_, i) => (
-                  <div key={i} className="space-y-2">
-                    <Skeleton className="h-5 w-5/6" />
-                    <div className="space-y-2">
-                      <Skeleton className="h-10 w-full rounded-lg" />
-                      <Skeleton className="h-10 w-full rounded-lg" />
-                      <Skeleton className="h-10 w-4/5 rounded-lg" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="border-t border-gray-200" />
-              <SkeletonButton />
-            </>
-          )}
-
-          {variant === "form" && (
-            <>
-              <div className="space-y-3">
-                <Skeleton className="h-8 w-3/4" />
-                <SkeletonText lines={2} />
-              </div>
-              <div className="space-y-3">
-                <Skeleton className="h-10 w-full rounded-lg" />
-                <Skeleton className="h-10 w-full rounded-lg" />
-                <div className="space-y-2">
-                  <Skeleton className="h-5 w-1/2" />
-                  <Skeleton className="h-32 w-full rounded-lg" />
-                </div>
-              </div>
-              <div className="border-t border-gray-200" />
-              <div className="space-y-3">
-                <SkeletonButton className="bg-green-100" />
-                <SkeletonButton className="bg-red-100" />
-              </div>
-            </>
-          )}
-
-          {variant === "completion" && (
-            <>
-              <div className="space-y-3">
-                <Skeleton className="h-8 w-3/5" />
-                <Skeleton className="h-7 w-4/5" />
-              </div>
-              <div className="space-y-2">
-                <SkeletonText lines={3} />
-              </div>
-              <div className="border-t border-gray-200" />
-              <SkeletonButton className="bg-blue-100" />
-            </>
-          )}
-        </div>
+        {renderSkeletonContent()}
       </div>
     </div>
   );

@@ -115,8 +115,9 @@ const CancelReasonStep = ({ setStep, resetNavigation }: Props) => {
     loadCancellation();
   }, [user?.id, subscription?.id, userLoading]);
 
-  // Show skeleton while loading user data or cancellation data
-  if (loading || userLoading) {
+  // Only show skeleton if we're actively loading data and not during initial modal load
+  // This prevents double skeletons (CancelModalSkeleton handles initial load)
+  if (loading && !userLoading) {
     return (
       <div className="order-2 md:order-1 space-y-5 w-full">
         <div className="space-y-4">

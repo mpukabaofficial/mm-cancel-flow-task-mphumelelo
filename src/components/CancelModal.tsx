@@ -8,7 +8,6 @@ import { cancellationService } from "@/lib/api";
 import { Step } from "@/types/step";
 import { getTotalSteps } from "@/utils/steps";
 import { useCallback, useEffect, useRef } from "react";
-import CancelModalSkeleton from "./skeletons/CancelModalSkeleton";
 import CancellationCard from "./CancelModal/CancellationCard";
 import { StepRenderer } from "./CancelModal/steps/StepRenderer";
 
@@ -34,7 +33,7 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
     // cancellationId,
     setVariant,
     variant,
-    loading,
+    loading: variantLoading,
     subscription,
   } = useVariant(isOpen);
 
@@ -103,42 +102,31 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
 
   if (!isOpen) return null;
 
-  // Show loading while variant is being assigned
-  if (loading || !variant || !cancellationId) {
-    // Determine skeleton variant based on current step
-    let skeletonVariant: "loading" | "questionnaire" | "form" | "completion" =
-      "loading";
+  // Determine loading state and skeleton variant to pass to CancellationCard
+  const isModalLoading = variantLoading || !variant || !cancellationId;
 
-    if (currentStep.num === 0) {
-      skeletonVariant = "form"; // Initial job decision step
-    } else if (
-      currentStep.option === "job-found" ||
-      currentStep.option === "reasons" ||
-      currentStep.num === 1
-    ) {
-      skeletonVariant = "questionnaire";
-    } else if (
-      currentStep.option === "cancel-complete" ||
-      currentStep.option === "job-cancel-complete" ||
-      currentStep.option === "get-visa-help"
-    ) {
-      skeletonVariant = "completion";
-    } else if (currentStep.num >= 2) {
-      skeletonVariant = "form";
-    }
+  let skeletonVariant: "loading" | "questionnaire" | "form" | "completion" =
+    "loading";
 
-    return (
-      <div className="bg-black/30 fixed inset-0 flex items-center justify-center p-2 sm:p-4 z-50">
-        <CancelModalSkeleton
-          variant={skeletonVariant}
-          showStepIndicator={currentStep.num > 0}
-          showBackButton={canGoBack && currentStep.num > 0}
-        />
-      </div>
-    );
+  if (currentStep.num === 0) {
+    skeletonVariant = "form"; // Initial job decision step
+  } else if (
+    currentStep.option === "job-found" ||
+    currentStep.option === "reasons" ||
+    currentStep.num === 1
+  ) {
+    skeletonVariant = "questionnaire";
+  } else if (
+    currentStep.option === "cancel-complete" ||
+    currentStep.option === "job-cancel-complete" ||
+    currentStep.option === "get-visa-help"
+  ) {
+    skeletonVariant = "completion";
+  } else if (currentStep.num >= 2) {
+    skeletonVariant = "form";
   }
 
-  const totalSteps = getTotalSteps(currentStep, variant);
+  const totalSteps = getTotalSteps(currentStep, variant || "B");
 
   // Check if we're on a completion step
   const isCompleted =
@@ -162,10 +150,17 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
     onBack: navigateBack,
     resetNavigation,
     completed: isCompleted,
+    isLoading: isModalLoading,
+    skeletonVariant,
   };
 
   // Main step routing using StepRenderer
   const renderStep = () => {
+    // Don't render steps if we're loading
+    if (isModalLoading) {
+      return null;
+    }
+
     const stepRendererProps = {
       currentStep,
       variant,
@@ -182,7 +177,7 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
 
   return (
     <div
-      className="bg-black/30 fixed inset-0 flex items-center justify-center p-2 sm:p-4 z-50"
+      className="bg-black/30 fixed inset-0 z-50 sm:flex sm:items-center sm:justify-center sm:p-4"
       onClick={handleBackdropClick}
     >
       <CancellationCard {...commonProps}>{renderStep()}</CancellationCard>
