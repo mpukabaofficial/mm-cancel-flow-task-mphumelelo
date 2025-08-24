@@ -8,7 +8,7 @@ export { default as CancellationCard } from "../CancelModal/CancellationCard";
 export { default as CancellationVisa } from "./CancellationVisa";
 export { default as CancellationVisaNoJob } from "./CancellationVisaNoJob";
 export { default as CancelModal } from "../CancelModal";
-export { default as CancelModalSkeleton } from "./CancelModalSkeleton";
+export { default as CancelModalSkeleton } from "../skeletons/CancelModalSkeleton";
 export { default as CancelOffer } from "./CancelOffer";
 export { default as CancelReasons } from "./CancelReasons";
 export { default as CancelReasonStep } from "./CancelReasonStep";

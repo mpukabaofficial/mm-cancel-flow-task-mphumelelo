@@ -8,7 +8,7 @@ import { cancellationService } from "@/lib/api";
 import { Step } from "@/types/step";
 import { getTotalSteps } from "@/utils/steps";
 import { useCallback, useEffect, useRef } from "react";
-import CancelModalSkeleton from "./CancellationScreens/CancelModalSkeleton";
+import CancelModalSkeleton from "./skeletons/CancelModalSkeleton";
 import CancellationCard from "./CancelModal/CancellationCard";
 import { StepRenderer } from "./CancelModal/steps/StepRenderer";
 
