@@ -34,7 +34,6 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
     // cancellationId,
     setVariant,
     variant,
-    error,
     loading,
     subscription,
   } = useVariant(isOpen);
@@ -186,11 +185,6 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
       className="bg-black/30 fixed inset-0 flex items-center justify-center p-2 sm:p-4 z-50"
       onClick={handleBackdropClick}
     >
-      {error && (
-        <div className="absolute top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          {error}
-        </div>
-      )}
       <CancellationCard {...commonProps}>{renderStep()}</CancellationCard>
     </div>
   );

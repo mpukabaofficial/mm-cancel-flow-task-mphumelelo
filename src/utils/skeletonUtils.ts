@@ -1,5 +1,4 @@
 import { Step } from "@/types/step";
-import { DownsellVariant } from "@/lib/variant";
 
 export type SkeletonVariant = 'loading' | 'questionnaire' | 'form' | 'completion';
 
@@ -14,7 +13,6 @@ export interface SkeletonConfig {
  */
 export function getSkeletonConfig(
   currentStep: Step,
-  variant: DownsellVariant | null,
   canGoBack: boolean
 ): SkeletonConfig {
   let skeletonVariant: SkeletonVariant = 'loading';
