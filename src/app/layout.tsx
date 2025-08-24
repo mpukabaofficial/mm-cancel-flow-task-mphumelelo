@@ -1,7 +1,7 @@
-import UserProvider from "@/components/UserProvider";
 import type { Metadata } from "next";
 import { DM_Sans, Inter } from "next/font/google";
 import "./globals.css";
+import { UserProvider } from "@/contexts/UserContext";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
