@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
-import Button from "./ui/Button";
-import HorizontalLine from "./ui/HorizontalLine";
+import Button from "../ui/Button";
+import HorizontalLine from "../ui/HorizontalLine";
 import { cancellationService, subscriptionService } from "@/lib/api";
 import { useUser } from "@/contexts/UserContext";
 import { DownsellVariant, calculateDownsellPrice } from "@/lib/variant";
 import { Step } from "@/types/step";
-import { Skeleton, SkeletonText, SkeletonButton } from "./ui/Skeleton";
+import { Skeleton, SkeletonText, SkeletonButton } from "../ui/Skeleton";
 
 interface Props {
   step: Step;

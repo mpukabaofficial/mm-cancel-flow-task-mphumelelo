@@ -7,7 +7,7 @@ import { cancellationService } from "@/lib/api";
 import { Loader2Icon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Step } from "@/types/step";
-import { Skeleton, SkeletonText, SkeletonButton } from "./ui/Skeleton";
+import { Skeleton, SkeletonText, SkeletonButton } from "../ui/Skeleton";
 
 interface Props {
   setStep: (step: Step) => void;

@@ -2,11 +2,11 @@ import { cancellationService } from "@/lib/api";
 import { DownsellVariant } from "@/lib/variant";
 import { Step } from "@/types/step";
 import { useEffect, useState } from "react";
-import ErrorMessage from "./ErrorMessage";
-import FollowUp from "./FollowUp";
-import OptionItem from "./OptionItem";
-import Button from "./ui/Button";
-import HorizontalLine from "./ui/HorizontalLine";
+import ErrorMessage from "../ErrorMessage";
+import FollowUp from "../FollowUp";
+import OptionItem from "../OptionItem";
+import Button from "../ui/Button";
+import HorizontalLine from "../ui/HorizontalLine";
 import { useUser } from "@/contexts/UserContext";
 
 type ReasonChoices =

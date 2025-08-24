@@ -1,6 +1,6 @@
 "use client";
 
-import CancelModal from "@/components/CancelModal";
+import CancelModal from "@/components/CancellationScreens/CancelModal";
 import { useUser } from "@/contexts/UserContext";
 import { cancellationService } from "@/lib/api";
 import { useState } from "react";

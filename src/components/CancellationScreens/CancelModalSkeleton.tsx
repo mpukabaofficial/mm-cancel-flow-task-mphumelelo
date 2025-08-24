@@ -1,15 +1,15 @@
-import { Skeleton, SkeletonText, SkeletonButton } from "./ui/Skeleton";
+import { Skeleton, SkeletonText, SkeletonButton } from "../ui/Skeleton";
 
 interface CancelModalSkeletonProps {
-  variant?: 'loading' | 'questionnaire' | 'form' | 'completion';
+  variant?: "loading" | "questionnaire" | "form" | "completion";
   showStepIndicator?: boolean;
   showBackButton?: boolean;
 }
 
-const CancelModalSkeleton = ({ 
-  variant = 'loading', 
+const CancelModalSkeleton = ({
+  variant = "loading",
   showStepIndicator = true,
-  showBackButton = false 
+  showBackButton = false,
 }: CancelModalSkeletonProps) => {
   return (
     <div className="w-full max-w-[1000px] max-h-[90vh] overflow-y-auto rounded-[12px] sm:rounded-[20px] bg-white relative font-semibold text-gray-warm-800">
@@ -50,7 +50,7 @@ const CancelModalSkeleton = ({
 
         {/* Content skeleton - varies by variant */}
         <div className="w-full space-y-5">
-          {variant === 'loading' && (
+          {variant === "loading" && (
             <>
               <div className="space-y-2">
                 <Skeleton className="h-8 w-3/4" />
@@ -68,7 +68,7 @@ const CancelModalSkeleton = ({
             </>
           )}
 
-          {variant === 'questionnaire' && (
+          {variant === "questionnaire" && (
             <>
               <div className="space-y-3">
                 <Skeleton className="h-8 w-4/5" />
@@ -91,7 +91,7 @@ const CancelModalSkeleton = ({
             </>
           )}
 
-          {variant === 'form' && (
+          {variant === "form" && (
             <>
               <div className="space-y-3">
                 <Skeleton className="h-8 w-3/4" />
@@ -113,7 +113,7 @@ const CancelModalSkeleton = ({
             </>
           )}
 
-          {variant === 'completion' && (
+          {variant === "completion" && (
             <>
               <div className="space-y-3">
                 <Skeleton className="h-8 w-3/5" />

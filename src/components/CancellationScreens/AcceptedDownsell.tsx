@@ -2,8 +2,8 @@
 
 import { Subscription } from "@/contexts/UserContext";
 import { useNavigateApp } from "@/hooks/useNavigateApp";
-import Button from "./ui/Button";
-import HorizontalLine from "./ui/HorizontalLine";
+import Button from "../ui/Button";
+import HorizontalLine from "../ui/HorizontalLine";
 
 interface Props {
   onClose: () => void;

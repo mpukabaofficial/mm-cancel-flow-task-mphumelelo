@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { ReactNode } from "react";
-import StepIndicator from "./StepIndicator";
+import StepIndicator from "../StepIndicator";
 import { Step } from "@/types/step";
 
 interface Props {

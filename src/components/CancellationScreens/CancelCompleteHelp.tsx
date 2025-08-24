@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
-import Button from "./ui/Button";
-import HorizontalLine from "./ui/HorizontalLine";
+import Button from "../ui/Button";
+import HorizontalLine from "../ui/HorizontalLine";
 
 const CancelCompleteHelp = () => {
   return (

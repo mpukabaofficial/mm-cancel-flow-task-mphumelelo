@@ -4,11 +4,11 @@ import { cancellationService } from "@/lib/api";
 import { DownsellVariant } from "@/lib/variant";
 import { Step } from "@/types/step";
 import { useState } from "react";
-import ErrorMessage from "./ErrorMessage";
-import QuestionComponent from "./QuestionComponent";
-import Button from "./ui/Button";
-import HorizontalLine from "./ui/HorizontalLine";
-import { Skeleton, SkeletonButton } from "./ui/Skeleton";
+import ErrorMessage from "../ErrorMessage";
+import QuestionComponent from "../QuestionComponent";
+import Button from "../ui/Button";
+import HorizontalLine from "../ui/HorizontalLine";
+import { Skeleton, SkeletonButton } from "../ui/Skeleton";
 
 interface Props {
   step: Step;

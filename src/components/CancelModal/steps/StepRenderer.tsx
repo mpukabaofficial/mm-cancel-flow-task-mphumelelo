@@ -1,18 +1,18 @@
 import { Step } from "@/types/step";
 import { DownsellVariant } from "@/lib/variant";
 import { Subscription } from "@/contexts/UserContext";
-import AcceptedDownsell from "../../AcceptedDownsell";
-import CancelComplete from "../../CancelComplete";
-import CancelCompleteHelp from "../../CancelCompleteHelp";
-import CancelHow from "../../CancelHow";
-import CancelOffer from "../../CancelOffer";
-import CancelReasonStep from "../../CancelReasonStep";
-import CancelReasons from "../../CancelReasons";
-import CancellationVisa from "../../CancellationVisa";
-import CancellationVisaNoJob from "../../CancellationVisaNoJob";
-import FoundJobQuestionnaire from "../../FoundJobQuestionnaire";
-import JobCancelComplete from "../../JobCancelComplete";
-import NoJobQuestionnaire from "../../NoJobQuestionnaire";
+import AcceptedDownsell from "../../CancellationScreens/AcceptedDownsell";
+import CancelComplete from "../../CancellationScreens/CancelComplete";
+import CancelCompleteHelp from "../../CancellationScreens/CancelCompleteHelp";
+import CancelHow from "../../CancellationScreens/CancelHow";
+import CancelOffer from "../../CancellationScreens/CancelOffer";
+import CancelReasonStep from "../../CancellationScreens/CancelReasonStep";
+import CancelReasons from "../../CancellationScreens/CancelReasons";
+import CancellationVisa from "../../CancellationScreens/CancellationVisa";
+import CancellationVisaNoJob from "../../CancellationScreens/CancellationVisaNoJob";
+import FoundJobQuestionnaire from "../../CancellationScreens/FoundJobQuestionnaire";
+import JobCancelComplete from "../../CancellationScreens/JobCancelComplete";
+import NoJobQuestionnaire from "../../CancellationScreens/NoJobQuestionnaire";
 
 interface StepRendererProps {
   currentStep: Step;

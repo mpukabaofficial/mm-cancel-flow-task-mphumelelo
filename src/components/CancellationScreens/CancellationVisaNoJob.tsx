@@ -1,9 +1,9 @@
 import { Step } from "@/types/step";
-import OptionItem from "./OptionItem";
-import Button from "./ui/Button";
-import HorizontalLine from "./ui/HorizontalLine";
-import ErrorMessage from "./ErrorMessage";
-import FollowUp from "./FollowUp";
+import OptionItem from "../OptionItem";
+import Button from "../ui/Button";
+import HorizontalLine from "../ui/HorizontalLine";
+import ErrorMessage from "../ErrorMessage";
+import FollowUp from "../FollowUp";
 import { useVisaForm } from "@/hooks/useVisaForm";
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
   onSetStep: (step: Step) => void;
 }
 
-const CancellationVisa = ({ onSetStep, step }: Props) => {
+const CancellationVisaNoJob = ({ onSetStep, step }: Props) => {
   const {
     selectedOption,
     setSelectedOption,
@@ -40,13 +40,19 @@ const CancellationVisa = ({ onSetStep, step }: Props) => {
 
   return (
     <div className="w-full space-y-5">
-      <h1 className="text-large">
-        We helped you land the job, now let&apos;s help you secure your visa.
-      </h1>
-      <p className="text-normal">
+      <div className="space-y-3">
+        <h1 className="text-large">
+          You landed the job! <br />
+          <span className="italic">That&apos;s what we live for.</span>
+        </h1>
+        <p className="tracking-[-1px] text-xl">
+          Even if it wasn&apos;t through Migrate Mate, <br />
+          let us help get your visa sorted.
+        </p>
+      </div>
+      <p className="tracking-[-0.8px]">
         Is your company providing an immigration lawyer to help with your visa?
       </p>
-
       <div className="space-y-4">
         {showError && (
           <ErrorMessage error="Please select an option to continue*" />
@@ -121,7 +127,6 @@ const CancellationVisa = ({ onSetStep, step }: Props) => {
           </div>
         )}
       </div>
-
       <HorizontalLine />
       <Button
         disabled={!isFormValid() || loading || initialLoading}
@@ -133,4 +138,4 @@ const CancellationVisa = ({ onSetStep, step }: Props) => {
   );
 };
 
-export default CancellationVisa;
+export default CancellationVisaNoJob;

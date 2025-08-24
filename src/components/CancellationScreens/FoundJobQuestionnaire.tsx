@@ -1,11 +1,11 @@
 "use client";
 import useQuestionnaire from "@/hooks/useQuestionnaire";
 import { Step } from "@/types/step";
-import ErrorMessage from "./ErrorMessage";
-import Questionnaire from "./Questionnaire";
-import Button from "./ui/Button";
-import HorizontalLine from "./ui/HorizontalLine";
-import { Skeleton, SkeletonButton } from "./ui/Skeleton";
+import ErrorMessage from "../ErrorMessage";
+import Questionnaire from "../Questionnaire";
+import Button from "../ui/Button";
+import HorizontalLine from "../ui/HorizontalLine";
+import { Skeleton, SkeletonButton } from "../ui/Skeleton";
 import { useUser } from "@/contexts/UserContext";
 
 interface Props {
