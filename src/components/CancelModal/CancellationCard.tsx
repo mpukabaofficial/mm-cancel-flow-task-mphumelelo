@@ -154,9 +154,10 @@ const CancellationCard = ({
         )}
       </div>
       {/* main */}
-      <div className="p-3 sm:p-5 flex flex-col md:flex-row gap-3 sm:gap-5">
+      <div className="flex-1 overflow-y-auto">
+        <div className="p-3 sm:p-5 flex flex-col md:flex-row gap-3 sm:gap-5">
         {/* Image on top for mobile, right side for desktop */}
-        <div className="order-1 md:order-2 h-[100px] sm:h-[122px] md:h-auto w-full md:w-[400px] relative flex-shrink-0 self-stretch">
+        <div className="order-first md:order-2 h-[100px] sm:h-[122px] md:h-auto w-full md:w-[400px] relative flex-shrink-0 self-stretch">
           <Image
             src="/empire-state-compressed.jpg"
             alt="New York skyline"
@@ -169,7 +170,7 @@ const CancellationCard = ({
 
         {/* Show skeleton content if loading, otherwise show children */}
         {isLoading ? (
-          <div className="w-full animate-pulse">
+          <div className="w-full animate-pulse order-last md:order-1">
             <CancelModalSkeleton
               variant={skeletonVariant}
               showStepIndicator={step.num > 0}
@@ -178,8 +179,9 @@ const CancellationCard = ({
             />
           </div>
         ) : (
-          <div className="w-full animate-fade-in">{children}</div>
+          <div className="w-full animate-fade-in order-last md:order-1">{children}</div>
         )}
+        </div>
       </div>
     </div>
   );

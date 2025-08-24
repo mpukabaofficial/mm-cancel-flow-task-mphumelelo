@@ -1,29 +1,37 @@
 import ErrorMessage from "@/components/ui/ErrorMessage";
 import FollowUp from "@/components/FollowUp";
 import OptionItem from "@/components/OptionItem";
-import { useVisaForm } from "@/hooks/useVisaForm";
 import { Step } from "@/types/step";
+
+type VisaChoice = "Yes" | "No";
 
 interface Props {
   step: Step;
   onSetStep: (step: Step) => void;
+  selectedOption: VisaChoice | null;
+  setSelectedOption: (option: VisaChoice | null) => void;
+  visaType: string;
+  setVisaType: (type: string) => void;
+  showError: boolean;
+  showFollowUpError: boolean;
+  setShowFollowUpError: (show: boolean) => void;
+  initialLoading: boolean;
+  handleOptionSelect: (option: VisaChoice) => void;
 }
 
-const VisaQuestions = ({ onSetStep, step }: Props) => {
-  const {
-    selectedOption,
-    setSelectedOption,
-    visaType,
-    setVisaType,
-    showError,
-    showFollowUpError,
-    setShowFollowUpError,
-    initialLoading,
-    handleOptionSelect,
-  } = useVisaForm({
-    step,
-    setStep: onSetStep,
-  });
+const VisaQuestions = ({ 
+  onSetStep, 
+  step,
+  selectedOption,
+  setSelectedOption,
+  visaType,
+  setVisaType,
+  showError,
+  showFollowUpError,
+  setShowFollowUpError,
+  initialLoading,
+  handleOptionSelect,
+}: Props) => {
   return (
     <div className="space-y-4">
       {showError && (
