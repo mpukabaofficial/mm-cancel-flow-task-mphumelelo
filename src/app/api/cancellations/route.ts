@@ -1,7 +1,6 @@
 import { supabaseAdmin } from '@/lib/supabase'
 import { NextRequest, NextResponse } from 'next/server'
 import { createCancellationSchema, validateRequestBody, uuidSchema } from '@/lib/validations'
-import { userService } from '@/lib/userService'
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,35 +16,58 @@ export async function POST(request: NextRequest) {
     }
 
     const body = validation.data
-    const user = await userService.getUser()
     
-    if (!user) {
+    // Get the first user from the database (for demo purposes)
+    const { data: users, error: userError } = await supabaseAdmin
+      .from('users')
+      .select('*')
+      .order('created_at', { ascending: true })
+      .limit(1)
+    
+    if (userError) {
+      console.error('Error fetching user:', userError)
       return NextResponse.json({ 
-        error: 'User not found' 
+        error: 'Failed to fetch user' 
+      }, { status: 500 })
+    }
+    
+    if (!users || users.length === 0) {
+      return NextResponse.json({ 
+        error: 'No users found in database' 
       }, { status: 404 })
+    }
+    
+    const user = users[0]
+    
+    // Only include defined fields to avoid validation issues
+    const insertData: Record<string, unknown> = {
+      subscription_id: body.subscription_id,
+      downsell_variant: body.downsell_variant,
+      user_id: user.id
+    }
+    
+    // Only add optional fields if they are defined
+    if (body.reason !== undefined) {
+      insertData.reason = body.reason
+    }
+    if (body.has_job !== undefined) {
+      insertData.has_job = body.has_job
     }
     
     const { data, error } = await supabaseAdmin
       .from('cancellations')
-      .insert([
-        {
-          subscription_id: body.subscription_id,
-          downsell_variant: body.downsell_variant,
-          reason: body.reason,
-          has_job: body.has_job,
-          user_id: user.id
-        }
-      ])
+      .insert([insertData])
       .select()
       .single()
 
     if (error) {
+      console.error('Supabase cancellation insert error:', error)
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
     return NextResponse.json(data)
   } catch (error) {
-    console.error(error)
+    console.error('Cancellation creation error:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

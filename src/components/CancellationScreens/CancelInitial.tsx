@@ -68,7 +68,23 @@ const CancelReasonStep = ({ setStep, resetNavigation }: Props) => {
         }
 
         // Update with new job status and potentially new variant
-        await cancellationService.update(id, updateData);
+        try {
+          await cancellationService.update(id, updateData);
+        } catch (updateError: unknown) {
+          // If update fails because cancellation doesn't exist (fallback UUID case),
+          // try to get or create a proper cancellation and then update it
+          if (updateError instanceof Error && updateError.message?.includes('not found') && user?.id && subscription?.id) {
+            console.log('Fallback UUID detected, creating proper cancellation record');
+            const variantResult = await cancellationService.getOrAssignVariant(
+              user.id,
+              subscription.id
+            );
+            // Now try the update with the properly created cancellation
+            await cancellationService.update(variantResult.id, updateData);
+          } else {
+            throw updateError;
+          }
+        }
 
         // Update the previous job status tracker
         setPreviousJobStatus(hasFoundJob);
