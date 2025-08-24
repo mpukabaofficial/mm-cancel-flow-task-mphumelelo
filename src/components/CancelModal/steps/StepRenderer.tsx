@@ -1,18 +1,20 @@
 import { Step } from "@/types/step";
 import { DownsellVariant } from "@/lib/variant";
 import { Subscription } from "@/contexts/UserContext";
-import AcceptedDownsell from "../../CancellationScreens/AcceptedDownsell";
-import CancelComplete from "../../CancellationScreens/CancelComplete";
-import CancelCompleteHelp from "../../CancellationScreens/CancelCompleteHelp";
-import CancelHow from "../../CancellationScreens/CancelHow";
-import CancelOffer from "../../CancellationScreens/CancelOffer";
-import CancelReasonStep from "../../CancellationScreens/CancelReasonStep";
-import CancelReasons from "../../CancellationScreens/CancelReasons";
-import CancellationVisa from "../../CancellationScreens/CancellationVisa";
-import CancellationVisaNoJob from "../../CancellationScreens/CancellationVisaNoJob";
-import FoundJobQuestionnaire from "../../CancellationScreens/FoundJobQuestionnaire";
-import JobCancelComplete from "../../CancellationScreens/JobCancelComplete";
-import NoJobQuestionnaire from "../../CancellationScreens/NoJobQuestionnaire";
+import {
+  AcceptedDownsell,
+  CancelComplete,
+  CancelCompleteHelp,
+  CancelHow,
+  CancellationVisa,
+  CancellationVisaNoJob,
+  CancelOffer,
+  CancelReasons,
+  CancelReasonStep,
+  FoundJobQuestionnaire,
+  JobCancelComplete,
+  NoJobQuestionnaire,
+} from "@/components/CancellationScreens";
 
 interface StepRendererProps {
   currentStep: Step;
@@ -22,7 +24,7 @@ interface StepRendererProps {
   navigateBack: () => void;
   resetNavigation: (step?: Step) => void;
   handleClose: () => void;
-  isNavigatingHome: React.MutableRefObject<boolean>;
+  isNavigatingHome: React.RefObject<boolean>;
 }
 
 export class StepRenderer {
