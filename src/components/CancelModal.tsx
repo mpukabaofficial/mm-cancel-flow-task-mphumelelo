@@ -75,7 +75,7 @@ export default function CancelModal({ isOpen, onClose }: CancelModalProps) {
       // Reset state when modal closes
       setVariant(null);
     }
-  }, [isOpen, resetNavigation]);
+  }, [isOpen, resetNavigation, setVariant]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
