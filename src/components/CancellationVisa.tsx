@@ -40,15 +40,12 @@ const CancellationVisa = ({ onSetStep, step }: Props) => {
 
   return (
     <div className="w-full space-y-5">
-      <div>
-        <h1 className="text-large">
-          We helped you land the job, now let&apos;s help you secure your visa.
-        </h1>
-        <p className="text-normal">
-          Is your company providing an immigration lawyer to help with your
-          visa?
-        </p>
-      </div>
+      <h1 className="text-large">
+        We helped you land the job, now let&apos;s help you secure your visa.
+      </h1>
+      <p className="text-normal">
+        Is your company providing an immigration lawyer to help with your visa?
+      </p>
 
       <div className="space-y-4">
         {showError && (
