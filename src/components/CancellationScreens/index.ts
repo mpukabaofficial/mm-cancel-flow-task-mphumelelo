@@ -11,7 +11,7 @@ export { default as CancelModal } from "../CancelModal";
 export { default as CancelModalSkeleton } from "../skeletons/CancelModalSkeleton";
 export { default as CancelOffer } from "./CancelOffer";
 export { default as CancelReasons } from "./CancelReasons";
-export { default as CancelReasonStep } from "./CancelReasonStep";
+export { default as CancelReasonStep } from "./CancelInitial";
 export { default as FoundJobQuestionnaire } from "./FoundJobQuestionnaire";
 export { default as JobCancelComplete } from "./JobCancelComplete";
 export { default as NoJobQuestionnaire } from "./NoJobQuestionnaire";
