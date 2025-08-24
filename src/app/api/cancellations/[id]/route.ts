@@ -19,7 +19,7 @@ const paramsSchema = z.object({
 // Route Handlers
 export const GET = withErrorHandling(async (request, { params }) => {
   const paramValidation = await validateRouteParams(params, paramsSchema);
-  if (paramValidation.error) return paramValidation.error;
+  if ("error" in paramValidation) return paramValidation.error;
 
   const { data, error } = await supabaseAdmin
     .from("cancellations")
@@ -33,7 +33,7 @@ export const GET = withErrorHandling(async (request, { params }) => {
 
 export const PATCH = withErrorHandling(async (request, { params }) => {
   const paramValidation = await validateRouteParams(params, paramsSchema);
-  if (paramValidation.error) return paramValidation.error;
+  if ("error" in paramValidation) return paramValidation.error;
 
   // Validate request body
   const rawBody = await request.json();
@@ -62,7 +62,7 @@ export const PATCH = withErrorHandling(async (request, { params }) => {
 
 export const DELETE = withErrorHandling(async (request, { params }) => {
   const paramValidation = await validateRouteParams(params, paramsSchema);
-  if (paramValidation.error) return paramValidation.error;
+  if ("error" in paramValidation) return paramValidation.error;
 
   const { error } = await supabaseAdmin
     .from("cancellations")

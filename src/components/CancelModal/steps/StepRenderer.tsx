@@ -64,7 +64,7 @@ export class StepRenderer {
         step={currentStep}
         onSetStep={navigateToStep}
         variant={variant}
-        subscriptionAmount={subscription?.monthly_price || 25}
+        subscriptionAmount={subscription?.monthly_price ? subscription.monthly_price / 100 : 25}
       />
     );
   }
@@ -103,7 +103,7 @@ export class StepRenderer {
         <CancelReasons
           setStep={navigateToStep}
           variant={variant}
-          subscriptionAmount={subscription?.monthly_price || 25}
+          subscriptionAmount={subscription?.monthly_price ? subscription.monthly_price / 100 : 25}
         />
       );
     }
@@ -114,7 +114,7 @@ export class StepRenderer {
         step={currentStep}
         onSetStep={navigateToStep}
         variant={variant}
-        subscriptionAmount={subscription?.monthly_price || 25}
+        subscriptionAmount={subscription?.monthly_price ? subscription.monthly_price / 100 : 25}
       />
     );
   }
@@ -155,7 +155,7 @@ export class StepRenderer {
       <CancelReasons
         setStep={navigateToStep}
         variant={variant}
-        subscriptionAmount={subscription?.monthly_price || 25}
+        subscriptionAmount={subscription?.monthly_price ? subscription.monthly_price / 100 : 25}
       />
     );
   }

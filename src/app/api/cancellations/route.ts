@@ -84,7 +84,7 @@ export async function GET(request: NextRequest) {
     if (userId) {
       try {
         uuidSchema.parse(userId)
-      } catch (error) {
+      } catch {
         return NextResponse.json({ 
           error: 'Invalid user_id format', 
           details: 'user_id must be a valid UUID' 

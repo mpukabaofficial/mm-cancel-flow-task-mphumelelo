@@ -87,7 +87,7 @@ export default function TestStorePage() {
           {subscription ? (
             <div className="space-y-2">
               <p><strong>ID:</strong> {subscription.id}</p>
-              <p><strong>Price:</strong> ${subscription.monthly_price}/month</p>
+              <p><strong>Price:</strong> ${(subscription.monthly_price / 100).toFixed(2)}/month</p>
               <p><strong>Status:</strong> 
                 <span className={`ml-2 px-2 py-1 rounded text-sm ${
                   subscription.status === 'active' ? 'bg-green-100 text-green-800' :

@@ -10,10 +10,10 @@ export type ApiHandler = (
 ) => Promise<NextResponse>;
 
 // Helper: Validate params and return standardized error
-export async function validateRouteParams(
+export async function validateRouteParams<T>(
   params: Promise<{ id: string }>,
-  schema: z.ZodSchema
-) {
+  schema: z.ZodSchema<T>
+): Promise<{ data: T } | { error: NextResponse }> {
   const resolvedParams = await params;
   const validation = validateParams(resolvedParams, schema);
 
