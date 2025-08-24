@@ -4,7 +4,7 @@ export { default as AcceptedDownsell } from "./AcceptedDownsell";
 export { default as CancelComplete } from "./CancelComplete";
 export { default as CancelCompleteHelp } from "./CancelCompleteHelp";
 export { default as CancelHow } from "./CancelHow";
-export { default as CancellationCard } from "./CancellationCard";
+export { default as CancellationCard } from "../CancellationCard";
 export { default as CancellationVisa } from "./CancellationVisa";
 export { default as CancellationVisaNoJob } from "./CancellationVisaNoJob";
 export { default as CancelModal } from "./CancelModal";

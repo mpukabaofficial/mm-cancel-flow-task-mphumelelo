@@ -9,7 +9,7 @@ import { Step } from "@/types/step";
 import { getTotalSteps } from "@/utils/steps";
 import { useCallback, useEffect, useRef } from "react";
 import CancelModalSkeleton from "./CancelModalSkeleton";
-import CancellationCard from "./CancellationCard";
+import CancellationCard from "../CancellationCard";
 import { StepRenderer } from "../CancelModal/steps/StepRenderer";
 
 interface CancelModalProps {
