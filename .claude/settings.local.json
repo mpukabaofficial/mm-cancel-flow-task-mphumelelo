@@ -29,7 +29,9 @@
       "Bash(tasklist:*)",
       "Bash(move \"src/app/api/subscriptions/[userId]\" \"src/app/api/subscriptions/user/[userId]\")",
       "Bash(cat:*)",
-      "Bash(npx next build:*)"
+      "Bash(npx next build:*)",
+      "Bash(supabase:*)",
+      "Bash(npx cross-env:*)"
     ],
     "deny": [],
     "ask": []

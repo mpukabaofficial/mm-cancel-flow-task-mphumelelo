@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "db:reset": "supabase db reset",
-    "db:setup": "supabase start && set PGPASSWORD=postgres && psql -h localhost -p 54322 -U postgres -d postgres -f seed.sql"
+    "db:setup": "npx supabase start && npx supabase db reset"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.55.0",
@@ -25,6 +25,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cross-env": "^7.0.3",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
     "supabase": "^1.200.3",
