@@ -63,10 +63,10 @@ const CancellationCard = ({
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (window.innerWidth >= 640 || !isDragging || touchStart === null) return;
-    
+
     const currentTouch = e.targetTouches[0].clientY;
     const diff = currentTouch - touchStart;
-    
+
     // Only allow downward dragging
     if (diff > 0) {
       setDragOffset(diff);
@@ -76,7 +76,7 @@ const CancellationCard = ({
 
   const handleTouchEnd = () => {
     if (window.innerWidth >= 640 || !isDragging) return;
-    
+
     if (!touchStart || !touchEnd) {
       setIsDragging(false);
       setDragOffset(0);
@@ -92,7 +92,7 @@ const CancellationCard = ({
       // Snap back to original position
       setDragOffset(0);
     }
-    
+
     setIsDragging(false);
     setTouchStart(null);
     setTouchEnd(null);
@@ -106,17 +106,22 @@ const CancellationCard = ({
     }
   }, [isClosing]);
 
-  const dragStyle = isDragging && dragOffset > 0 
-    ? { transform: `translateY(${Math.min(dragOffset, 200)}px)` }
-    : {};
+  const dragStyle =
+    isDragging && dragOffset > 0
+      ? { transform: `translateY(${Math.min(dragOffset, 200)}px)` }
+      : {};
 
   return (
-    <div 
+    <div
       ref={containerRef}
-      className={`w-full sm:max-w-[1000px] h-[90vh] sm:max-h-[90vh] overflow-y-auto 
+      className={`w-full sm:max-w-[1000px] h-[90vh] sm:max-h-[90vh] sm:h-fit overflow-y-auto 
                  fixed bottom-0 left-0 sm:relative sm:bottom-auto sm:left-auto
                  rounded-t-[20px] sm:rounded-[20px] bg-white font-semibold text-gray-warm-800 
-                 ${isClosing ? 'animate-slide-down sm:animate-none' : 'animate-slide-up sm:animate-none'}
+                 ${
+                   isClosing
+                     ? "animate-slide-down sm:animate-none"
+                     : "animate-slide-up sm:animate-none"
+                 }
                  transition-transform duration-200 ease-out`}
       style={dragStyle}
       onTouchStart={handleTouchStart}
@@ -127,7 +132,7 @@ const CancellationCard = ({
       <div className="sm:hidden w-full flex justify-center pt-3 pb-2">
         <div className="w-8 h-1 bg-gray-warm-300 rounded-full"></div>
       </div>
-      
+
       <button
         onClick={handleClose}
         className="absolute top-[12px] right-[12px] sm:top-[18px] sm:right-[20px] z-10"
@@ -192,9 +197,7 @@ const CancellationCard = ({
             />
           </div>
         ) : (
-          <div className="w-full animate-fade-in">
-            {children}
-          </div>
+          <div className="w-full animate-fade-in">{children}</div>
         )}
       </div>
     </div>

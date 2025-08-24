@@ -48,7 +48,7 @@ export function UserProvider({ children }: UserProviderProps) {
         setError(null);
 
         // Get user
-        const user = userService.getUser();
+        const user = await userService.getUser();
         setUser(user);
 
         // Fetch user's subscription

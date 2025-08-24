@@ -160,8 +160,9 @@ export class StepRenderer {
     );
   }
 
-  static renderVisaHelpComplete() {
-    return <CancelCompleteHelp />;
+  static renderVisaHelpComplete(props: StepRendererProps) {
+    const { handleClose } = props;
+    return <CancelCompleteHelp onClose={handleClose} />;
   }
 
   static renderStep4(props: StepRendererProps) {
@@ -172,7 +173,7 @@ export class StepRenderer {
     }
 
     if (currentStep.option === "get-visa-help") {
-      return this.renderVisaHelpComplete();
+      return this.renderVisaHelpComplete(props);
     }
 
     // Default: CancelComplete

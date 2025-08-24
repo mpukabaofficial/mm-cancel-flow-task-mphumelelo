@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { subscriptionDb } from '@/lib/subscriptionService'
+import { subscriptionDb } from '@/lib/subscriptionDb'
 import { validateParams, uuidSchema } from '@/lib/validations'
 import { z } from 'zod'
 

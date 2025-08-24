@@ -13,8 +13,31 @@ interface Props {
 }
 
 const CancelReasons = ({ setStep, variant, subscriptionAmount }: Props) => {
-  const { handleDownsellAccept, loading, handleSubmit, isFormValid } =
-    useCancelReasons();
+  const { 
+    handleDownsellAccept, 
+    loading, 
+    handleSubmit, 
+    isFormValid,
+    setShowFollowUpError,
+    setShowPriceError,
+    showFollowUpError,
+    showPriceError,
+    isValidPrice,
+    maxPrice,
+    setMaxPrice,
+    platformFeedback,
+    setPlatformFeedback,
+    jobsFeedback,
+    setJobsFeedback,
+    moveFeedback,
+    setMoveFeedback,
+    otherReason,
+    setOtherReason,
+    handleReasonSelect,
+    showError,
+    selectedReason,
+    setSelectedReason,
+  } = useCancelReasons();
 
   return (
     <div className="w-full space-y-5">
@@ -27,7 +50,27 @@ const CancelReasons = ({ setStep, variant, subscriptionAmount }: Props) => {
           Please take a minute to let us know why:
         </p>
       </div>
-      <ReasonsQuestions />
+      <ReasonsQuestions 
+        setShowFollowUpError={setShowFollowUpError}
+        setShowPriceError={setShowPriceError}
+        showFollowUpError={showFollowUpError}
+        showPriceError={showPriceError}
+        isValidPrice={isValidPrice}
+        maxPrice={maxPrice}
+        setMaxPrice={setMaxPrice}
+        platformFeedback={platformFeedback}
+        setPlatformFeedback={setPlatformFeedback}
+        jobsFeedback={jobsFeedback}
+        setJobsFeedback={setJobsFeedback}
+        moveFeedback={moveFeedback}
+        setMoveFeedback={setMoveFeedback}
+        otherReason={otherReason}
+        setOtherReason={setOtherReason}
+        handleReasonSelect={handleReasonSelect}
+        showError={showError}
+        selectedReason={selectedReason}
+        setSelectedReason={setSelectedReason}
+      />
       <HorizontalLine />
       <div className="space-y-4">
         {variant === "B" && (

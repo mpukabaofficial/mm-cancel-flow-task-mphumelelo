@@ -1,30 +1,51 @@
 import FollowUp from "@/components/FollowUp";
 import OptionItem from "@/components/OptionItem";
 import ErrorMessage from "@/components/ui/ErrorMessage";
-import useCancelReasons from "@/hooks/CancelReasons/useCancelReasons";
+import { ReasonChoices } from "@/types/reasons";
 
-const ReasonsQuestions = () => {
-  const {
-    setShowFollowUpError,
-    setShowPriceError,
-    showFollowUpError,
-    showPriceError,
-    isValidPrice,
-    maxPrice,
-    setMaxPrice,
-    platformFeedback,
-    setPlatformFeedback,
-    jobsFeedback,
-    setJobsFeedback,
-    moveFeedback,
-    otherReason,
-    setMoveFeedback,
-    setOtherReason,
-    handleReasonSelect,
-    showError,
-    selectedReason,
-    setSelectedReason,
-  } = useCancelReasons();
+interface Props {
+  setShowFollowUpError: (value: boolean) => void;
+  setShowPriceError: (value: boolean) => void;
+  showFollowUpError: boolean;
+  showPriceError: boolean;
+  isValidPrice: (price: string) => boolean;
+  maxPrice: string;
+  setMaxPrice: (value: string) => void;
+  platformFeedback: string;
+  setPlatformFeedback: (value: string) => void;
+  jobsFeedback: string;
+  setJobsFeedback: (value: string) => void;
+  moveFeedback: string;
+  setMoveFeedback: (value: string) => void;
+  otherReason: string;
+  setOtherReason: (value: string) => void;
+  handleReasonSelect: (reason: ReasonChoices) => void;
+  showError: boolean;
+  selectedReason: ReasonChoices | null;
+  setSelectedReason: (reason: ReasonChoices | null) => void;
+}
+
+const ReasonsQuestions = ({
+  setShowFollowUpError,
+  setShowPriceError,
+  showFollowUpError,
+  showPriceError,
+  isValidPrice,
+  maxPrice,
+  setMaxPrice,
+  platformFeedback,
+  setPlatformFeedback,
+  jobsFeedback,
+  setJobsFeedback,
+  moveFeedback,
+  otherReason,
+  setMoveFeedback,
+  setOtherReason,
+  handleReasonSelect,
+  showError,
+  selectedReason,
+  setSelectedReason,
+}: Props) => {
 
   return (
     <div className="space-y-4">

@@ -17,12 +17,14 @@ export const userService = {
    */
   getUser: async () => {
     try {
-      const response = await api.get<User[]>("/users");
-      console.log(response);
-      const users = response.data;
-      if (users.length === 0) return null;
+      const response = await api.get("/users");
+      console.log("User API response:", response.data);
+      
+      if (!response.data.success || !response.data.users || response.data.users.length === 0) {
+        return null;
+      }
 
-      return response.data[0];
+      return response.data.users[0];
     } catch (error) {
       if (error instanceof AxiosError) {
         console.error("Error fetching user:", {
@@ -43,24 +45,16 @@ export const userService = {
    */
   fetchUserSubscription: async () => {
     const user = await userService.getUser();
-    if (!user?.id) return;
+    if (!user?.id) {
+      console.log("No user available for subscription fetch");
+      return null;
+    }
 
     try {
-      const response = await fetch(`/api/subscriptions/user/${user.id}`);
+      const response = await api.get(`/subscriptions/user/${user.id}`);
+      console.log("Subscription API response:", response.data);
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Subscription API failed:", {
-          status: response.status,
-          statusText: response.statusText,
-          error: errorText,
-        });
-        throw new Error(
-          `Failed to fetch subscription: ${response.status} ${response.statusText}`
-        );
-      }
-
-      const subscription = await response.json();
+      const subscription = response.data;
 
       return {
         id: subscription.id,
@@ -71,8 +65,22 @@ export const userService = {
         updated_at: subscription.updated_at,
       };
     } catch (error) {
-      console.error("Error in fetchUserSubscription:", error);
-      throw error;
+      if (error instanceof AxiosError) {
+        console.error("Error fetching subscription:", {
+          message: error.message,
+          status: error.response?.status,
+          data: error.response?.data,
+        });
+        
+        // If it's a 404, that's expected for users without subscriptions
+        if (error.response?.status === 404) {
+          console.log("No active subscription found for user");
+          return null;
+        }
+      } else {
+        console.error("Unexpected error fetching subscription:", error);
+      }
+      throw new Error("Failed to fetch subscription. Please try again.");
     }
   },
 };

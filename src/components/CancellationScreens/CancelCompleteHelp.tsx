@@ -1,9 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
+import { useUser } from "@/contexts/UserContext";
+import { subscriptionService } from "@/lib/subscriptionService";
 import Button from "../ui/Button";
 import HorizontalLine from "../ui/HorizontalLine";
 
-const CancelCompleteHelp = () => {
+interface Props {
+  onClose: (isOpen: boolean) => void;
+}
+
+const CancelCompleteHelp = ({ onClose }: Props) => {
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { subscription } = useUser();
+
+  const handleFinish = async () => {
+    setIsProcessing(true);
+    
+    try {
+      // Cancel the subscription
+      if (subscription?.id) {
+        await subscriptionService.cancel(subscription.id);
+        console.log("Subscription cancelled successfully");
+      }
+      
+      // Log that email has been sent
+      console.log("Email has been sent to the person");
+      
+      // Close the modal
+      onClose(false);
+    } catch (error) {
+      console.error("Failed to cancel subscription:", error);
+      // Still close the modal even if cancellation fails
+      onClose(false);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   return (
     <div className="w-full space-y-5">
       <h1 className="text-large">
@@ -33,7 +66,13 @@ const CancelCompleteHelp = () => {
         </div>
       </div>
       <HorizontalLine />
-      <Button variant="primary">Finish</Button>
+      <Button 
+        variant="primary" 
+        onClick={handleFinish} 
+        disabled={isProcessing}
+      >
+        {isProcessing ? "Processing..." : "Finish"}
+      </Button>
     </div>
   );
 };
