@@ -1,4 +1,4 @@
-import { cancellationService } from "@/lib/api";
+import { cancellationService } from "@/lib/cancellationService";
 import { useEffect, useState } from "react";
 
 const useQuestionnaire = (id: string) => {

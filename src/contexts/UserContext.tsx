@@ -7,12 +7,7 @@ import {
   useState,
   ReactNode,
 } from "react";
-import { getUser, fetchUserSubscription } from "@/lib/user";
-
-export interface User {
-  id: string;
-  email: string;
-}
+import { userService, User } from "@/lib/userService";
 
 export interface Subscription {
   id: string;
@@ -53,11 +48,11 @@ export function UserProvider({ children }: UserProviderProps) {
         setError(null);
 
         // Get user
-        const user = getUser();
+        const user = userService.getUser();
         setUser(user);
 
         // Fetch user's subscription
-        const userSubscription = await fetchUserSubscription();
+        const userSubscription = await userService.fetchUserSubscription();
         setSubscription(userSubscription);
       } catch (err) {
         console.error("Failed to initialize user:", err);

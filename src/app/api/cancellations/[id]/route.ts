@@ -1,126 +1,74 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
-import { updateCancellationSchema, validateRequestBody, validateParams, uuidSchema } from '@/lib/validations'
-import { z } from 'zod'
+import { supabaseAdmin } from "@/lib/supabase";
+import {
+  updateCancellationSchema,
+  uuidSchema,
+  validateRequestBody,
+} from "@/lib/validations";
+import { NextResponse } from "next/server";
+import { z } from "zod";
+import {
+  handleDatabaseError,
+  validateRouteParams,
+  withErrorHandling,
+} from "./requests";
 
 const paramsSchema = z.object({
-  id: uuidSchema
-})
+  id: uuidSchema,
+});
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const resolvedParams = await params
-    // Validate URL parameters
-    const paramValidation = validateParams(resolvedParams, paramsSchema)
-    if (!paramValidation.success) {
-      return NextResponse.json({ 
-        error: 'Invalid parameters', 
-        details: paramValidation.error 
-      }, { status: 400 })
-    }
+// Route Handlers
+export const GET = withErrorHandling(async (request, { params }) => {
+  const paramValidation = await validateRouteParams(params, paramsSchema);
+  if (paramValidation.error) return paramValidation.error;
 
-    const { data, error } = await supabaseAdmin
-      .from('cancellations')
-      .select('*')
-      .eq('id', resolvedParams.id)
-      .single()
+  const { data, error } = await supabaseAdmin
+    .from("cancellations")
+    .select("*")
+    .eq("id", paramValidation.data.id)
+    .single();
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 })
-    }
+  if (error) return handleDatabaseError(error);
+  return NextResponse.json(data);
+});
 
-    return NextResponse.json(data)
-  } catch (error) {
-    console.error(error)
+export const PATCH = withErrorHandling(async (request, { params }) => {
+  const paramValidation = await validateRouteParams(params, paramsSchema);
+  if (paramValidation.error) return paramValidation.error;
+
+  // Validate request body
+  const rawBody = await request.json();
+  const bodyValidation = validateRequestBody(updateCancellationSchema, rawBody);
+
+  if (!bodyValidation.success) {
     return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+      {
+        error: "Validation failed",
+        details: bodyValidation.error,
+      },
+      { status: 400 }
+    );
   }
-}
 
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const resolvedParams = await params
-    // Validate URL parameters
-    const paramValidation = validateParams(resolvedParams, paramsSchema)
-    if (!paramValidation.success) {
-      return NextResponse.json({ 
-        error: 'Invalid parameters', 
-        details: paramValidation.error 
-      }, { status: 400 })
-    }
+  const { data, error } = await supabaseAdmin
+    .from("cancellations")
+    .update(bodyValidation.data)
+    .eq("id", paramValidation.data.id)
+    .select()
+    .single();
 
-    // Parse and validate request body
-    const rawBody = await request.json()
-    const bodyValidation = validateRequestBody(updateCancellationSchema, rawBody)
-    
-    if (!bodyValidation.success) {
-      return NextResponse.json({ 
-        error: 'Validation failed', 
-        details: bodyValidation.error 
-      }, { status: 400 })
-    }
+  if (error) return handleDatabaseError(error);
+  return NextResponse.json(data);
+});
 
-    const body = bodyValidation.data
-    
-    const { data, error } = await supabaseAdmin
-      .from('cancellations')
-      .update(body)
-      .eq('id', resolvedParams.id)
-      .select()
-      .single()
+export const DELETE = withErrorHandling(async (request, { params }) => {
+  const paramValidation = await validateRouteParams(params, paramsSchema);
+  if (paramValidation.error) return paramValidation.error;
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 })
-    }
+  const { error } = await supabaseAdmin
+    .from("cancellations")
+    .delete()
+    .eq("id", paramValidation.data.id);
 
-    return NextResponse.json(data)
-  } catch (error) {
-    console.error(error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
-  }
-}
-
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const resolvedParams = await params
-    // Validate URL parameters
-    const paramValidation = validateParams(resolvedParams, paramsSchema)
-    if (!paramValidation.success) {
-      return NextResponse.json({ 
-        error: 'Invalid parameters', 
-        details: paramValidation.error 
-      }, { status: 400 })
-    }
-
-    const { error } = await supabaseAdmin
-      .from('cancellations')
-      .delete()
-      .eq('id', resolvedParams.id)
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 })
-    }
-
-    return NextResponse.json({ message: 'Cancellation deleted successfully' })
-  } catch (error) {
-    console.error(error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
-  }
-}
+  if (error) return handleDatabaseError(error);
+  return NextResponse.json({ message: "Cancellation deleted successfully" });
+});

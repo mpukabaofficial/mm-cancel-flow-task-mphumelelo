@@ -1,5 +1,5 @@
 import { useUser } from "@/contexts/UserContext";
-import { subscriptionService } from "@/lib/api";
+import { subscriptionService } from "@/lib/subscriptionService";
 import { useEffect, useState } from "react";
 const useCancelSubscription = () => {
     const {subscription} = useUser()

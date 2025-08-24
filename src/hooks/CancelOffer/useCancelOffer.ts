@@ -1,5 +1,6 @@
 import { useUser } from "@/contexts/UserContext";
-import { cancellationService, subscriptionService } from "@/lib/api";
+import { cancellationService } from "@/lib/cancellationService";
+import { subscriptionService } from "@/lib/subscriptionService";
 import { calculateDownsellPrice } from "@/lib/variant";
 import { useCallback, useEffect, useState } from "react";
 

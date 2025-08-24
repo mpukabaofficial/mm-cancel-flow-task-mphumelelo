@@ -1,6 +1,6 @@
 import { useUser } from "@/contexts/UserContext";
 import useNoJobQuestionnaire from "@/hooks/useNoJobQuestionnaire";
-import { cancellationService } from "@/lib/api";
+import { cancellationService } from "@/lib/cancellationService";
 import { DownsellVariant } from "@/lib/variant";
 import { Step } from "@/types/step";
 import { useState } from "react";

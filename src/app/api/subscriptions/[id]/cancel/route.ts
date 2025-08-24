@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { SubscriptionService } from '@/lib/subscriptionService'
+import { subscriptionDb } from '@/lib/subscriptionService'
 import { validateParams, uuidSchema } from '@/lib/validations'
 import { z } from 'zod'
 
@@ -23,7 +23,7 @@ export async function PATCH(
     }
 
     // Cancel the subscription
-    const updatedSubscription = await SubscriptionService.cancelSubscription(resolvedParams.id)
+    const updatedSubscription = await subscriptionDb.cancelSubscription(resolvedParams.id)
 
     return NextResponse.json(updatedSubscription)
   } catch (error) {

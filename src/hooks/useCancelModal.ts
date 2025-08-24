@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { useUser } from "@/contexts/UserContext";
 import { useNavigationStack } from "@/hooks/useNavigationStack";
 import useVariant from "@/hooks/useVariant";
-import { cancellationService } from "@/lib/api";
+import { cancellationService } from "@/lib/cancellationService";
 import { Step } from "@/types/step";
 import { getTotalSteps } from "@/utils/steps";
 

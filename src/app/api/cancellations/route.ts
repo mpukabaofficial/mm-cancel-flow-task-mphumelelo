@@ -1,7 +1,7 @@
 import { supabaseAdmin } from '@/lib/supabase'
 import { NextRequest, NextResponse } from 'next/server'
 import { createCancellationSchema, validateRequestBody, uuidSchema } from '@/lib/validations'
-import { getUser } from '@/lib/user'
+import { userService } from '@/lib/userService'
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = validation.data
-    const user = getUser()
+    const user = userService.getUser()
     
     const { data, error } = await supabaseAdmin
       .from('cancellations')

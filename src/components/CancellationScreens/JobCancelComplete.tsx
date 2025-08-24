@@ -1,5 +1,5 @@
 import { useUser } from "@/contexts/UserContext";
-import { subscriptionService } from "@/lib/api";
+import { subscriptionService } from "@/lib/subscriptionService";
 import { useEffect, useState } from "react";
 import Button from "../ui/Button";
 import HorizontalLine from "../ui/HorizontalLine";

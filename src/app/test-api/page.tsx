@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { testService, cancellationService } from '@/lib/api'
+import { testService } from '@/lib/testService'
+import { cancellationService } from '@/lib/cancellationService'
 import Button from '@/components/ui/Button'
 
 export default function TestApiPage() {

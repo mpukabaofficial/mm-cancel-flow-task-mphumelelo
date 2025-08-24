@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useUser } from '@/contexts/UserContext'
-import { cancellationService } from '@/lib/api'
+import { cancellationService } from '@/lib/cancellationService'
 import { DownsellVariant } from '@/lib/variant'
 
 /**

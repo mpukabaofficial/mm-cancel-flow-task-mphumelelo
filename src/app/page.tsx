@@ -2,7 +2,7 @@
 
 import CancelModal from "@/components/CancelModal";
 import { useUser } from "@/contexts/UserContext";
-import { cancellationService } from "@/lib/api";
+import { cancellationService } from "@/lib/cancellationService";
 import { useState } from "react";
 
 // Get subscription data for UI display

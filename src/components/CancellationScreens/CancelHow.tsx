@@ -2,7 +2,7 @@ import { Step } from "@/types/step";
 import Button from "../ui/Button";
 import HorizontalLine from "../ui/HorizontalLine";
 import { useState, useEffect } from "react";
-import { cancellationService } from "@/lib/api";
+import { cancellationService } from "@/lib/cancellationService";
 import { useUser } from "@/contexts/UserContext";
 
 interface Props {

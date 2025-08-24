@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { SubscriptionService } from '@/lib/subscriptionService'
+import { subscriptionDb } from '@/lib/subscriptionService'
 import { validateParams, uuidSchema } from '@/lib/validations'
 import { z } from 'zod'
 
@@ -37,7 +37,7 @@ export async function PATCH(
     }
 
     // Accept downsell offer
-    const updatedSubscription = await SubscriptionService.acceptDownsellOffer(
+    const updatedSubscription = await subscriptionDb.acceptDownsellOffer(
       resolvedParams.id, 
       bodyValidation.data.newPrice
     )

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { cancellationService } from "@/lib/api";
+import { cancellationService } from "@/lib/cancellationService";
 
 const useNoJobQuestionnaire = (id: string) => {
   const [answers, setAnswers] = useState<(string | null)[]>([null, null, null]); // 3 questions for no job

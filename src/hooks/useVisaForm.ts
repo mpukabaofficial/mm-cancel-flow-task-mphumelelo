@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { cancellationService } from "@/lib/api";
+import { cancellationService } from "@/lib/cancellationService";
 import { UpdateCancellationRequest } from "@/types/types";
 import { Step } from "@/types/step";
 import { useUser } from "@/contexts/UserContext";

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { cancellationService } from '@/lib/api'
+import { cancellationService } from '@/lib/cancellationService'
 import { assignVariant, VARIANT_CONFIG } from '@/lib/variant'
 import Button from '@/components/ui/Button'
 
