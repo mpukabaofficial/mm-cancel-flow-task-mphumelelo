@@ -42,7 +42,8 @@ const useCancelOffer = () => {
 
         if (accepted) {
           // User accepted the downsell offer - subtract $10 from current price
-          const newPrice = Math.max(0, (subscription.monthly_price - 10)) * 100; // Convert to cents
+          // subscription.monthly_price is already in cents, so subtract 1000 cents ($10)
+          const newPrice = Math.max(0, subscription.monthly_price - 1000);
 
           await subscriptionService.acceptDownsell(subscription.id, newPrice);
 
@@ -69,7 +70,8 @@ const useCancelOffer = () => {
   );
 
   // Calculate discounted price for display
-  const originalPrice = subscription?.monthly_price || 25;
+  // Convert cents to dollars for display (subscription.monthly_price is in cents)
+  const originalPrice = subscription?.monthly_price ? subscription.monthly_price / 100 : 25;
   const discountedPrice = calculateDownsellPrice(originalPrice);
 
   return {
