@@ -1,31 +1,30 @@
-import React, { useCallback, useEffect, useState } from "react";
-import Button from "../ui/Button";
-import HorizontalLine from "../ui/HorizontalLine";
-import { cancellationService, subscriptionService } from "@/lib/api";
 import { useUser } from "@/contexts/UserContext";
+import useCancelOffer from "@/hooks/CancelOffer/useCancelOffer";
 import { DownsellVariant, calculateDownsellPrice } from "@/lib/variant";
 import { Step } from "@/types/step";
-import { Skeleton, SkeletonText, SkeletonButton } from "../ui/Skeleton";
+import { useEffect } from "react";
+import CancelOfferSkeleton from "../skeletons/CancelOfferSkeleton";
+import Button from "../ui/Button";
+import HorizontalLine from "../ui/HorizontalLine";
+import ErrorMessage from "../ui/ErrorMessage";
 
 interface Props {
   step: Step;
   setStep: (step: Step) => void;
   variant: DownsellVariant;
 }
-const CancelOffer = ({ setStep, step, variant }: Props) => {
-  const { cancellationId } = useUser();
-  const id = cancellationId || "";
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isVariantA, setIsVariantA] = useState(false);
-  const [loading, setLoading] = useState(true);
 
+const CancelOffer = ({ setStep, step, variant }: Props) => {
+  const { subscription } = useUser();
   const {
-    subscription,
-    user,
-    updateSubscriptionStatus,
-    isLoading: userLoading,
-  } = useUser();
+    handleDownsellResponse,
+    loading,
+    setIsVariantA,
+    setLoading,
+    isVariantA,
+    submitting,
+    error,
+  } = useCancelOffer();
 
   // Check if this is variant A (skip downsell step)
   useEffect(() => {
@@ -39,64 +38,7 @@ const CancelOffer = ({ setStep, step, variant }: Props) => {
       return () => clearTimeout(timer);
     }
     setLoading(false);
-  }, [variant, step, setStep]);
-
-  // Set loading to false when user data is loaded
-  useEffect(() => {
-    if (!userLoading && subscription) {
-      setLoading(false);
-    }
-  }, [userLoading, subscription]);
-
-  const handleDownsellResponse = useCallback(
-    async (accepted: boolean) => {
-      if (!subscription?.id || submitting || !user?.id) return;
-
-      setSubmitting(true);
-      setError(null);
-
-      try {
-        // Update cancellation record
-        await cancellationService.update(id, {
-          accepted_downsell: accepted,
-        });
-
-        if (accepted) {
-          // User accepted the downsell offer
-          // Calculate new price (typically 50% discount)
-          const newPrice = Math.floor(subscription.monthly_price * 0.5);
-
-          // Update subscription with new price and reset cancellation status
-          await subscriptionService.acceptDownsell(subscription.id, newPrice);
-
-          // Update local subscription state
-          updateSubscriptionStatus("active");
-
-          setStep({ option: "A", num: step.num + 1 });
-        } else {
-          // User declined the offer, cancel the subscription
-          await subscriptionService.cancel(subscription.id);
-
-          setStep({ option: "B", num: step.num + 1 });
-        }
-      } catch (err) {
-        console.error("Failed to update cancellation:", err);
-        setError("Failed to save your response. Please try again.");
-      } finally {
-        setSubmitting(false);
-      }
-    },
-    [
-      subscription?.id,
-      subscription?.monthly_price,
-      submitting,
-      user?.id,
-      id,
-      updateSubscriptionStatus,
-      setStep,
-      step.num,
-    ]
-  );
+  }, [variant, step, setStep, setLoading, setIsVariantA]);
 
   // Don't render anything for variant A (they skip this step)
   if (isVariantA || variant === "A") {
@@ -104,26 +46,8 @@ const CancelOffer = ({ setStep, step, variant }: Props) => {
   }
 
   // Show skeleton while loading
-  if (loading || userLoading || !subscription) {
-    return (
-      <div className="w-full space-y-5">
-        <div className="space-y-3">
-          <Skeleton className="h-8 w-4/5" />
-          <SkeletonText lines={1} />
-        </div>
-        <div className="p-3 border border-gray-200 bg-gray-50 rounded-xl space-y-4">
-          <Skeleton className="h-8 w-3/4 mx-auto" />
-          <div className="flex gap-[10px] items-end justify-center w-full">
-            <Skeleton className="h-8 w-20" />
-            <Skeleton className="h-6 w-16" />
-          </div>
-          <SkeletonButton className="bg-green-100" />
-          <Skeleton className="h-4 w-2/3 mx-auto" />
-        </div>
-        <div className="border-t border-gray-200" />
-        <SkeletonButton />
-      </div>
-    );
+  if (loading || !subscription) {
+    return <CancelOfferSkeleton />;
   }
 
   // Calculate discounted price for display
@@ -153,7 +77,10 @@ const CancelOffer = ({ setStep, step, variant }: Props) => {
         </div>
         <Button
           variant="green"
-          onClick={() => handleDownsellResponse(true)}
+          onClick={() => {
+            handleDownsellResponse(true);
+            setStep({ option: "A", num: step.num + 1 });
+          }}
           disabled={submitting}
         >
           {submitting
@@ -166,12 +93,15 @@ const CancelOffer = ({ setStep, step, variant }: Props) => {
       </div>
       <HorizontalLine />
       <Button
-        onClick={() => handleDownsellResponse(false)}
+        onClick={() => {
+          handleDownsellResponse(false);
+          setStep({ option: "B", num: step.num + 1 });
+        }}
         disabled={submitting}
       >
         No thanks
       </Button>
-      {error && <p className="text-red-500">{error}</p>}
+      <ErrorMessage error={error} />
     </div>
   );
 };
