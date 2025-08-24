@@ -5,7 +5,7 @@ import { useCancellationFlow } from "./useCancellationFlow";
 const useVariant = (isOpen: boolean) => {
   const [variant, setVariant] = useState<DownsellVariant | null>(null);
   
-    const { getOrAssignVariant, loading, error, subscription } =
+    const { getOrAssignVariant, loading, subscription } =
     useCancellationFlow();
 
   // Get or assign variant when modal opens
@@ -23,7 +23,7 @@ const useVariant = (isOpen: boolean) => {
       }
     }, [isOpen, variant, getOrAssignVariant]);
 
-  return {variant, setVariant, loading, error, subscription};
+  return {variant, setVariant, loading, subscription};
 };
 
 export default useVariant;
