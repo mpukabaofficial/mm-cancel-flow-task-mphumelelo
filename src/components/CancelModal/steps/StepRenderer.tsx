@@ -131,7 +131,6 @@ export class StepRenderer {
       return (
         <CancelComplete
           onClose={handleClose}
-          subscription={subscription}
           setNavigatingHome={(value: boolean) => {
             isNavigatingHome.current = value;
           }}
@@ -164,7 +163,7 @@ export class StepRenderer {
   }
 
   static renderStep4(props: StepRendererProps) {
-    const { currentStep, handleClose, subscription, isNavigatingHome } = props;
+    const { currentStep, handleClose, isNavigatingHome } = props;
 
     if (currentStep.option === "job-cancel-complete") {
       return <JobCancelComplete onClose={handleClose} />;
@@ -178,7 +177,6 @@ export class StepRenderer {
     return (
       <CancelComplete
         onClose={handleClose}
-        subscription={subscription}
         setNavigatingHome={(value: boolean) => {
           isNavigatingHome.current = value;
         }}
@@ -202,7 +200,6 @@ export class StepRenderer {
         return (
           <CancelComplete
             onClose={props.handleClose}
-            subscription={props.subscription}
             setNavigatingHome={(value: boolean) => {
               props.isNavigatingHome.current = value;
             }}
