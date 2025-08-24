@@ -1,10 +1,9 @@
 "use client";
 
-import { Step } from "@/types/step";
+import { Subscription } from "@/contexts/UserContext";
+import { useNavigateApp } from "@/hooks/useNavigateApp";
 import Button from "./ui/Button";
 import HorizontalLine from "./ui/HorizontalLine";
-import { useNavigateApp } from "@/hooks/useNavigateApp";
-import { Subscription } from "@/contexts/UserContext";
 
 interface Props {
   onClose: () => void;
@@ -61,31 +60,34 @@ const AcceptedDownsell = ({
   const { daysLeft, nextBillingDate } = calculateBillingDates();
   return (
     <div className="w-full space-y-5 ">
-        <div className="text-large ">
-          <p className="mb-5">Great choice, mate!</p>
-          <p className="tracking-[-2.9px] ">
-            <span>You&apos;re still on the path to your dream role.</span>{" "}
-            <span className="text-Brand-Migrate-Mate">
-              Let’s make it happen together!
-            </span>
-          </p>
-        </div>
-        <div className="font-[var(--font-inter)] ">
-          <p className="mb-4">
-            You&apos;ve got {daysLeft} days left on your current plan. Starting
-            from {nextBillingDate}, your monthly payment will be $
-            {subscription?.monthly_price
-              ? (subscription.monthly_price - 10).toFixed(2)
-              : "15.00"}
-            .
-          </p>
-          <p className="fine-print">You can cancel anytime before then.</p>
-        </div>
-        <HorizontalLine />
-        <Button onClick={() => handleGoHome(onClose, setNavigatingHome)} variant="primary">
-          Land your dream role
-        </Button>
+      <div className="text-large ">
+        <p className="mb-5">Great choice, mate!</p>
+        <p className="tracking-[-2.9px] ">
+          <span>You&apos;re still on the path to your dream role.</span>{" "}
+          <span className="text-Brand-Migrate-Mate">
+            Let’s make it happen together!
+          </span>
+        </p>
       </div>
+      <div className="font-[var(--font-inter)] ">
+        <p className="mb-4">
+          You&apos;ve got {daysLeft} days left on your current plan. Starting
+          from {nextBillingDate}, your monthly payment will be $
+          {subscription?.monthly_price
+            ? (subscription.monthly_price - 10).toFixed(2)
+            : "15.00"}
+          .
+        </p>
+        <p className="fine-print">You can cancel anytime before then.</p>
+      </div>
+      <HorizontalLine />
+      <Button
+        onClick={() => handleGoHome(onClose, setNavigatingHome)}
+        variant="primary"
+      >
+        Land your dream role
+      </Button>
+    </div>
   );
 };
 

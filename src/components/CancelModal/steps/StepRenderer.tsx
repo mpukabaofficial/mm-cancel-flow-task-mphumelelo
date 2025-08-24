@@ -167,7 +167,7 @@ export class StepRenderer {
     const { currentStep, handleClose, subscription, isNavigatingHome } = props;
 
     if (currentStep.option === "job-cancel-complete") {
-      return <JobCancelComplete />;
+      return <JobCancelComplete onClose={handleClose} />;
     }
 
     if (currentStep.option === "get-visa-help") {
