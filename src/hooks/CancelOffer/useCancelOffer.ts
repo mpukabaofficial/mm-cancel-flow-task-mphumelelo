@@ -1,5 +1,6 @@
 import { useUser } from "@/contexts/UserContext";
 import { cancellationService, subscriptionService } from "@/lib/api";
+import { calculateDownsellPrice } from "@/lib/variant";
 import { useCallback, useEffect, useState } from "react";
 
 const useCancelOffer = () => {
@@ -66,6 +67,10 @@ const useCancelOffer = () => {
     ]
   );
 
+  // Calculate discounted price for display
+  const originalPrice = subscription?.monthly_price || 25;
+  const discountedPrice = calculateDownsellPrice(originalPrice);
+
   return {
     handleDownsellResponse,
     setIsVariantA,
@@ -74,6 +79,8 @@ const useCancelOffer = () => {
     isVariantA,
     submitting,
     error,
+    discountedPrice,
+    originalPrice,
   };
 };
 

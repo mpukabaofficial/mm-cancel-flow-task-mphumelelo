@@ -1,12 +1,11 @@
-import { useUser } from "@/contexts/UserContext";
 import useCancelOffer from "@/hooks/CancelOffer/useCancelOffer";
-import { DownsellVariant, calculateDownsellPrice } from "@/lib/variant";
+import { DownsellVariant } from "@/lib/variant";
 import { Step } from "@/types/step";
 import { useEffect } from "react";
 import CancelOfferSkeleton from "../skeletons/CancelOfferSkeleton";
 import Button from "../ui/Button";
-import HorizontalLine from "../ui/HorizontalLine";
 import ErrorMessage from "../ui/ErrorMessage";
+import HorizontalLine from "../ui/HorizontalLine";
 
 interface Props {
   step: Step;
@@ -15,7 +14,6 @@ interface Props {
 }
 
 const CancelOffer = ({ setStep, step, variant }: Props) => {
-  const { subscription } = useUser();
   const {
     handleDownsellResponse,
     loading,
@@ -24,6 +22,8 @@ const CancelOffer = ({ setStep, step, variant }: Props) => {
     isVariantA,
     submitting,
     error,
+    discountedPrice,
+    originalPrice,
   } = useCancelOffer();
 
   // Check if this is variant A (skip downsell step)
@@ -46,13 +46,9 @@ const CancelOffer = ({ setStep, step, variant }: Props) => {
   }
 
   // Show skeleton while loading
-  if (loading || !subscription) {
+  if (loading) {
     return <CancelOfferSkeleton />;
   }
-
-  // Calculate discounted price for display
-  const originalPrice = subscription?.monthly_price || 25;
-  const discountedPrice = calculateDownsellPrice(originalPrice);
 
   return (
     <div className="w-full space-y-5">
