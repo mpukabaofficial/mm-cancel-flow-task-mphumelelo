@@ -1,11 +1,11 @@
 "use client";
 
-import Image from "next/image";
-import { ReactNode, useRef, useState, useEffect } from "react";
-import StepIndicator from "../StepIndicator";
 import { Step } from "@/types/step";
-import ChevronLeft from "../ui/icons/ChevronLeft";
+import Image from "next/image";
+import { ReactNode, useRef, useState } from "react";
 import CancelModalSkeleton from "../skeletons/CancelModalSkeleton";
+import StepIndicator from "../StepIndicator";
+import ChevronLeft from "../ui/icons/ChevronLeft";
 
 interface Props {
   onClose: () => void;
@@ -36,7 +36,6 @@ const CancellationCard = ({
   isLoading = false,
   skeletonVariant = "loading",
 }: Props) => {
-  const [isClosing, setIsClosing] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -47,11 +46,7 @@ const CancellationCard = ({
   const minSwipeDistance = 50;
 
   const handleClose = () => {
-    setIsClosing(true);
-    // Wait for animation to complete before actually closing
-    setTimeout(() => {
-      onClose();
-    }, 300);
+    onClose();
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -98,14 +93,6 @@ const CancellationCard = ({
     setTouchEnd(null);
   };
 
-  // Reset drag state when closing starts
-  useEffect(() => {
-    if (isClosing) {
-      setDragOffset(0);
-      setIsDragging(false);
-    }
-  }, [isClosing]);
-
   const dragStyle =
     isDragging && dragOffset > 0
       ? { transform: `translateY(${Math.min(dragOffset, 200)}px)` }
@@ -114,15 +101,9 @@ const CancellationCard = ({
   return (
     <div
       ref={containerRef}
-      className={`w-full sm:max-w-[1000px] h-[90vh] sm:max-h-[90vh] sm:h-fit overflow-y-auto 
+      className="w-full sm:max-w-[1000px] h-[90vh] sm:max-h-[90vh] sm:h-fit overflow-y-auto 
                  fixed bottom-0 left-0 sm:relative sm:bottom-auto sm:left-auto
-                 rounded-t-[20px] sm:rounded-[20px] bg-white font-semibold text-gray-warm-800 
-                 ${
-                   isClosing
-                     ? "animate-slide-down sm:animate-none"
-                     : "animate-slide-up sm:animate-none"
-                 }
-                 transition-transform duration-200 ease-out`}
+                 rounded-t-[20px] sm:rounded-[20px] bg-white font-semibold text-gray-warm-800"
       style={dragStyle}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}

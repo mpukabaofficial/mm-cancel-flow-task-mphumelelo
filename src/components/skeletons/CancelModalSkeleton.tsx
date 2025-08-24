@@ -18,7 +18,7 @@ const CancelModalSkeleton = ({
     <div className="w-full space-y-5">
       {variant === "loading" && (
         <>
-          <div className="space-y-2">
+          <div className="space-y-2 red">
             <Skeleton className="h-8 w-3/4" />
             <SkeletonText lines={2} />
           </div>
@@ -102,10 +102,12 @@ const CancelModalSkeleton = ({
 
   // Full modal skeleton with card wrapper
   return (
-    <div className="w-full sm:max-w-[1000px] h-[90vh] sm:max-h-[90vh] overflow-y-auto 
+    <div
+      className="w-full sm:max-w-[1000px] h-[90vh] sm:max-h-[90vh] overflow-y-auto 
                    fixed bottom-0 left-0 sm:relative sm:bottom-auto sm:left-auto
                    rounded-t-[20px] sm:rounded-[20px] bg-white font-semibold text-gray-warm-800 
-                   animate-slide-up sm:animate-none">
+                   animate-slide-up sm:animate-none"
+    >
       {/* Mobile drag handle - only visible on small screens */}
       <div className="sm:hidden w-full flex justify-center pt-3 pb-2">
         <div className="w-8 h-1 bg-gray-warm-300 rounded-full"></div>

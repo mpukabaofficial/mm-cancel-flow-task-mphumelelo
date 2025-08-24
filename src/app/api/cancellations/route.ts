@@ -17,7 +17,13 @@ export async function POST(request: NextRequest) {
     }
 
     const body = validation.data
-    const user = userService.getUser()
+    const user = await userService.getUser()
+    
+    if (!user) {
+      return NextResponse.json({ 
+        error: 'User not found' 
+      }, { status: 404 })
+    }
     
     const { data, error } = await supabaseAdmin
       .from('cancellations')

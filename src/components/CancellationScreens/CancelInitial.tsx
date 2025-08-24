@@ -7,7 +7,6 @@ import { cancellationService } from "@/lib/cancellationService";
 import { Loader2Icon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Step } from "@/types/step";
-import { Skeleton, SkeletonText, SkeletonButton } from "../ui/Skeleton";
 
 interface Props {
   setStep: (step: Step) => void;
@@ -115,29 +114,8 @@ const CancelReasonStep = ({ setStep, resetNavigation }: Props) => {
     loadCancellation();
   }, [user?.id, subscription?.id, userLoading]);
 
-  // Only show skeleton if we're actively loading data and not during initial modal load
-  // This prevents double skeletons (CancelModalSkeleton handles initial load)
-  if (loading && !userLoading) {
-    return (
-      <div className="order-2 md:order-1 space-y-5 w-full">
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Skeleton className="h-8 w-48" />
-            <Skeleton className="h-8 w-64" />
-          </div>
-          <Skeleton className="h-8 w-80" />
-        </div>
-        <div className="w-full md:w-[469px]">
-          <SkeletonText lines={3} />
-        </div>
-        <div className="border-t border-gray-200" />
-        <div className="w-full space-y-4">
-          <SkeletonButton />
-          <SkeletonButton />
-        </div>
-      </div>
-    );
-  }
+  // Remove component-level skeleton - CancellationCard handles all loading states
+  // This prevents double skeletons
 
   return (
     <div className="order-2 md:order-1 space-y-5 w-full">
